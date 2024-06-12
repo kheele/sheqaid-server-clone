@@ -1,0 +1,53 @@
+<div class="thead" style="border-left: 1px solid #ddd; height: 115px">
+    <div class="td text-center" style="padding-left: 5px">Basic Task Step</div>
+    <div class="td text-center" style="padding-left: 5px">Hazard</div>
+    <div class="td text-center" style="padding-left: 5px">Potential Risk</div>
+    <div class="td fixed-flex td-calc td-rotate-single" style="padding-left: 5px; min-width: 30px"><span>Risk Type</span></div>
+
+    <div class="td fixed-flex padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>;">
+        <div class="td text-center" style="min-width: <%= hasFrequency ? '150px' : '120px' %>; padding: 5px; border-bottom: 1px solid #ddd;">Inherent Risk Rating</div>
+        <div class="td flex padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>; min-height: 88px;">
+            <% if(hasFrequency) { %> 
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Frequency</span></div>
+            <% } %>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Probability</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Severity</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rating</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rank</span></div>
+        </div>
+    </div>
+
+    <div class="td text-center" style="padding-left: 5px">Control Measures</div>
+    <div class="td fixed-flex padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>;">
+        <div class="td text-center" style="min-width: <%= hasFrequency ? '150px' : '120px' %>; padding: 5px; border-bottom: 1px solid #ddd;">Controlled Risk Rating</div>
+        <div class="td flex padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>; min-height: 88px;">
+            <% if(hasFrequency) { %> 
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Frequency</span></div>
+            <% } %>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Probability</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Severity</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rating</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rank</span></div>
+        </div>
+    </div>
+
+    <% if(hasFrequency) { %> 
+    <div class="td text-center">Future Control Measures</div>
+    <div class="td fixed-flex padding-0" style="min-width: 150px;">
+        <div class="td text-center" style="min-width: 150px; padding: 5px; border-bottom: 1px solid #ddd;">Controlled Risk Rating</div>
+        <div class="td flex padding-0" style="min-width: 150px; min-height: 88px;">
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Frequency</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Probability</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Severity</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rating</span></div>
+            <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk" style="min-width: 30px"><span>Risk Rank</span></div>
+        </div>
+    </div>
+    <% } %>
+
+    <div class="td td-tr fixed-flex flex min-w-90 padding-0">
+        <div class="td fixed-flex td-calc td-rotate-single"><span>Responsible Person</span></div>
+        <div class="td fixed-flex td-calc td-rotate-single"><span>Target Date</span></div>
+        <div class="td fixed-flex td-calc td-rotate-single"><span>Due Date</span></div>
+    </div>
+</div>

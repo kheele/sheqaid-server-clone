@@ -1,0 +1,10 @@
+# dependencies
+/node_modules
+
+# misc
+npm-debug.log
+#Dockerfile
+certs
+documents
+.firebase
+.env

@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                font-family: "Roboto Medium";
+                box-sizing: border-box;
+            }
+            .wrapper {
+                display: block;
+                margin: 10px;
+            }
+            .section {
+                margin-bottom: 20px;
+            }
+            .section > h4,
+            .section > ul,
+            .section > p {
+                margin-left: 20px
+            }
+            .page-title {
+                text-align: center;
+            }
+            h1 {
+                font-size: 19px;
+            }
+            h2 {
+                font-size: 17px;
+            }
+            h3 {
+                font-size: 15px;
+            }
+            h4, p, li, td, th {
+                font-size: 12px;
+            }
+
+            .flex{
+                display: flex;
+            }
+            .flex > *{
+                flex: 1;
+            }
+            .fixed-flex{
+                flex-grow: initial !important;
+            }
+            .table{
+                display: block;
+                background: #fff;
+                position: relative;
+            }
+            .table > .thead{
+                display: flex;
+                border-bottom: 2px solid #eee;
+                background: #f6f6f6;
+            }
+            .table > .thead > .td{
+                flex: 1;
+                padding: 8px 0 4px;
+                font-weight: bold;
+                color: #888;
+                font-size: 12px;
+                border: 1px solid #eee;
+                border-left: none;
+            }
+            .table > .tbody{
+                display: block;
+            }
+            .table > .tbody .tr{
+                border-bottom: 2px solid #eee;
+                position: relative;
+            }
+            .table > .tbody .tr:not(.tr-table){
+                display: flex;
+                padding-left: 5px;
+                padding-right: 5px;
+
+            }
+            .table > .tbody .tr-table{
+                display: block;
+                /*                border: 1px solid #ddd;
+                                border-left: none;
+                                border-top: none;
+                                border-right: none;*/
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .table > .tbody .tr-table > .table .thead,
+            .table > .tbody .tr-table > .tr{
+                background: none;
+            }
+            .table > .tbody .tr-table > .table{
+                /*border: 1px dotted #ddd;*/
+                margin: 10px !important;
+                width: calc(100% - 20px) !important;
+                transition: all 2s;
+            }
+            .table > .tbody .tr-table > .table .thead .td{
+                font-size: 12px;
+                font-weight: normal;
+                font-style: italic;
+            }
+            .table > .tbody .tr-table > .table .tbody .td{
+                padding: 5px 0;
+                font-style: italic;
+            }
+            .table > .tbody .td > span{
+                background: #f7f7f7;
+                padding: 3px 3px;
+                display: block;
+                margin-right: 3px;
+                border-radius: 8px;
+                height: 100%;
+                font-size: 12px;
+            }
+            .table > .tbody .tr > .td:first-of-type > span{
+                background: #f7f7f7;
+                padding: 3px 3px;
+                display: inline;
+                margin-right: 3px;
+                border-radius: 50%;
+                height: 30px;
+            }
+            .table > .tbody .tr:nth-child(odd),
+            .table > .tbody .tr.tr-table > .tr{
+                background: #f7f7f7;
+            }
+            .table > .tbody .tr > .td{
+                flex: 1;
+                padding: 11px 0;
+                font-weight: 400;
+                color: #888;
+                font-size: 12px;
+                position: relative;
+            }
+
+            .table .td{
+                /*                border-color: #eee !important;
+                                border-left: none !important;*/
+            }
+            .table > .thead > .td:first-of-type{
+                /*border-left: 1px solid #eee !important;*/
+            }
+            .table > .thead > .td-tr > .td:not(:last-of-type){
+                margin: 0;
+                padding: 5px;
+            }
+            .table > .thead > .td-tr > .td:first-of-type{
+                margin-top: -6px;
+            }
+            .table > .thead > .td-tr > .td-tr{
+                display: flex;
+                margin: 0px;
+            }
+            .table > .thead .td-rotate{
+                transform: rotate(-90deg);
+                min-width: 95px;
+                height: 36.6666px;
+                min-height: 36.6666px;
+                max-height: 36.6666px;
+                border: 1px solid #ddd;
+                border-top-width: 0px;
+                border-left-width: 0px;
+                margin: 32px -29px 0 -30px;
+                padding: 12px 8px;
+            }
+            .table > .thead .td-rotate:last-of-type{
+                border-bottom-width: 0px;
+            }
+            .table > .thead .td-rotate.td-rotate-single{
+                padding: 11px 8px !important;
+                max-width: 125px;
+            }
+            .table > .thead .td-rotate.td-rotate-single:first-of-type{
+                margin: 43px 0 0px -44px;
+            }
+            .table > .thead .td-rotate.td-rotate-single:nth-of-type(2){
+                margin: -36px 2px 0px -8px;
+            }
+            .table > .thead .td-rotate.td-rotate-single:last-of-type{
+                margin: -37px 0 0 28px;
+            }
+            .table > .tbody > .tr {
+                padding: 0 !important;
+                min-height: 120px;
+            }
+            .table > .tbody > .tr > .td:not(.td-tr) {
+                padding: 11px 5px !important;
+                min-height: 42px;
+                height: auto !important;
+                border-right: 1px solid #eee;
+                /*                border: 1px solid #fff;
+                                border-right-width: 0px;
+                                border-top-width: 0;
+                                border-bottom-width: 2px;*/
+            }
+            .table > .tbody > .tr > .td.td-tr {
+                min-height: 42px;
+                height: auto !important;
+            }
+            .table > .tbody > .tr .td.td-calc {
+                /*min-width: 36.6666px;*/
+                height: 100%;
+                text-align: center;
+                padding: 11px 0;
+            }
+            .table > .tbody > .tr .td.td-calc {
+                border-right: 1px solid #eee;
+            }
+            .table > .tbody > .tr .td.td-calc:last-of-type{
+                /*                border-right: 0px !important;
+                                border-left: 0px !important;*/
+            }
+            .table > .tbody > .tr .td.td-rotate-single {
+                min-width: 33.3333% !important;
+                position: relative;
+            }
+            .table > .tbody > .tr .td.td-rotate-single span {
+                transform: rotate(-90deg);
+                min-width: 90px;
+                height: 28px;
+                max-height: 28px;
+                left: -31px;
+                top: 41px;
+                overflow: hidden;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+                padding: 9px 0px;
+                background: none;
+            }
+            .table > .tbody > .tr > .td:last-of-type {
+                padding: 0 !important;
+            }
+
+            .table > .tbody .td-risk-rating {
+                min-width: 145px;
+                padding: 0 !important;
+                /*border-right: 1px solid*/
+            }
+            .table > .tbody .td-risk-rating .td{
+                border-right: 1px solid #eee;
+            }
+            
+            .padding-0 {
+                padding: 0px !important;
+            }
+
+            .h-125 {height: 125px !important; }
+            .min-w-110 {min-width: 110px !important; }
+            .min-w-125 {min-width: 125px !important; }
+            .min-w-180 {min-width: 180px !important; }
+
+            .footer {
+                text-align: center; border-top: 1px solid #ddd; padding: 8px 0; color: #888; font-size: 9px; height: 40px;
+            }
+            .footer > span{
+                float: right;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="section" style="height: 650px">            
+                <h1 class="page-title" style="margin-bottom: 50px">Logo</h1>
+                <h1 class="page-title" style="margin-bottom: 50px">Baseline</h1>
+                <h1 class="page-title">Risk Assessment</h1>
+            </div>
+            <div class="section">          
+                <div class="table">
+                    <div class="thead h-125">
+                        <div class="td text-center" style="padding-left: 5px">Hazard Name / Description</div>
+                        <div class="td text-center" style="padding-left: 5px">Risk</div>
+                        <div class="td td-tr fixed-flex min-w-180" style="min-width: 180px;">
+                            <div class="td text-center" style="min-width: 180px;">Risk Type</div>
+                            <div class="td td-tr" style="min-width: 180px;">
+                                <div class="td fixed-flex td-calc td-rotate">Safety</div>
+                                <div class="td fixed-flex td-calc td-rotate">Health</div>
+                                <div class="td fixed-flex td-calc td-rotate">Environmental</div>
+                                <div class="td fixed-flex td-calc td-rotate">Quality</div>
+                                <div class="td fixed-flex td-calc td-rotate">Financial</div>
+                            </div>
+                        </div>
+                        <div class="td td-risk-rating td-tr fixed-flex has-frequency" style="min-width: 180px;">
+                            <div class="td text-center" style="min-width: 180px;">Inherent Risk Rating</div>
+                            <div class="td td-tr" style="min-width: 180px;">
+                                <div class="td fixed-flex td-calc td-rotate">Frequency</div>
+                                <div class="td fixed-flex td-calc td-rotate">Probability</div>
+                                <div class="td fixed-flex td-calc td-rotate">Severity</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rating</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rank</div>
+                            </div>
+                        </div>
+
+                        <div class="td text-center" style="padding-left: 5px">Risk Control Measures</div>
+                        <div class="td td-risk-rating td-tr fixed-flex has-frequency" style="min-width: 180px;">
+                            <div class="td text-center" style="min-width: 180px;">Controlled Risk Rating</div>
+                            <div class="td td-tr" style="min-width: 180px;">
+                                <div class="td fixed-flex td-calc td-rotate">Frequency</div>
+                                <div class="td fixed-flex td-calc td-rotate">Probability</div>
+                                <div class="td fixed-flex td-calc td-rotate">Severity</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rating</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rank</div>
+                            </div>
+                        </div>
+
+                        <div class="td text-center">Additional Risk Control Measures</div>
+                        <div class="td td-risk-rating td-tr fixed-flex has-frequency" style="min-width: 180px;">
+                            <div class="td text-center" style="min-width: 180px;">Additional Controlled Risk Rating</div>
+                            <div class="td td-tr" style="min-width: 180px;">
+                                <div class="td fixed-flex td-calc td-rotate">Frequency</div>
+                                <div class="td fixed-flex td-calc td-rotate">Probability</div>
+                                <div class="td fixed-flex td-calc td-rotate">Severity</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rating</div>
+                                <div class="td fixed-flex td-calc td-rotate">Risk Rank</div>
+                            </div>
+                        </div>
+
+                        <div class="td fixed-flex min-w-110 padding-0">
+                            <div class="td fixed-flex td-calc td-rotate td-rotate-single min-w-125 text-center">Responsible Person</div>
+                            <div class="td fixed-flex td-calc td-rotate td-rotate-single min-w-125 text-center">Target Date</div>
+                            <div class="td fixed-flex td-calc td-rotate td-rotate-single min-w-125 text-center">Due Date</div>
+                        </div>
+                    </div>
+                    <div class="tbody">
+                        <div class="tr">
+                            <div class="td" style="padding-left: 5px">
+                                <span class="counter">1</span>
+                                Hazard
+                            </div>
+                            <div class="td" style="padding-left: 5px">Risk</div>
+
+                            <div class="td td-tr fixed-flex flex min-w-180 padding-0" style="min-width: 180px;">
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                            </div>
+
+                            <div class="td td-risk-rating td-tr fixed-flex flex padding-0" style="min-width: 180px;">
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc"></div>
+                                <div class="td td-calc td-risk-level"></div>
+                            </div>
+
+                            <div class="td td-risk-control-measures" style="padding-left: 5px"></div>
+                            <div class="td td-risk-rating td-tr fixed-flex flex padding-0" style="min-width: 180px;">
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc td-risk-level"></div>
+                            </div>
+
+                            <div class="td td-risk-control-measures" style="padding-left: 5px">ssdf</div>
+                            <div class="td td-risk-rating td-tr fixed-flex flex padding-0" style="min-width: 180px;">
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc">1</div>
+                                <div class="td td-calc td-risk-level">1</div>
+                            </div>
+
+                            <div class="td td-tr fixed-flex flex min-w-110 min-h-120 padding-0">
+                                <div class="td fixed-flex td-calc td-rotate-single"><span>{responsible_personName}</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span>{Dates.formatDate(item.target_date)}</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span>{Dates.formatDate(item.due_date)}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pageFooter-first" class="footer">
+            <a href="https://sheqsolve.com">Powered by SHEQ Assist</a>
+            <span>Cover Page</span>
+        </div>
+        <div id="pageFooter" class="footer">
+            <a href="https://sheqsolve.com">Powered by SHEQ Assist</a>
+            <span>Page {{page}} of {{pages}}</span>
+        </div>
+    </body>
+</html>

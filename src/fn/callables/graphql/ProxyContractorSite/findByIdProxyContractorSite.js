@@ -1,0 +1,74 @@
+
+exports.query = `
+  query findByIdProxyContractorSiteQuery($id: bigint) {
+    proxy_contractors__sites_connection(where: {id: {_eq: $id}}) {
+      edges {
+        node {
+          id
+          status
+          contractor_id
+          contractor{
+            id
+            name
+            username
+            user_list{
+              id
+              fname
+              lname
+              username
+            }
+          }
+          site_id
+          site{
+            id
+            name
+            project{
+              id
+              name
+              user_list{
+                id
+                fname
+                lname
+                username
+                site_id
+              }
+            }
+            client{
+              id
+              name
+              email
+              contractor_email
+              user_list{
+                id
+                fname
+                lname
+                username
+                site_id
+                project_id
+              }
+            }
+            company{
+              id
+              name
+              user_list{
+                id
+                fname
+                lname
+                username
+                site_id
+                project_id
+                client_id
+              }
+            }
+            user_list{
+              id
+              fname
+              lname
+              username
+            }
+          }
+        }
+      }
+    }
+  }
+`;

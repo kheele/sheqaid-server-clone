@@ -1,0 +1,129 @@
+//<editor-fold desc="findByIdEmployeeDashboardStats">
+const findByIdEmployeeDashboardStats = (
+	{
+		name,
+		listName,
+		isContract,
+		type,
+		onCreateQuery,
+		mapResults,
+	}
+) => {
+	const operationName = `findByIdEmployeeHR${name}DashboardStatsQuery`;
+	
+	return async (socket, data) => {
+		const {
+			id,
+			mon,
+			mon2,
+			mon3,
+			//
+			// site_id, project_id, client_id, company_id,
+		} = data;
+		
+		// const id = site_id || project_id || client_id || company_id;
+		// let tbl;
+		// if(site_id) {
+		// 	tbl = "default_sites";
+		// } else if(project_id) {
+		// 	tbl = "default_projects";
+		// } else if(client_id) {
+		// 	tbl = "default_clients";
+		// } else {
+		// 	tbl = "default_companies";
+		// }
+		
+		console.log('socket.decodedIdToken', socket.request.session.decodedIdToken)
+		
+		let promise;
+		if(onCreateQuery) {
+			promise = onCreateQuery(data, operationName);
+		} else {
+			promise = getGraphQLOne({
+				variables: {id, mon, mon2, mon3},
+				query: `
+	      query ${operationName}($id: bigint, $mon: date, $mon2: date, $mon3: date) {
+	        hr_employees(where: {id: {_eq: $id}}) {
+            id
+            
+            #${listName}
+            list_active_aggregate:${listName}_aggregate(where: {removed: {_eq: false}${type ? `, type: {_eq: "${type}"}` : ''}}){
+                aggregate{
+                    count
+                }
+            }
+            list_removed_aggregate:${listName}_aggregate(where: {removed: {_eq: true}${type ? `, type: {_eq: "${type}"}` : ''}}){
+                aggregate{
+                    count
+                }
+            }
+            list_no_expiry_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+	              ${isContract ? 'contract_details: {' : ''}expiry_date: {_is_null: true}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+            list_expired_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+	              ${isContract ? 'contract_details: {' : ''}expiry_date: {_lte: "now()"}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+            list_mon_expiry_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+                ${isContract ? 'contract_details: {' : ''}expiry_date: {_gt: "now()", _lte: $mon}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+            list_2mon_expiry_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+                ${isContract ? 'contract_details: {' : ''}expiry_date: {_gt: $mon, _lte: $mon2}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+            list_3mon_expiry_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+                ${isContract ? 'contract_details: {' : ''}expiry_date: {_gt: $mon2, _lte: $mon3}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+            list_4mon_expiry_aggregate:${listName}_aggregate(where: {
+                removed: {_eq: false},
+                ${isContract ? 'contract_details: {' : ''}expiry_date: {_gt: $mon3}${isContract ? '}' : ''}
+	              ${type ? `, type: {_eq: "${type}"}` : ''}
+            }){
+                aggregate{
+                    count
+                }
+            }
+          }
+	      }
+	    `,
+				operationName,
+			});
+		}
+		
+		if (mapResults) {
+			promise = promise.then(mapResults(id));
+		}
+		
+		return promise;
+	};
+};
+exports.findByIdEmployeeDashboardStats = findByIdEmployeeDashboardStats;
+//</editor-fold>

@@ -1,0 +1,10 @@
+require('./employees');
+require('./employees-external');
+require('./docs');
+require('./departments');
+require('./job-categories');
+require('./job-positions');
+require('./job-observations');
+require('./ppe_items');
+require('./ppe_types');
+require('./teams');

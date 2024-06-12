@@ -1,0 +1,251 @@
+
+<style>
+    * {
+        font-family: "Roboto Medium";
+        box-sizing: border-box;
+    }
+    .wrapper {
+        display: block;
+        margin: 0px;
+    }
+    .page-title {
+        text-align: center;
+    }
+    h1 {
+        font-size: 19px;
+    }
+    h2 {
+        font-size: 17px;
+    }
+    h3 {
+        font-size: 15px;
+    }
+    h4, p, li, td, th {
+        font-size: 12px;
+    }
+
+    .flex{
+        display: flex;
+    }
+    .flex > *{
+        flex: 1;
+    }
+    .fixed-flex{
+        flex-grow: initial !important;
+    }
+    .table{
+        display: block;
+        background: #fff;
+        position: relative;
+    }
+    .table > .thead{
+        display: flex;
+        border-bottom: 2px solid #eee;
+        background: #f6f6f6;
+    }
+    .table > .thead > .td{
+        flex: 1;
+        padding: 8px 0 4px;
+        font-weight: bold;
+        color: #888;
+        font-size: 12px;
+        border: 1px solid #eee;
+        border-left: none;
+    }
+    .table > .tbody{
+        display: block;
+    }
+    .table > .tbody .tr{
+        border-bottom: 2px solid #eee;
+        position: relative;
+    }
+    .table > .tbody .tr:not(.tr-table){
+        display: flex;
+        padding-left: 5px;
+        padding-right: 5px;
+
+    }
+    .table > .tbody .tr-table{
+        display: block;
+        /*                border: 1px solid #ddd;
+                        border-left: none;
+                        border-top: none;
+                        border-right: none;*/
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .table > .tbody .tr-table > .table .thead,
+    .table > .tbody .tr-table > .tr{
+        background: none;
+    }
+    .table > .tbody .tr-table > .table{
+        /*border: 1px dotted #ddd;*/
+        margin: 10px !important;
+        width: calc(100% - 20px) !important;
+        transition: all 2s;
+    }
+    .table > .tbody .tr-table > .table .thead .td{
+        font-size: 12px;
+        font-weight: normal;
+        font-style: italic;
+    }
+    .table > .tbody .tr-table > .table .tbody .td{
+        padding: 5px 0;
+        font-style: italic;
+    }
+    .table > .tbody .td > span{
+        background: #f7f7f7;
+        padding: 3px 3px;
+        display: block;
+        margin-right: 3px;
+        border-radius: 8px;
+        height: 100%;
+        font-size: 12px;
+    }
+    .table > .tbody .tr > .td:first-of-type > span{
+        background: #f7f7f7;
+        padding: 3px 3px;
+        display: inline;
+        margin-right: 3px;
+        border-radius: 50%;
+        height: 30px;
+    }
+    .table > .tbody .tr:nth-child(odd),
+    .table > .tbody .tr.tr-table > .tr{
+        background: #f7f7f7;
+    }
+    .table > .tbody .tr > .td{
+        flex: 1;
+        padding: 11px 0;
+        font-weight: 400;
+        color: #888;
+        font-size: 12px;
+        position: relative;
+    }
+
+    .table .td{
+        /*                border-color: #eee !important;
+                        border-left: none !important;*/
+    }
+    .table > .thead > .td:first-of-type{
+        /*border-left: 1px solid #eee !important;*/
+    }
+    .table > .thead > .td-tr > .td:not(:last-of-type){
+        margin: 0;
+        padding: 5px;
+    }
+    .table > .thead > .td-tr > .td:first-of-type{
+        margin-top: -6px;
+    }
+    .table > .thead > .td-tr > .td-tr{
+        display: flex;
+        margin: 0px;
+    }
+    .table > .thead .td-rotate{
+        -webkit-transform: rotate(-90deg);
+        width: 95px;
+        height: 36.6666px;
+        height: 36.6666px;
+        border: 1px solid #ddd;
+        border-top-width: 0px;
+        border-left-width: 0px;
+        margin: 32px -29px 0 -30px;
+        padding: 12px 8px;
+    }
+    .table > .thead .td-rotate:last-of-type{
+        border-bottom-width: 0px;
+    }
+    .table > .thead .td-rotate.td-rotate-single{
+        padding: 11px 8px !important;
+        width: 125px;
+    }
+    .table > .thead .td-rotate.td-rotate-single:first-of-type{
+        margin: 43px 0 0px -44px;
+    }
+    .table > .thead .td-rotate.td-rotate-single:nth-of-type(2){
+        margin: -36px 2px 0px -8px;
+    }
+    .table > .thead .td-rotate.td-rotate-single:last-of-type{
+        margin: -37px 0 0 28px;
+    }
+    .table > .tbody > .tr {
+        padding: 0 !important;
+        height: 120px;
+    }
+    .table > .tbody > .tr > .td > span{
+        height: auto;
+    }
+    .table > .tbody > .tr > .td:not(.td-tr) {
+        padding: 11px 5px !important;
+        height: 42px;
+        height: auto !important;
+        border-right: 1px solid #eee;
+        /*                border: 1px solid #fff;
+                        border-right-width: 0px;
+                        border-top-width: 0;
+                        border-bottom-width: 2px;*/
+    }
+    .table > .tbody > .tr > .td.td-tr {
+        height: 42px;
+        height: auto !important;
+    }
+    .table > .tbody > .tr .td.td-calc {
+        /*width: 36.6666px;*/
+        height: 100%;
+        text-align: center;
+        padding: 11px 0;
+    }
+    .table > .tbody > .tr .td.td-calc {
+        border-right: 1px solid #eee;
+    }
+    .table > .tbody > .tr .td.td-calc:last-of-type{
+        /*                border-right: 0px !important;
+                        border-left: 0px !important;*/
+    }
+    .table > .tbody > .tr .td.td-rotate-single {
+        width: 33.3333% !important;
+        position: relative;
+    }
+    .table > .tbody > .tr .td.td-rotate-single span {
+        -webkit-transform: rotate(-90deg);
+        width: 90px;
+        height: 28px;
+        left: -31px;
+        top: 41px;
+        overflow: hidden;
+        right: 0;
+        bottom: 0;
+        position: absolute;
+        padding: 9px 0px;
+        background: none;
+    }
+    .table > .tbody > .tr > .td:last-of-type {
+        padding: 0 !important;
+    }
+
+    .table > .tbody .td-risk-rating {
+        padding: 0 !important;
+        /*border-right: 1px solid*/
+    }
+    .table > .tbody .td-risk-rating .td{
+        border-right: 1px solid #eee;
+    }
+
+    .padding-0 {
+        padding: 0px !important;
+    }
+
+    .h-125 {height: 125px !important; }
+    .min-w-110 {width: 110px !important; }
+    .min-w-125 {width: 125px !important; }
+
+    #pageHeader {
+        text-align: center; border-bottom: 1px solid #ddd; margin-bottom: 0px;
+    }
+    .footer {
+        text-align: center; border-top: 1px solid #ddd; padding: 5px 0; color: #888; font-size: 9px; height: 20px; margin-top: 55px;
+    }
+    .footer > span{
+        float: right;
+    }
+</style>

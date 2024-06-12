@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SHEQ Aid - Password Recovery</title>
+        <link rel="stylesheet" href="style.css" media="all"/>
+    </head>
+    <body>
+        <div id="message">
+            <h3><b>Recover Password</b></h3>
+            <hr />
+            <p>Please use the form below to reset your Password.</p>
+            <p>
+                <label>New Password</label>
+                <input name="password" type="password" placeholder="New Password"/>
+                <label>Confirmation Password</label>
+                <input name="password_conf" type="password" placeholder="Confirmation Password"/>
+            </p>
+            <p>
+                <a class="button" href="javascript:submit();">Submit</a>
+            </p>
+            <p id="msg"></p>
+        </div>
+        <div id="no-access">
+            <h3><b>This page is forbidden</b></h3>
+        </div>
+        <p id="footer">&copy;<span></span> SHEQ Aid. All Rights Reserved</p>
+
+        <script>
+            function getParam(name) {
+                const parser = document.createElement('a');
+                parser.href = window.location.href;
+                const query = parser.search.substring(1);
+                const vars = query.split('&');
+                for (let i = 0; i < vars.length; i++) {
+                    const pair = vars[i].split('=');
+                    if (pair[0] === name && pair[1]) {
+                        return decodeURIComponent(pair[1]);
+                    }
+                }
+            }
+
+            function submit() {
+                const password = document.querySelector('input[name=password]');
+                if (password.value.trim().length === 0) {
+                    alert('New Password is required')
+                    return;
+                }
+                if (password.value.trim().length < 6) {
+                    alert('New Password must be a minimum of 6 characters')
+                    return;
+                }
+
+                const password_conf = document.querySelector('input[name=password_conf]');
+                if (password_conf.value.trim().length === 0) {
+                    alert('Confirmation Password is required')
+                    return;
+                }
+
+                if (password.value !== password_conf.value) {
+                    alert('New Password and Confirmation Password do not match')
+                    return;
+                }
+
+                const btn = document.querySelector('.button');
+                btn.setAttribute("disabled", true);
+                const msg = document.querySelector('#msg');
+
+                msg.innerHTML = 'Please wait...';
+
+                fetch(`https://server.cloud.sheqaid.com/api/callables/accounts/onResetPassword/${getParam('type')}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: getParam('id'),
+                        password: password.value
+                    }),
+                }).
+                then(res => res.json()).
+                then(res => {
+                    // console.log('res', res)
+                    if (!res) {
+                        msg.innerHTML = 'You are not authorized to update the password.';
+                        return;
+                    }
+                    if (res === true) {
+                        password.value = '';
+                        password_conf.value = '';
+                        msg.innerHTML = 'Password successfully reset.<br />Please login to the system using your new password.';
+                    } else if (res === "UPDATE_ERROR") {
+                        msg.innerHTML = 'The password could not be updated. Please try again.<br /><br />\n\
+                                                Note: <i style="color: red;">If you recently updated your password, please request another <b>Password Recovery</b></i>';
+                    } else if (res === "TOKEN_NOT_FOUND") {
+                        msg.innerHTML = 'The password could not be updated. Please try again.';
+                    } else {
+                        msg.innerHTML = 'You are not authorized to update the password.';
+                    }
+                }).catch(e => {
+                    if (e.code === 'not-found') {
+                        msg.innerHTML = 'The user to reset password for does not exist.';
+                    } else {
+                        msg.innerHTML = 'An error occurred. Please try again.';
+                        console.error(e);
+                    }
+                }).finally(() => {
+                    btn.setAttribute("disabled", false);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelector('#footer span').innerHTML = new Date().getFullYear();
+
+                const message = document.querySelector('#message');
+                const no_access = document.querySelector('#no-access');
+                if (getParam('id') && getParam('type')) {
+                    message.style.display = "block";
+                    no_access.style.display = "none";
+                } else {
+                    message.style.display = "none";
+                    no_access.style.display = "block";
+                }
+            });
+        </script>
+    </body>
+</html>

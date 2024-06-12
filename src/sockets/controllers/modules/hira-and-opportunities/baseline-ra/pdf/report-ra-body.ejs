@@ -1,0 +1,110 @@
+                    
+<% list.forEach(({id, data: {created_at, activity, expiry_date, risk_tolerance, list: sub_list}}, n) => {%>
+<label class="w-full font-size-16" style="margin: 10px 0 !important;"><%= (n+1)%>. <%= activity %></label> 
+<div class="tbody" style="border-top: 2px solid #eee;">
+    <% sub_list.forEach(({
+            task_step, hazard, risk,
+            risk_type, control_measure_list, control_measure_list_additional,
+            likelihood_1, frequency_1, consequence_1,
+            likelihood_2, frequency_2, consequence_2,
+            likelihood_3, frequency_3, consequence_3,
+            responsible_person, target_date, due_date
+        }, n) => {
+        
+        let responsible_personName = null;
+        if(responsible_person) {
+            const {fname, lname, data} = responsible_person;
+            responsible_personName = (fname || data.fname).charAt(0).toUpperCase() + '. ' + (lname || data.lname);
+        } else {
+            responsible_personName = "";
+        }
+        
+        const calcRiskRating = (likelihood, frequency, consequence) => {
+            if(hasFrequency) {
+                return ((likelihood + frequency) / 2) * consequence;
+            } else {
+                return likelihood * consequence;
+            }
+        };
+        const calcRiskRank = (n) => {
+            if (n <= 4) {
+                return 'Low';
+            } else if (n <= 8) {
+                return 'Medium';
+            } else if (n <= 15) {
+                return 'High';
+            } else if (n > 15){
+                return 'Extreme';
+            }
+        };
+        
+        const risk_rating_1 = calcRiskRating(likelihood_1, frequency_1, consequence_1);
+        const risk_rank_1 = calcRiskRank(risk_rating_1);
+        
+        const risk_rating_2 = calcRiskRating(likelihood_2, frequency_2, consequence_2);        
+        const risk_rank_2 = calcRiskRank(risk_rating_2);
+        
+        let risk_rating_3, risk_rank_3;
+        if(hasFrequency && likelihood_3 && frequency_3 && consequence_3) {
+            risk_rating_3 = calcRiskRating(likelihood_3, frequency_3, consequence_3);
+            risk_rank_3 = calcRiskRank(risk_rating_3);
+        }
+    %>
+    <div class="tr">
+        <div class="td" style="padding-left: 5px; border-left: 1px solid #ddd">
+            <span class="counter"><%= (n+1) %></span> <%= task_step %>
+        </div>
+        <div class="td" style="padding-left: 5px"><%= hazard %></div>
+        <div class="td" style="padding-left: 5px"><%= risk %></div>
+
+        <div class="td text-center fixed-flex" style="min-width: 30px;">
+            <% risk_type.forEach(v => { %>
+                <p style="margin: 0; text-align: center;"><%= v.substring(0, 1) %></p>
+            <% }); %>
+        </div>
+
+        <div class="td td-tr fixed-flex flex min-h-120 padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>">
+            <% if(hasFrequency) { %> <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= frequency_1 %></div><% } %>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= likelihood_1 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= consequence_1 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= risk_rating_1 %></div>
+            <div class="td fixed-flex td-calc td-rotate-single" style="min-width: 30px; height: 100px"><span style="text-align: right;top: 41px;"><%= risk_rank_1 %></span></div>
+        </div>
+
+        <div class="td td-risk-control-measures" style="padding-left: 5px">
+            <% (control_measure_list || []).forEach((v, n) => { %>
+            <p style="margin: 0"><%= (n+1) %>. <%= v.text %></0>
+            <% }); %>
+        </div>
+        <div class="td td-tr fixed-flex flex min-h-120 padding-0" style="min-width: <%= hasFrequency ? '150px' : '120px' %>">
+            <% if(hasFrequency) { %> <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= frequency_2 %></div><% } %>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= likelihood_2 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= consequence_2 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= risk_rating_2 %></div>
+            <div class="td fixed-flex td-calc td-rotate-single" style="min-width: 30px; height: 100px"><span style="text-align: right;top: 41px;"><%= risk_rank_2 %></span></div>
+        </div>
+
+        <% if(hasFrequency) { %> 
+        <div class="td td-risk-control-measures has-frequency" style="padding-left: 5px">
+            <% (control_measure_list_additional || []).forEach((v, n) => { %>
+            <p style="margin: 0"><%= (n+1) %>. <%= v.text %></p>
+            <% }); %>
+        </div>
+        <div class="td td-tr fixed-flex flex min-h-120 padding-0" style="min-width: 150px">
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= frequency_3 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= likelihood_3 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= consequence_3 %></div>
+            <div class="td fixed-flex td-calc" style="min-width: 30px; height: 100px"><%= risk_rating_3 %></div>
+            <div class="td fixed-flex td-calc td-rotate-single" style="min-width: 30px; height: 100px"><span style="text-align: right;top: 41px;"><%= risk_rank_3 %></span></div>
+        </div>
+        <% } %>
+
+        <div class="td td-tr fixed-flex flex min-w-90 padding-0" style="height: 100px">
+            <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 41px"><%= responsible_personName %></span></div>
+            <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 40px"><%= Dates.formatDate(target_date) %></span></div>
+            <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 40px"><%= Dates.formatDate(due_date) %></span></div>
+        </div>
+    </div>
+    <% });%>
+</div>
+<% })%>

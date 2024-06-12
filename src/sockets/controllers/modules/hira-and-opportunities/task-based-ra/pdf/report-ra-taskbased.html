@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            * {
+                font-family: "Roboto Medium";
+                box-sizing: border-box;
+            }
+            .wrapper {
+                display: block;
+                margin: 10px;
+            }
+            .section {
+                margin-bottom: 20px;
+            }
+            .section > h4,
+            .section > ul,
+            .section > p {
+                margin-left: 20px
+            }
+            .page-title {
+                text-align: center;
+            }
+            h1 {
+                font-size: 19px;
+            }
+            h2 {
+                font-size: 17px;
+            }
+            h3 {
+                font-size: 15px;
+            }
+            h4, p, li, td, th {
+                font-size: 12px;
+            }
+
+            .flex{
+                display: flex;
+            }
+            .flex > *{
+                flex: 1;
+            }
+            .fixed-flex{
+                flex-grow: initial !important;
+            }
+            .table{
+                display: block;
+                background: #fff;
+                position: relative;
+            }
+            .table > .thead{
+                display: flex;
+                border-bottom: 2px solid #ddd;
+                background: #f6f6f6;
+            }
+            .table > .thead > .td{
+                flex: 1;
+                padding: 5px 0;
+                font-weight: bold;
+                color: #888;
+                font-size: 11px;
+                border: 1px solid #ddd;
+                border-left: none;
+            }
+            .table > .tbody{
+                display: block;
+            }
+            .table > .tbody .tr{
+                border-bottom: 2px solid #eee;
+                position: relative;
+            }
+            .table > .tbody .tr:not(.tr-table){
+                display: flex;
+                padding-left: 5px;
+                padding-right: 5px;
+
+            }
+            .table > .tbody .tr-table{
+                display: block;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            .table > .tbody .tr-table > .table .thead,
+            .table > .tbody .tr-table > .tr{
+                background: none;
+            }
+            .table > .tbody .tr-table > .table{
+                margin: 10px !important;
+                width: calc(100% - 20px) !important;
+                transition: all 2s;
+            }
+            .table > .tbody .tr-table > .table .thead .td{
+                font-size: 12px;
+                font-weight: normal;
+                font-style: italic;
+            }
+            .table > .tbody .tr-table > .table .tbody .td{
+                padding: 5px 0;
+                font-style: italic;
+            }
+            .table > .tbody .td > span{
+                background: #f7f7f7;
+                padding: 3px 3px;
+                display: block;
+                margin-right: 3px;
+                border-radius: 8px;
+                height: 100%;
+                font-size: 12px;
+            }
+            .table > .tbody .tr > .td:first-of-type > span{
+                background: #f7f7f7;
+                padding: 3px 3px;
+                display: inline;
+                margin-right: 3px;
+                border-radius: 50%;
+                height: 30px;
+            }
+            .table > .tbody .tr:nth-child(odd),
+            .table > .tbody .tr.tr-table > .tr{
+                background: #f7f7f7;
+            }
+            .table > .tbody .tr > .td{
+                flex: 1;
+                border-right: 1px solid #eee;
+                padding: 5px 0;
+                font-weight: 400;
+                color: #888;
+                font-size: 12px;
+                position: relative;
+            }
+
+            .table > .thead .td-rotate{
+                transform: rotate(-90deg);
+                min-width: 95px;
+                height: 30px;
+                min-height: 30px;
+                max-height: 30px;
+                border: 1px solid #ddd;
+                border-top-width: 0px;
+                border-left-width: 0px;
+                border-right: 0px;
+                margin: 32px -29px 0 -30px;
+                padding: 12px 8px;
+            }
+            .table > .thead .td-rotate:last-of-type{
+                border-bottom-width: 0px;
+            }
+
+            .table .td.td-rotate-single{
+                padding: 7px 8px !important;
+                min-width: 30px !important;
+                position: relative;
+                border-right: 1px solid #ddd;
+            }
+            .table .td.td-rotate-single:last-of-type{
+                border-right: 0px;
+            }
+            .table .td.td-rotate-single span {
+                transform: rotate(-90deg);
+                min-width: 107px;
+                height: 30px;
+                max-height: 30px;
+                left: -39px;
+                top: 40px;
+                overflow: hidden;
+                right: 0;
+                bottom: 0;
+                position: absolute;
+                padding: 8px 5px;
+                background: none;
+            }
+            .table .td.td-rotate-single-risk span {
+                min-width: 85px;
+                left: -28px;
+                top: 27px;
+            }
+
+            .table > .tbody > .tr {
+                padding: 0 !important;
+                height: 115px;
+            }
+            .table > .tbody > .tr > .td > span{
+                height: auto;
+            }
+            .table > .tbody > .tr .td.td-calc {
+                height: 100%;
+                text-align: center;
+                padding: 5px 0;
+            }
+            .table > .tbody > .tr .td.td-calc {
+                border-right: 1px solid #eee;
+            }
+            .table > .tbody > .tr > .td:last-of-type {
+                padding: 0 !important;
+            }
+
+            .padding-0 {
+                padding: 0px !important;
+            }
+
+            .h-125 {height: 125px !important; }
+            .min-w-90 {min-width: 90px !important; }
+            .min-w-125 {min-width: 125px !important; }
+            .min-w-180 {min-width: 180px !important; }
+
+            .footer {
+                text-align: center; border-top: 1px solid #ddd; padding: 8px 0; color: #888; font-size: 9px; height: 40px;
+            }
+            .footer > span{
+                float: right;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="section" style="height: 650px">            
+                <h1 class="page-title" style="margin-bottom: 50px">Logo</h1>
+                <h1 class="page-title" style="margin-bottom: 50px">Task Based</h1>
+                <h1 class="page-title">Risk Assessment</h1>
+            </div>
+            <div class="section">            
+                <div class="table">
+                    <div class="thead" style="border-left: 1px solid #ddd; height: 115px">
+                        <div class="td text-center" style="padding-left: 5px">Hazard Name / Description</div>
+                        <div class="td text-center" style="padding-left: 5px">Risk</div>
+                        <div class="td text-center fixed-flex" style="padding-left: 5px; min-width: 90px">Risk Type</div>
+
+                        <div class="td fixed-flex padding-0" style="min-width: 120px;">
+                            <div class="td text-center" style="min-width: 120px; padding: 5px; border-bottom: 1px solid #ddd;">Inherent Risk Rating</div>
+                            <div class="td flex padding-0" style="min-width: 120px; min-height: 88px;">
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Probability</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Severity</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Risk Rating</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Risk Rank</span></div>
+                            </div>
+                        </div>
+
+                        <div class="td text-center" style="padding-left: 5px">Risk Control Measures</div>
+                        <div class="td fixed-flex padding-0" style="min-width: 120px;">
+                            <div class="td text-center" style="min-width: 120px; padding: 5px; border-bottom: 1px solid #ddd;">Controlled Risk Rating</div>
+                            <div class="td flex padding-0" style="min-width: 120px; min-height: 88px;">
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Probability</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Severity</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Risk Rating</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single td-rotate-single-risk"><span>Risk Rank</span></div>
+                            </div>
+                        </div>
+
+                        <div class="td fixed-flex flex min-w-90 padding-0">
+                            <div class="td fixed-flex td-calc td-rotate-single"><span>Responsible Person</span></div>
+                            <div class="td fixed-flex td-calc td-rotate-single"><span>Target Date</span></div>
+                            <div class="td fixed-flex td-calc td-rotate-single"><span>Due Date</span></div>
+                        </div>
+                    </div>
+                    <div class="tbody">
+                        <div class="tr">
+                            <div class="td" style="padding-left: 5px; border-left: 1px solid #ddd">
+                                <span class="counter">1</span>
+                                Hazard
+                            </div>
+                            <div class="td" style="padding-left: 5px">Risk</div>
+
+                            <div class="td text-center fixed-flex" style="min-width: 90px; padding-left: 5px">Environmental</div>
+
+                            <div class="td fixed-flex flex min-h-120 padding-0" style="min-width: 120px">
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 41px;">Extreme</span></div>
+                            </div>
+
+                            <div class="td td-risk-control-measures" style="padding-left: 5px"></div>
+                            <div class="td fixed-flex flex min-h-120 padding-0" style="min-width: 120px">
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc" style="min-width: 30px">1</div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 41px;">Extreme</span></div>
+                            </div>
+
+                            <div class="td fixed-flex flex min-w-90 padding-0" style="height: 115px">
+                                <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 46px">{responsible_personName}</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 47px">{Dates.formatDate(item.target_date)}</span></div>
+                                <div class="td fixed-flex td-calc td-rotate-single"><span style="text-align: right; top: 47px">{Dates.formatDate(item.due_date)}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="pageFooter-first" class="footer">
+            <a href="https://sheqsolve.com">Powered by SHEQ Assist</a>
+            <span>Cover Page</span>
+        </div>
+        <div id="pageFooter" class="footer">
+            <a href="https://sheqsolve.com">Powered by SHEQ Assist</a>
+            <span>Page {{page}} of {{pages}}</span>
+        </div>
+    </body>
+</html>
