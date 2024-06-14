@@ -1,6 +1,6 @@
 {
-        "name": "sheqaid-server",
-        "description": "Cloud Functions",
+        "name": "sheqaid-bun-server",
+        "description": "",
         "scripts": {
                 "test": "mocha --reporter spec",
                 "lint": "eslint .",
@@ -13,7 +13,7 @@
                 "add:cors": "gsutil cors set cors.json gs://sheqsolve.appspot.com",
                 "install:mod": "npm install -g npm@10.2.5",
                 "install:remove": "rm -rf node_modules package-lock.json",
-                "install:all": "npm i jsonwebtoken --save",
+                "install:all": "npm i moment@2.24.0",
                 "neon:build": "npm run build"
         },
         "engines": {
@@ -46,7 +46,7 @@
                 "js-excel-template": "^3.0.2",
                 "jsonwebtoken": "^9.0.2",
                 "mime": "^3.0.0",
-                "moment": "2.24.0",
+                "moment": "^2.24.0",
                 "moment-timezone": "0.5.13",
                 "morgan": "^1.10.0",
                 "node-blob": "0.0.2",

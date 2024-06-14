@@ -55,16 +55,24 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
     io.engine.use(helmetMiddleware);
     io.engine.use(sessionMiddleware);
 
+    io.use((socket, next) => {
+        if(!socket.injectCreate) {
+            socket.injectCreate = injectCreate.bind(socket);
+        }
+        if(!socket.orgsFilter) {
+            socket.orgsFilter = orgsFilter.bind(socket);
+        }
+        next();
+    });
+
     io.use(async (socket, next) => {
-        console.log("io.use1");
+        console.log("io.use socket.injectCreate", !!socket.injectCreate);
+        console.log("io.use socket.orgsFilter", !!socket.orgsFilter);
         const res = await setAuthDecodedIdTokenBySocket(socket);
         console.log("io.use", res);
         if (res === "UNAUTHORIZED") {
             return;
         }
-
-        socket.injectCreate = injectCreate.bind(socket);
-        socket.orgsFilter = orgsFilter.bind(socket);
 
         next();
     });
@@ -204,6 +212,9 @@ function orgsFilter(orgs) {
     if(excCompany) return [];
 
     const {session} = this.request;
+    const {decodedIdToken} = session;
+
+    if(!decodedIdToken) return;
 
     const {
         company_id,
@@ -219,13 +230,15 @@ function orgsFilter(orgs) {
 
         selected_contractor_client_id,
         selected_contractor_site_id,
-    } = session.decodedIdToken || {};
+    } = decodedIdToken;
+
+    console.log("orgsFilter session decodedIdToken selected_client_id", selected_client_id);
 
     const {
         isConsultant,
         isContractor,
         isNoProjects,
-    } = session.decodedIdToken || {};
+    } = decodedIdToken;
 
     const hasProjects = !isNoProjects;
 

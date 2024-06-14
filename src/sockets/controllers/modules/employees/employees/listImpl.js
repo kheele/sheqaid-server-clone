@@ -25,10 +25,12 @@ module.exports = async (socket, data) => {
 		exact_orgs = false,
 		//
 		client_filter,
-		// orgs_filter = [],
+		orgs_filter = [],
 	} = data;
 
-	const orgs_filter = socket.orgsFilter(data);
+	console.log('listImpl1', orgs_filter)
+	// const orgs_filter = socket.orgsFilter(data);
+	console.log('listImpl2', socket.orgsFilter(data))
 
 	const {filter} = getVariablesAndQueryConfig({
 		orgs_filter,

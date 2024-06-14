@@ -74,12 +74,14 @@ module.exports = (config) => {
                 excCompany,
                 //
                 client_filter,
-                // orgs_filter = [],
+                orgs_filter = [],
                 //
                 ...others
             } = data;
 
-            const orgs_filter = socket.orgsFilter(data);
+            console.log('listImpl1', orgs_filter)
+            // const orgs_filter = socket.orgsFilter(data);
+            console.log('listImpl2', socket.orgsFilter(data))
 
             let remove_args;
             if ('written_off' in data) {
