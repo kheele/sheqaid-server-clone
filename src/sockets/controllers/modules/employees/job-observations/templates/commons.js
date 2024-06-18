@@ -7,7 +7,9 @@ exports.getVariablesAndQueryConfig = (
 		//
 		status,
 		name,
+		task_observed,
 		scheduled,
+		team_observed_id,
 		//
 		site_id, project_id, client_id,
 		//
@@ -26,8 +28,14 @@ exports.getVariablesAndQueryConfig = (
 		if(name) {
 			filter.push(`name: {_ilike: "%${name}%"}`);
 		}
+		if (task_observed) {
+			filter.push(`task_observed: {_ilike: "%${task_observed}%"}`);
+		}
 		if(scheduled) {
 			filter.push(`scheduled: {_eq: ${scheduled === "Yes"}}`);
+		}
+		if (team_observed_id) {
+			filter.push(`team_observed_id: {_eq: ${team_observed_id}}`);
 		}
 	}
 	
@@ -118,13 +126,15 @@ exports.job_observation_template_details_find_fragment = `
     is_template
     visibility
     scheduled
-    job_position{
-      id
-      name
-    }
+    task_observed
     
     total_questions #computed
     
+    task_observed
+    team_observed{
+        id
+        name
+    }
     template_questionnaire_list_aggregate{
       aggregate{
         count
@@ -159,13 +169,15 @@ exports.job_observation_template_details_list_fragment = `
     is_template
     visibility
     scheduled
-    job_position{
-      id
-      name
-    }
+    task_observed
     
     total_questions #computed
     
+    task_observed
+    team_observed{
+        id
+        name
+    }
     template_questionnaire_list_aggregate{
       aggregate{
         count

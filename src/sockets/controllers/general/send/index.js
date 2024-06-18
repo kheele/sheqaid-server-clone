@@ -23,7 +23,7 @@ class Cntr extends ACntr {
 	}
 	
 	async confirmUserOTP(socket, data = {}) {
-		console.log('data', data)
+		// console.log('data', data)
 		
 		const {access_type, username, code} = data;
 		

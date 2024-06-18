@@ -19,6 +19,7 @@ module.exports = (config) => {
             id,
             id_list,
             excCompany,
+            noFilter,
         } = data;
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
@@ -75,13 +76,14 @@ module.exports = (config) => {
                 //
                 client_filter,
                 orgs_filter = [],
+                noFilter,
                 //
                 ...others
             } = data;
 
             console.log('listImpl1', orgs_filter)
-            // const orgs_filter = socket.orgsFilter(data);
-            console.log('listImpl2', socket.orgsFilter(data))
+            // const orgs_filter = noFilter ? [] : socket.orgsFilter(data);
+            console.log('listImpl2', noFilter ? [] : socket.orgsFilter(data))
 
             let remove_args;
             if ('written_off' in data) {
@@ -115,23 +117,28 @@ module.exports = (config) => {
                 `;
             }
 
-            return listGraphQL({
-                query: `
-                    query listAll${name}ByLoggedQuery {
-                      ${tbl}(
+            const query = `
+                query listAll${name}ByLoggedQuery {
+                    ${tbl}(
                         where: {
                           ${where}
                         },
                         ${order_by ? `${isFunction(order_by) ? order_by(data) : order_by},` : ''}
                         offset: ${offset},
                         ${limit > 0 ? `limit: ${limit}` : ''}
-                      ) {
+                    ) {
                         ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
-                          ${__orgs_fragment}
-                      }
+                        ${__orgs_fragment}
                     }
-				`,
+                }
+			`;
+
+            return listGraphQL({
+                query,
                 operationName: `listAll${name}ByLoggedQuery`,
+            }).catch(err => {
+                console.error(err, query);
+                throw err;
             });
         }
     };

@@ -6,6 +6,7 @@ exports.getVariablesAndQueryConfig = (
     {
         orgs_filter = [],
         //
+        excludeIds,
         id,
         //
         incContractors = false,
@@ -29,6 +30,9 @@ exports.getVariablesAndQueryConfig = (
     if(id) {
         filter.push(`id: {_eq: ${id}}`);
     } else {
+        if(excludeIds) {
+            filter.push(`_not: {id: {_in: [${excludeIds}]}}`);
+        }
         //
         if (department_id) {
             filter.push(`department_id: {_eq: ${department_id}}`);

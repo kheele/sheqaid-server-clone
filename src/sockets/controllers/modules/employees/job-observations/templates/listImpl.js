@@ -18,8 +18,6 @@ module.exports = async (socket, data) => {
 		name,
 		scheduled,
 		visibility,
-		job_position_id,
-		job_position_list,
 		//
 		site_id, project_id, client_id,
 		//
@@ -78,18 +76,7 @@ module.exports = async (socket, data) => {
         ]}
 			`;
 		}
-		
-		let where_job_position_id;
-		if (job_position_list) {
-			where_job_position_id = `
-					{job_position_id:{_in: [${job_position_list.map(v => v.id).join(',')}]}},
-				`;
-		} else if (job_position_id) {
-			where_job_position_id = `
-					{job_position_id:{_eq: ${job_position_id}}},
-				`;
-		}
-		
+
 		return listGraphQL({
 			query: `
         query listAllJobObservationTemplateByLoggedQuery {
@@ -100,7 +87,6 @@ module.exports = async (socket, data) => {
                   {group: {_eq: "Job Observations"}},
                   {is_template: {_eq: true}},
                   ${employee_id ? `{employee_id: {_eq: ${employee_id}}},` : ''}
-                  ${where_job_position_id ? where_job_position_id : ''}
                   ${_or}
                 ]
               },

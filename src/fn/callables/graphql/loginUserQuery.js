@@ -55,6 +55,13 @@ exports.query = `
             email
             phone
           }
+          settings_list {
+            id
+            settings_category{
+                id
+                key
+            }
+          }
           permissions_module_list {
             id
             actions {

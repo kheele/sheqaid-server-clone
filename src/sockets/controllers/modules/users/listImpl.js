@@ -12,6 +12,7 @@ module.exports = async (socket, data) => {
 		removed = false,
 		//
 		id,
+		excludeIds,
 		//
 		name,
 		//
@@ -25,6 +26,7 @@ module.exports = async (socket, data) => {
 	
 	const {filter} = getVariablesAndQueryConfig({
 		orgs_filter,
+		excludeIds,
 		//
 		id,
 		//

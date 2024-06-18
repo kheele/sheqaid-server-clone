@@ -1,6 +1,6 @@
 const {query: loginUserQuery} = require("../graphql/loginUserQuery");
 const {query: loginContractorUserQuery} = require("../graphql/loginContractorUserQuery");
-const {query: loginStaffQuery} = require("../graphql/loginContractorUserQuery");//TODO: create this for Staff
+const {query: loginStaffQuery} = require("../graphql/loginStaffQuery");//TODO: create this for Staff
 
 exports.User = {
     query: loginUserQuery,

@@ -1,49 +1,57 @@
 //<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (
-  {
-    orgs_filter = [],
-    //
-    id,
-    //
-    name,
-    interval,
-    template_id,
-    //
-    site_id, project_id, client_id,
-    //
-    exact_orgs = false,
-  }
+    {
+        orgs_filter = [],
+        //
+        id,
+        //
+        name,
+        task_observed,
+        interval,
+        team_observed_id,
+        template_id,
+        //
+        site_id, project_id, client_id,
+        //
+        exact_orgs = false,
+    }
 ) => {
-  //<editor-fold desc="variables, filters">
-  let filter = orgs_filter || [];//orgsFilter({socket, site_id, project_id, client_id, exact_orgs});
-  
-  if(id) {
-    filter.push(`id: {_eq: ${id}}`);
-  } else {
-    if(name) {
-      filter.push(`name: {_ilike: "%${name}%"}`);
+    //<editor-fold desc="variables, filters">
+    let filter = orgs_filter || [];//orgsFilter({socket, site_id, project_id, client_id, exact_orgs});
+
+    if (id) {
+        filter.push(`id: {_eq: ${id}}`);
+    } else {
+        if (name) {
+            filter.push(`name: {_ilike: "%${name}%"}`);
+        }
+        if (task_observed) {
+            filter.push(`task_observed: {_ilike: "%${task_observed}%"}`);
+        }
+        if (interval) {
+            filter.push(`interval: {_eq: "${interval}"}`);
+        }
+        if (team_observed_id) {
+            filter.push(`team_observed_id: {_eq: ${team_observed_id}}`);
+        }
+        if (template_id) {
+            filter.push(`template_id: {_eq: ${template_id}}`);
+        }
     }
-    if(interval) {
-      filter.push(`interval: {_eq: "${interval}"}`);
-    }
-    if(template_id) {
-      filter.push(`template_id: {_eq: ${template_id}}`);
-    }
-  }
-  
-  filter = filter.join(',');
-  //</editor-fold>
-  
-  return {filter};
+
+    filter = filter.join(',');
+    //</editor-fold>
+
+    return {filter};
 };
 //</editor-fold>
 
 //<editor-fold desc="job_observation_question_find_fragment">
 const job_observation_question_find_fragment = (deep = 3) => {
-  if (deep === 0) {
-    return `id`;
-  }
-  return `
+    if (deep === 0) {
+        return `id`;
+    }
+    return `
     id
     answer
     answer_employee{
@@ -189,9 +197,10 @@ exports.job_observation_details_find_fragment = `
     schedule_date
     date_completed
     time_completed
-    job_position{
-      id
-      name
+    task_observed
+    team_observed{
+        id
+        name
     }
     employee{
       id
@@ -263,9 +272,10 @@ exports.job_observation_details_list_fragment = `
     schedule_date
     date_completed
     time_completed
-    job_position{
-      id
-      name
+    task_observed
+    team_observed{
+        id
+        name
     }
     employee{
       id

@@ -4,6 +4,7 @@ exports.getVariablesAndQueryConfig = (
 	{
 		orgs_filter = [],
 		//
+		excludeIds,
 		id,
 		//
 		name,
@@ -19,6 +20,9 @@ exports.getVariablesAndQueryConfig = (
 	if(id) {
 		filter.push(`id: {_eq: ${id}}`);
 	} else {
+		if(excludeIds) {
+			filter.push(`_not: {id: {_in: [${excludeIds}]}}`);
+		}
 		if(name) {
 			if (filter.anyMatch(v => v.trim().startsWith('_or'))) {
 				filter.push(`_and: {
@@ -41,7 +45,7 @@ exports.getVariablesAndQueryConfig = (
 exports.user_details_fragment = `
   id
   auth_id
-  created_at,
+  created_at
   fname
   lname
   full_name

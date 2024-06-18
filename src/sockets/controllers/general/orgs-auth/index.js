@@ -5,8 +5,9 @@ eventManager.on("orgs/updateSession", async (socket, {idToken}) => {
 	}
 	
 	return admin.auth().verifyIdToken(idToken).then((decodedToken) => {
-		socket.request.session.decodedIdToken = decodedToken;
-		socket.request.session.save();
+		const {session} = socket.request;
+		session.decodedIdToken = decodedToken;
+		session.save();
 	});
 });
 

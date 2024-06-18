@@ -21,7 +21,7 @@ const doc_inc_fragment = `
 
 //<editor-fold desc="listImpl">
 module.exports = async (socket, data) => {
-    console.log('data', data)
+    // console.log('data', data)
 
     let {
         offset = 0,

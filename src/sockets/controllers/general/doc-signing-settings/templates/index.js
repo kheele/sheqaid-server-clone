@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const createImpl = require("../../../modules/createImpl");
 const updateImpl = require("../../../modules/updateImpl");
 const findImpl = require("../../../modules/findImpl");
+const listImpl = require("../../../modules/listImpl");
 const {signable_doc_template_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 
 const {DOCUSEAL_API_URL, DOCUSEAL_API_KEY, DOCUSEAL_USER_EMAIL} = process.env;
@@ -20,11 +21,7 @@ const args = {
 
 const path = "doc-signing-settings/api/docuseal/templates";
 
-eventManager.on(`${path}`, async (socket, data) => {
-    const {rows} = await db.query('SELECT * FROM templates ORDER BY id DESC');
-
-    res.json({templates: rows});
-});
+eventManager.on(`${path}/listByLogged`, listImpl(args));
 
 eventManager.on(`${path}/edit`, async (socket, data) => {
     const jwt = require('jsonwebtoken');

@@ -42,7 +42,7 @@ module.exports = (config) => {
             remove_args = {key: 'removed', value: removed};
         }
 
-        const {filter} = getVariablesAndQueryConfig({
+        const {filter = ""} = getVariablesAndQueryConfig ? getVariablesAndQueryConfig({
             orgs_filter,
             //
             id,
@@ -53,13 +53,13 @@ module.exports = (config) => {
             site_id, project_id, client_id, company_id,
             //
             exact_orgs
-        });
+        }) : {};
 
         // const whereArgs = {filter, [remove_args.key]: remove_args.value, ...data, site_id, project_id, client_id, company_id};
 
         let where;
         if (__where) {
-            where = __where({filter, [remove_args.key]: remove_args.value});
+            where = __where({data, filter, [remove_args.key]: remove_args.value});
         } else {
             where = `
 			  ${remove_args.key}: {_eq: ${remove_args.value}},
