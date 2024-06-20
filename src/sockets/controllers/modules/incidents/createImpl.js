@@ -39,7 +39,7 @@ module.exports = async (socket, input) => {
         witness_list,
         //6.5
         distribution_list,
-    
+
         //7.1
         person_injured,//
         person_injured_other,//
@@ -110,43 +110,44 @@ module.exports = async (socket, input) => {
         consequence,
         likelihood,
         risk_rating,
-      } = input;
+    } = input;
+
+    console.log('create incident:', input);
+
+    const processPersonOther = (person_other) => {
+        if (person_other && person_other.data) {
+            const {data, data:{job_position}} = person_other;
+            if(job_position) {
+                data.job_position_id = job_position.id;
+                delete data.job_position;
+            }
+            socket.injectCreate(person_other.data);
+        }
+    };
 
     //6
-    if(person_involved_list) {
+    if (person_involved_list) {
         person_involved_list.data.forEach(({person_involved_other}) => {
-        if(person_involved_other) {
-            socket.injectCreate(person_involved_other.data);
-        }
+            processPersonOther(person_involved_other);
         });
     }
-    if(witness_list) {
+    if (witness_list) {
         witness_list.data.forEach(({witness_other}) => {
-        if(witness_other) {
-            socket.injectCreate(witness_other.data);
-        }
+            processPersonOther(witness_other);
         });
     }
-    if(distribution_list) {
+    if (distribution_list) {
         distribution_list.data.forEach(({other_person}) => {
-        if(other_person) {
-            socket.injectCreate(other_person.data);
-        }
+            processPersonOther(other_person);
         });
     }
 
-    if(person_reported_to_other && person_reported_to_other.data) {
-        socket.injectCreate(person_reported_to_other.data);
-    }
-    if(person_reporting_other && person_reporting_other.data) {
-        socket.injectCreate(person_reporting_other.data);
-    }
-    if(person_injured_other && person_injured_other.data) {
-        socket.injectCreate(person_injured_other.data);
-    }
+    processPersonOther(person_reported_to_other);
+    processPersonOther(person_reporting_other);
+    processPersonOther(person_injured_other);
 
     const res = await insertGraphQL({
-		mutation: `
+        mutation: `
 			mutation insertIncidentMutation($object: sheq_incident_investigation_insert_input!) {
                 insert_sheq_incident_investigation_one(
                     object: $object
@@ -155,11 +156,11 @@ module.exports = async (socket, input) => {
                 }
             }
 		`,
-		input,
-		operationName: "insertIncidentMutation",
-	});
+        input,
+        operationName: "insertIncidentMutation",
+    });
 
-    if(res) {
+    if (res) {
         return findByIdImpl(socket, res.id);
     }
 }
