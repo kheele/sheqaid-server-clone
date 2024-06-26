@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const createImpl = require("../../../modules/createImpl");
 const updateImpl = require("../../../modules/updateImpl");
 const findImpl = require("../../../modules/findImpl");
+const findByIdImpl = require("../../../modules/findByIdImpl");
 const listImpl = require("../../../modules/listImpl");
 const {signable_doc_template_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 
@@ -40,32 +41,33 @@ eventManager.on(`${path}/edit`, async (socket, data) => {
     res.json({token});
 });
 
-eventManager.on(`${path}/findById`, async (socket, id) => {
-    const {id: templateId} = req.params;
-    const {rows: templateRows} = await db.query('SELECT * FROM templates WHERE id = $1', [templateId]);
-
-    if (templateRows.length === 0) {
-        return res.status(404).json({error: 'Template not found'});
-    }
-
-    await loadSubmissions(templateId, templateRows[0].external_id)
-
-    const {rows: submissionRows} = await db.query('SELECT * FROM submissions WHERE template_id = $1 ORDER BY id DESC ', [templateId]);
-
-    if (submissionRows.length === 0) return res.json({template: templateRows[0] || {}, submissions: []});
-
-    const {rows: submitterRows} = await db.query('SELECT * FROM submitters WHERE submission_id = ANY($1) ORDER BY id DESC', [submissionRows.map((submission) => submission.id)]);
-
-    res.json({
-        template: templateRows[0],
-        submissions: submissionRows.map((submission) => {
-            return {
-                id: submission.id,
-                submitters: submitterRows.filter((submitter) => submitter.submission_id === submission.id)
-            }
-        })
-    });
-});
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+// eventManager.on(`${path}/findById`, async (socket, id) => {
+    // const {id: templateId} = req.params;
+    // const {rows: templateRows} = await db.query('SELECT * FROM templates WHERE id = $1', [templateId]);
+    //
+    // if (templateRows.length === 0) {
+    //     return res.status(404).json({error: 'Template not found'});
+    // }
+    //
+    // await loadSubmissions(templateId, templateRows[0].external_id)
+    //
+    // const {rows: submissionRows} = await db.query('SELECT * FROM submissions WHERE template_id = $1 ORDER BY id DESC ', [templateId]);
+    //
+    // if (submissionRows.length === 0) return res.json({template: templateRows[0] || {}, submissions: []});
+    //
+    // const {rows: submitterRows} = await db.query('SELECT * FROM submitters WHERE submission_id = ANY($1) ORDER BY id DESC', [submissionRows.map((submission) => submission.id)]);
+    //
+    // res.json({
+    //     template: templateRows[0],
+    //     submissions: submissionRows.map((submission) => {
+    //         return {
+    //             id: submission.id,
+    //             submitters: submitterRows.filter((submitter) => submitter.submission_id === submission.id)
+    //         }
+    //     })
+    // });
+// });
 
 eventManager.on(`${path}/create`, async (socket, input) => {
     const fn = createImpl(args);
@@ -155,13 +157,14 @@ eventManager.on(`${path}/update`, async (socket, _attrs) => {
 });
 
 eventManager.on(`${path}/findByModuleKey`, async (socket, input) => {
-    const fn = findImpl({
+    const find = findImpl({
         ...args,
     });
-    return fn.apply(this, [socket, input]).then(res => {
+    return find(socket, input).then(res => {
+        console.log(`${path}/findByModuleKey1`, res);
         if (!res) return;
 
-        // console.log(`${path}/findByModuleKey`, res);
+        console.log(`${path}/findByModuleKey`, res);
 
         // https://api.docuseal.co/s/${slug}
 

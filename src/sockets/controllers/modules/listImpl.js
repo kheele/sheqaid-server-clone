@@ -92,7 +92,7 @@ module.exports = (config) => {
                 remove_args = {key: 'removed', value: removed};
             }
 
-            const filters = getVariablesAndQueryConfig({
+            const filters = getVariablesAndQueryConfig ? getVariablesAndQueryConfig({
                 orgs_filter,
                 //
                 ...others,
@@ -101,9 +101,9 @@ module.exports = (config) => {
                 site_id, project_id, client_id, company_id,
                 //
                 exact_orgs
-            });
+            }) : {};
 
-            const {filter} = filters;
+            const {filter = ""} = filters;
 
             // const whereArgs = {filter, [remove_args.key]: remove_args.value, ...data, site_id, project_id, client_id, company_id};
 
@@ -118,7 +118,7 @@ module.exports = (config) => {
             }
 
             const query = `
-                query listAll${name}ByLoggedQuery {
+                query listAll${name}Query {
                     ${tbl}(
                         where: {
                           ${where}
@@ -135,7 +135,7 @@ module.exports = (config) => {
 
             return listGraphQL({
                 query,
-                operationName: `listAll${name}ByLoggedQuery`,
+                operationName: `listAll${name}Query`,
             }).catch(err => {
                 console.error(err, query);
                 throw err;

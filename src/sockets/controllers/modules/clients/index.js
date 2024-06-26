@@ -22,4 +22,10 @@ eventManager.on("clients/listByLogged", listImpl({
 	order_by: "order_by: {name: asc}",
 	getVariablesAndQueryConfig,
 }));
+
+eventManager.on("clients/listAll", listImpl({
+	...args,
+	details_fragment,
+	order_by: "order_by: {name: asc}",
+}));
 //

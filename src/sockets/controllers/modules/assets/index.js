@@ -10,7 +10,7 @@ require('./monitoring-plan-fuel-usage-list');
 require('./monitoring-plan-working-hrs-or-km-list');
 require('./photos');
 require('./purchase-info');
-require('./register-list');
+require('./registers');
 require('./vehicle-forms');
 
 const findByIdImpl = require("../findByIdImpl");

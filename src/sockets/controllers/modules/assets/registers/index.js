@@ -3,6 +3,7 @@ const {
 	personal_details_other_fragment,
 } = require("../../../../../graphql/Fragments");
 const findByIdImpl = require('../../findByIdImpl');
+const listImpl = require("../../listImpl");
 
 const details_fragment = `
 	id
@@ -23,11 +24,11 @@ const details_fragment = `
   }
 `;
 
-eventManager.on("assets/register-list/findById", findByIdImpl({
+eventManager.on("assets/registers/findById", findByIdImpl({
 	name: "AssetRegisterListItem", tbl: "asset_register_list", details_fragment,
 }));
 
-eventManager.on("assets/register-list/create", async (socket, data) => {
+eventManager.on("assets/registers/create", async (socket, data) => {
 	if(!data) return;
 	
 	const {
@@ -80,3 +81,5 @@ eventManager.on("assets/register-list/create", async (socket, data) => {
 		input,
 	}).then(res => res && res.returning);
 });
+
+eventManager.on("assets/registers/listByLogged", listImpl);

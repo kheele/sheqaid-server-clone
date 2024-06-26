@@ -31,6 +31,7 @@ exports.getVariablesAndQueryConfig = (
 		witness_id,
 		// type,
 		//
+		status,
 		due_to,
 		//
 		responsible_person_id,
@@ -83,11 +84,11 @@ exports.getVariablesAndQueryConfig = (
 		}
 		if (supervisor_id) {
 			filterEmployee.push(`_and:{
-        _or: [
-          {supervisor_id: {_eq: ${supervisor_id}}},
-          {team:{supervisor_id: {_eq: ${supervisor_id}}}}
-       ]
-      }`);
+				_or: [
+				  {supervisor_id: {_eq: ${supervisor_id}}},
+				  {team:{supervisor_id: {_eq: ${supervisor_id}}}}
+			   ]
+			  }`);
 		}
 		
 		if (view === "Employee") {
@@ -152,7 +153,11 @@ exports.getVariablesAndQueryConfig = (
 				}
 			}
 		}
-		
+
+		if(status) {
+			filter.push(`status: {_eq: "${status}"}`);
+		}
+
 		//
 		if (date) {
 			filter.push(`date: {_eq: "${date}"}`);

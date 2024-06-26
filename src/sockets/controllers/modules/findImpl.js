@@ -69,8 +69,7 @@ module.exports = (config) => {
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
 
-        return listGraphQL({
-            query: `
+        const query = `
 	        query find${name}ByLoggedQuery {
 	          ${tbl}(
 	            where: {
@@ -82,9 +81,15 @@ module.exports = (config) => {
 	                ${__orgs_fragment}
 	          }
 	        }
-				`,
+		`;
+
+        return listGraphQL({
+            query,
             operationName: `find${name}ByLoggedQuery`,
-        }).then(res => res && res[0]);
+        }).then(res => res && res[0]).catch(err => {
+            console.error(`find${name}ByLoggedQuery`, err, query);
+            throw err;
+        });
     };
 }
 //</editor-fold>

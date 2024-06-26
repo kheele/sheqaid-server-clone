@@ -74,7 +74,7 @@ require('./libs/date-utils');
 global.EmailUtils = require('./libs/email.util');
 global.DriveUtils = require('./libs/drive.utils');
 
-require('./libs/funs_impl')
+require('./libs/funs_impl');
 require('./libs/graphql_impl');
 require('./libs/auth_impl');
 require('./libs/files_impl');

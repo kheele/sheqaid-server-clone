@@ -13,7 +13,7 @@
                 "add:cors": "gsutil cors set cors.json gs://sheqsolve.appspot.com",
                 "install:mod": "npm install -g npm@10.2.5",
                 "install:remove": "rm -rf node_modules package-lock.json",
-                "install:all": "npm i moment@2.24.0",
+                "install:all": "npm uninstall form-data ",
                 "neon:build": "npm run build"
         },
         "engines": {
@@ -39,6 +39,7 @@
                 "firebase": "^9.9.0",
                 "firebase-admin": "^8.10.0",
                 "firebase-functions": "^3.6.1",
+                "form-data": "^4.0.0",
                 "formidable": "^1.2.2",
                 "fs-extra": "10.1.0",
                 "googleapis": "^67.1.0",

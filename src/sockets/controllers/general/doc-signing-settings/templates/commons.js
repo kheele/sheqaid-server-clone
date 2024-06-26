@@ -13,6 +13,10 @@ exports.getVariablesAndQueryConfig = (
         //
         employee_id,
         // job_position_id,
+        employee_contract_id,
+        employee_counseling_id,
+        employee_warning_id,
+        employee_sheq_document_id,
         //
         name,
         doc_type,
@@ -29,10 +33,12 @@ exports.getVariablesAndQueryConfig = (
     if (id) {
         filter.push(`id: {_eq: ${id}}`);
     } else {
-        if (view === "Template") {
-            filter.push(`to_submit: {_eq: false}`);
-        } else {
-            filter.push(`to_submit: {_eq: true}`);
+        if(view) {
+            if (view === "Templates") {
+                filter.push(`to_submit: {_eq: false}`);
+            } else {
+                filter.push(`to_submit: {_eq: true}`);
+            }
         }
         //
         if (external_id) {
@@ -44,6 +50,18 @@ exports.getVariablesAndQueryConfig = (
         //
         if (employee_id) {
             filter.push(`employee_submitter_list:{employee_id: {_eq: ${employee_id}}}`);
+        }
+        if (employee_contract_id) {
+            filter.push(`employee_contract_id: {_eq: ${employee_contract_id}}`);
+        }
+        if (employee_counseling_id) {
+            filter.push(`employee_counseling_id: {_eq: ${employee_counseling_id}}`);
+        }
+        if (employee_warning_id) {
+            filter.push(`employee_warning_id: {_eq: ${employee_warning_id}}`);
+        }
+        if (employee_sheq_document_id) {
+            filter.push(`employee_sheq_document_id: {_eq: ${employee_sheq_document_id}}`);
         }
         // if (job_position_id) {
         // 	filter.push(`job_position_id: {_eq: ${job_position_id}}`);
@@ -89,6 +107,9 @@ const signable_doc_template_details_fragment = `
     	id
     }
     employee_warning{
+    	id
+    }
+    employee_sheq_document{
     	id
     }
     module{

@@ -7,6 +7,7 @@ exports.inc_fragment = ({removed, inc_employee = false, }) => `
     removed
     category
     date
+    doc
     amount
     status
 		currency_country{

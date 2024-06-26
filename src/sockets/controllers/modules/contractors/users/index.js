@@ -14,8 +14,7 @@ eventManager.on("contractors/users/findById", findByIdImpl(args));
 
 eventManager.on("contractors/users/listByLogged", listImpl({
 	...args,
-	details_fragment,
-	order_by: "order_by: {lname: asc}",
+	order_by: `order_by: {lname: asc}`,
 	getVariablesAndQueryConfig,
 }));
 //
