@@ -11,7 +11,9 @@ module.exports = (
 ) => {
 	return async (socket, id) => {
 		console.log('deleteImpl:', id);
-        
+
+        const auth = await socket.getAuth();
+
         const findById = findByIdImpl({
             name, 
             tbl, 
@@ -32,6 +34,7 @@ module.exports = (
             `,
             operationName: `delete${name}Mutation`,
             id,
+            auth,
         });
     };
 };

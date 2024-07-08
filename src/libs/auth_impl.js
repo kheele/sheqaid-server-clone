@@ -8,7 +8,7 @@ global.setAuthDecodedIdTokenBySocket = async (socket) => {
     // if (request) {
         const {headers, auth} = handshake;
         // console.log('io.use session auth', auth);
-        const {token = null, uid, access_type} = auth || {};
+        const {token = null, uid} = auth || {};
         if (token) {
             // admin.auth().getUser(uid).then(({customClaims = {}}) => {
             //     console.log('io.use session auth customClaims', customClaims);

@@ -15,6 +15,8 @@ module.exports = (
         const { id } = attrs;
         delete attrs.id;
 
+        const auth = await socket.getAuth();
+
         const findById = findByIdImpl({
             name,
             tbl,
@@ -53,6 +55,7 @@ module.exports = (
             operationName: `update${name}Mutation`,
             id,
             attrs,
+            auth,
         });
 
         if (res) {

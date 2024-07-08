@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>SHEQ Aid - Sign Document</title>
+        <link rel="stylesheet" href="style.css" media="all"/>
+        <script src="https://cdn.docuseal.co/js/form.js"></script>
+    </head>
+    <body>
+        <docuseal-form id="docusealForm"></docuseal-form>
+        <div id="no-access">
+            <h3><b>This page is forbidden</b></h3>
+        </div>
+        <p id="footer">&copy;<span></span> SHEQ Aid. All Rights Reserved</p>
+
+        <script>
+            function getParam(name) {
+                const parser = document.createElement('a');
+                parser.href = window.location.href;
+                const query = parser.search.substring(1);
+                const vars = query.split('&');
+                for (let i = 0; i < vars.length; i++) {
+                    const pair = vars[i].split('=');
+                    if (pair[0] === name && pair[1]) {
+                        return decodeURIComponent(pair[1]);
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelector('#footer span').innerHTML = new Date().getFullYear();
+
+                const form = document.querySelector('docuseal-form');
+                const no_access = document.querySelector('#no-access');
+                if (getParam('s') && getParam('role')) {
+                    form.setAttribute("data-src", `https://docuseal.co/s/${getParam('s')}`);
+                    form.setAttribute("data-role", getParam('role'));
+                    // form.setAttribute("data-email", ``);
+                    form.setAttribute("data-custom-css", `
+                        .sticky.bg-yellow-100:first-of-type{
+                            visibility: hidden !important;
+                        }
+                    `);
+
+                    // form.setAttribute("data-logo", ``);
+                    // form.setAttribute("data-external-id", ``);
+                    // form.setAttribute("data-completed-message-title", ``);
+                    // form.setAttribute("data-completed-message-body", ``);
+
+                    form.style.display = "block";
+                    no_access.style.display = "none";
+
+                    form.addEventListener('init', () => {
+
+                    });
+                    form.addEventListener('load', (e) => e.detail);
+                    form.addEventListener('completed', (e) => e.detail);
+                } else {
+                    form.style.display = "none";
+                    no_access.style.display = "block";
+                }
+            });
+        </script>
+    </body>
+</html>

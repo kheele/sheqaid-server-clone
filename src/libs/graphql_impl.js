@@ -1,7 +1,25 @@
 //<editor-fold desc="sendRelay">
 global.sendRelay = async (args) => {
     if (!args) return null;
-    const {query, variables, operationName} = args;
+
+    let {headers, query, variables, operationName, auth} = args;
+
+    if (!headers) {
+        headers = {};
+    }
+
+    if(auth) {
+        const {token, user_auth_id, user_access_type} = auth;
+        if(token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        if(user_auth_id) {
+            headers['X-Hasura-User-Id'] = user_auth_id;
+        }
+        if(user_access_type) {
+            headers['X-Hasura-User-Access-Type'] = user_access_type;
+        }
+    }
 
     const result = await fetch(process.env.ENDPOINT_HASURA_RELAY, {
         method: "POST",
@@ -9,7 +27,7 @@ global.sendRelay = async (args) => {
             "Content-Type": "application/json",
             "x-hasura-access-key": process.env.HASURA_ADMIN_SECRET,
             "X-Hasura-Role": "admin",
-            // ...headers,
+            ...headers,
         },
         body: JSON.stringify({
             query,
@@ -34,10 +52,23 @@ global.sendRelay = async (args) => {
 //<editor-fold desc="sendGraphQL">
 global.sendGraphQL = async (args) => {
     if (!args) return null;
-    let {headers, mutation, query, variables, operationName, multi_queries, count, token} = args;
+    let {headers, mutation, query, variables, operationName, multi_queries, count, token, auth} = args;
 
     if (!headers) {
         headers = {};
+    }
+
+    if(auth) {
+        const {token, user_auth_id, user_access_type} = auth;
+        if(token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        if(user_auth_id) {
+            headers['X-Hasura-User-Id'] = user_auth_id;
+        }
+        if(user_access_type) {
+            headers['X-Hasura-User-Access-Type'] = user_access_type;
+        }
     }
 
     if (mutation) {
@@ -46,6 +77,7 @@ global.sendGraphQL = async (args) => {
             headers: {
                 "Content-Type": "application/json",
                 "x-hasura-access-key": process.env.HASURA_ADMIN_SECRET,
+                "X-Hasura-Role": "admin",
                 ...headers,
             },
             body: JSON.stringify({query: mutation, operationName, variables}),
@@ -89,6 +121,7 @@ global.sendGraphQL = async (args) => {
         headers: {
             "Content-Type": "application/json",
             "x-hasura-access-key": process.env.HASURA_ADMIN_SECRET,
+            "X-Hasura-Role": "admin",
             ...headers,
         },
         body: JSON.stringify({query, variables}),
@@ -260,27 +293,29 @@ global.getGraphQLOne = async ({query, operationName, variables, multi_queries = 
 //</editor-fold>
 
 //<editor-fold desc="insertRelay">
-global.insertRelay = async ({query, operationName, input}) => {
+global.insertRelay = async ({query, operationName, input, auth}) => {
     return await sendRelay({
         query,
         operationName,
-        variables: {object: input}
+        variables: {object: input},
+        auth,
     });
 };
 //</editor-fold>
 
 //<editor-fold desc="insertGraphQL">
-global.insertGraphQL = async ({mutation, operationName, input}) => {
+global.insertGraphQL = async ({mutation, operationName, input, auth}) => {
     return await sendGraphQL({
         mutation,
         operationName,
-        variables: {[isArray(input)? "objects" : "object"]: input}
+        variables: {[isArray(input)? "objects" : "object"]: input},
+        auth,
     });
 };
 //</editor-fold>
 
 //<editor-fold desc="updateRelay">
-global.updateRelay = async ({mutation, operationName, id, attrs}) => {
+global.updateRelay = async ({mutation, operationName, id, attrs, auth}) => {
     if (attrs.id) {
         delete attrs.id;
     }
@@ -291,12 +326,13 @@ global.updateRelay = async ({mutation, operationName, id, attrs}) => {
             id: {id},
             _set: attrs,
         },
+        auth,
     });
 };
 //</editor-fold>
 
 //<editor-fold desc="updateGraphQL">
-global.updateGraphQL = async ({mutation, operationName, id, attrs}) => {
+global.updateGraphQL = async ({mutation, operationName, id, attrs, auth}) => {
     if (attrs.id) {
         delete attrs.id;
     }
@@ -307,18 +343,20 @@ global.updateGraphQL = async ({mutation, operationName, id, attrs}) => {
             id: {id},
             _set: attrs,
         },
+        auth,
     });
 };
 //</editor-fold>
 
 //<editor-fold desc="deleteGraphQL">
-global.deleteGraphQL = async ({mutation, operationName, id}) => {
+global.deleteGraphQL = async ({mutation, operationName, id, auth}) => {
     return await sendGraphQL({
         mutation,
         operationName,
         variables: {
             id
         },
+        auth,
     });
 };
 //</editor-fold>

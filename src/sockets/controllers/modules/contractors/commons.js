@@ -177,64 +177,64 @@ exports.contractor_details_fragment = (data) => {
 	}
 
 	return `
-    id
-    created_at
-    name
-    username
-    inc_contractor_pack
-    contractor_user_list_aggregate(where:{removed: {_eq: false}}){
-      aggregate{
-        count
-      }
-    }
-    employee_list_aggregate(where:{removed: {_eq: false}}){
-      aggregate{
-        count
-      }
-    }
-    questionnaire_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}}){
-      aggregate{
-        count
-      }
-    }
-    questionnaire_active_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_neq: "CompleteAccepted"}}){
-      aggregate{
-        count
-      }
-    }
-    questionnaire_complete_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_eq: "CompleteAccepted"}}){
-        aggregate{
-          count
-        }
-    }
-    questionnaire_compliance_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_eq: "CompleteAccepted"}}){
-        nodes {
-            id
-            question_list_aggregate {
-                aggregate {
-                    sum {
-                        score
-                        maxScore
-                    }
-                    min {
-                        score
-                    }
-                    max {
-                        score
-                    }
-                    avg {
-                        score
-                    }
-                }
-            }
-        }
-    }
-    incident_list_aggregate(where:{removed: {_eq: false}}){
-      aggregate{
-        count
-      }
-    }
-    site_pending_list:site_list(where: {status: {_eq: "Pending"}${where ? `, ${where}` : ""}}){
+		id
+		created_at
+		name
+		username
+		inc_contractor_pack
+		contractor_user_list_aggregate(where:{removed: {_eq: false}}){
+		  aggregate{
+			count
+		  }
+		}
+		employee_list_aggregate(where:{removed: {_eq: false}}){
+		  aggregate{
+			count
+		  }
+		}
+		questionnaire_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}}){
+		  aggregate{
+			count
+		  }
+		}
+		questionnaire_active_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_neq: "CompleteAccepted"}}){
+		  aggregate{
+			count
+		  }
+		}
+		questionnaire_complete_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_eq: "CompleteAccepted"}}){
+			aggregate{
+			  count
+			}
+		}
+		questionnaire_compliance_list_aggregate:contractor_questionnaire_list_aggregate(where: {removed: {_eq: false}, is_template: {_eq: false}, group: {_eq: "Contractors"}, status: {_eq: "CompleteAccepted"}}){
+			nodes {
+				id
+				question_list_aggregate {
+					aggregate {
+						sum {
+							score
+							maxScore
+						}
+						min {
+							score
+						}
+						max {
+							score
+						}
+						avg {
+							score
+						}
+					}
+				}
+			}
+		}
+		incident_list_aggregate(where:{removed: {_eq: false}}){
+		  aggregate{
+			count
+		  }
+		}
+		site_pending_list:site_list(where: {status: {_eq: "Pending"}${where ? `, ${where}` : ""}}){
 		  ${site_details_fragment}
 		}
 		site_accepted_list:site_list(where: {status: {_eq: "Accepted"}${where ? `, ${where}` : ""}}){

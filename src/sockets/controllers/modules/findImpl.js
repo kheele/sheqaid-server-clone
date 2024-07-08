@@ -9,6 +9,7 @@ module.exports = (config) => {
             details_fragment,
             orgs_fragment: orgs_fragment_override,
             where: __where,
+            skipRemoved = false,
             getVariablesAndQueryConfig,
         } = config;
 
@@ -36,10 +37,14 @@ module.exports = (config) => {
         } = data;
 
         let remove_args;
-        if ('written_off' in data) {
-            remove_args = {key: 'written_off', value: written_off};
-        } else {
-            remove_args = {key: 'removed', value: removed};
+        if (data) {
+            if (!skipRemoved) {
+                if ('written_off' in data) {
+                    remove_args = {key: 'written_off', value: written_off};
+                } else {
+                    remove_args = {key: 'removed', value: removed};
+                }
+            }
         }
 
         const {filter = ""} = getVariablesAndQueryConfig ? getVariablesAndQueryConfig({
@@ -59,12 +64,22 @@ module.exports = (config) => {
 
         let where;
         if (__where) {
-            where = __where({data, filter, [remove_args.key]: remove_args.value});
+            if (remove_args) {
+                where = __where({data, filter, [remove_args.key]: remove_args.value});
+            } else {
+                where = __where({data, filter});
+            }
         } else {
-            where = `
-			  ${remove_args.key}: {_eq: ${remove_args.value}},
-		    ${filter}
-			`;
+            if (remove_args) {
+                where = `
+                    ${remove_args.key}: {_eq: ${remove_args.value}},
+                    ${filter}
+                `;
+            } else {
+                where = `
+                    ${filter}
+                `;
+            }
         }
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;

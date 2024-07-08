@@ -42,6 +42,7 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
     global.io = new Server(server, {
         adapter: createAdapter(pubClient, subClient),
         // adapter: createShardedAdapter(pubClient, subClient),
+        maxHttpBufferSize: 10e8, // 1000 MB
         cors: corsOptions,
         transports: ['websocket'],
         connectionStateRecovery: {
@@ -56,6 +57,9 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
     io.engine.use(sessionMiddleware);
 
     io.use((socket, next) => {
+        if(!socket.getAuth) {
+            socket.getAuth = getAuth.bind(socket);
+        }
         if(!socket.injectCreate) {
             socket.injectCreate = injectCreate.bind(socket);
         }
@@ -378,4 +382,41 @@ function orgsFilter(orgs) {
 
     // console.log("orgsFilter filter", filter);
     return filter;
+}
+
+async function getAuth(token) {
+    if(token) {
+        const decodedIdToken = await admin.auth().verifyIdToken(token);
+        if(!decodedIdToken) return;
+        let {
+            sub,
+            access_type,
+        } = decodedIdToken;
+        console.log("getAuth from_client_token access_type sub token decodedIdToken", access_type, sub, token, decodedIdToken);
+
+        return {token, user_auth_id: sub, user_access_type: access_type};
+    }
+
+    const {request:{session}, handshake: {auth}} = this;
+
+    if(!session) return;
+    if(!auth) return;
+
+    const {decodedIdToken} = session;
+    if(!decodedIdToken) return;
+
+    token = auth.token;
+    if(!token) return;
+
+    let {
+        sub,
+        access_type,
+    } = decodedIdToken;
+    if(isFunction(sub)) {
+        sub = sub();
+    }
+
+    console.log("getAuth from_session access_type sub token decodedIdToken", access_type, sub, token, decodedIdToken);
+
+    return {token, user_auth_id: sub, user_access_type: access_type};
 }

@@ -11,8 +11,10 @@ module.exports = (
     }
 ) => {
     return async (socket, input) => {
-        socket.injectCreate(input);
+        socket && socket.injectCreate(input);
         console.log('createImpl:', input);
+
+        const auth = await socket.getAuth();
 
         const res = await insertGraphQL({
             mutation: `
@@ -26,6 +28,7 @@ module.exports = (
             `,
             input,
             operationName: `insert${name}Mutation`,
+            auth,
         });
 
         if (res) {

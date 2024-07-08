@@ -180,3 +180,12 @@ eventManager.on(`${path}/findByModuleKey`, async (socket, input) => {
         return res;
     });
 });
+
+// Hi there,
+//
+// You have been invited to submit the "{{template.name}}" form.
+//
+// {{submitter.link}}
+//
+// Thanks,
+// SHEQ Aid

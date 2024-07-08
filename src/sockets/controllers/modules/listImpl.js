@@ -10,6 +10,7 @@ module.exports = (config) => {
             orgs_fragment: orgs_fragment_override,
             where: __where,
             order_by,
+            skipRemoved = false,
             getVariablesAndQueryConfig,
         } = config;
 
@@ -20,7 +21,7 @@ module.exports = (config) => {
             id_list,
             excCompany,
             noFilter,
-        } = data;
+        } = data || {};
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
 
@@ -79,17 +80,21 @@ module.exports = (config) => {
                 noFilter,
                 //
                 ...others
-            } = data;
+            } = data || {};
 
             console.log('listImpl1', orgs_filter)
             // const orgs_filter = noFilter ? [] : socket.orgsFilter(data);
-            console.log('listImpl2', noFilter ? [] : socket.orgsFilter(data))
+            console.log('listImpl2', noFilter ? [] : socket && socket.orgsFilter(data))
 
             let remove_args;
-            if ('written_off' in data) {
-                remove_args = {key: 'written_off', value: written_off};
-            } else {
-                remove_args = {key: 'removed', value: removed};
+            if(data) {
+                if(!skipRemoved) {
+                    if ('written_off' in data) {
+                        remove_args = {key: 'written_off', value: written_off};
+                    } else {
+                        remove_args = {key: 'removed', value: removed};
+                    }
+                }
             }
 
             const filters = getVariablesAndQueryConfig ? getVariablesAndQueryConfig({
@@ -109,12 +114,22 @@ module.exports = (config) => {
 
             let where;
             if (__where) {
-                where = __where({data, filters, filter, [remove_args.key]: remove_args.value});
+                if(remove_args) {
+                    where = __where({data, filters, filter, [remove_args.key]: remove_args.value});
+                } else {
+                    where = __where({data, filters, filter});
+                }
             } else {
-                where = `
-			        ${remove_args.key}: {_eq: ${remove_args.value}},
-                    ${filter}
-                `;
+                if(remove_args) {
+                    where = `
+                        ${remove_args.key}: {_eq: ${remove_args.value}},
+                        ${filter}
+                    `;
+                } else {
+                    where = `
+                        ${filter}
+                    `;
+                }
             }
 
             const query = `

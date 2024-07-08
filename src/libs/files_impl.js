@@ -53,7 +53,7 @@ global.uploadFile = async (doc, filePath) => {
         }
     }
 
-    console.log('uploadFile doc.buffer', typeof doc.buffer, doc.buffer instanceof Buffer);
+    // console.log('uploadFile doc.buffer', typeof doc.buffer, doc.buffer instanceof Buffer);
 
     return socketFileUploader.emit('emit', {
         path: 'uploadFile',
