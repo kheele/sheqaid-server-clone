@@ -1,6 +1,6 @@
 eventManager.on("auth", async (socket, data = {}) => {
     console.log('auth data', data)
-    let {token, uid} = data;
+    let {token} = data;
 
     const {request, handshake} = socket;
     if (request && token) {

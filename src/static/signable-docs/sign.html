@@ -38,8 +38,10 @@
                     form.setAttribute("data-role", getParam('role'));
                     // form.setAttribute("data-email", ``);
                     form.setAttribute("data-custom-css", `
-                        .sticky.bg-yellow-100:first-of-type{
+                        .sticky.bg-yellow-100:first-of-type,
+                        svg{
                             visibility: hidden !important;
+                            display: none !important;
                         }
                     `);
 

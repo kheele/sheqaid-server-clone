@@ -8,13 +8,17 @@ module.exports = (
         details_fragment,
         orgs_fragment,
         uploadUpdate,
+        // onUploadExist,
+        // onUploadComplete,
     }
 ) => {
     return async (socket, input) => {
         socket && socket.injectCreate(input);
         console.log('createImpl:', input);
 
-        const auth = await socket.getAuth();
+        const auth = socket ? await socket.getAuth() : null;
+
+        // const uploadExist = onUploadExist && onUploadExist(input);
 
         const res = await insertGraphQL({
             mutation: `
@@ -32,8 +36,17 @@ module.exports = (
         });
 
         if (res) {
-            if (isFunction(uploadUpdate)) {
-                const { new_name, key, keys } = uploadUpdate(res.id);
+            const findById = findByIdImpl({
+                name,
+                tbl,
+                details_fragment,
+                orgs_fragment,
+            });
+
+            let savedItem = await findById(socket, res.id);
+
+            if (uploadUpdate && isFunction(uploadUpdate)) {
+                const { new_name, key, keys } = uploadUpdate(savedItem);
                 const { id } = res;
                 if (keys) {
                     await Promise.all(keys.map(async key => {
@@ -42,15 +55,11 @@ module.exports = (
                 } else {
                     await upload({input, id, tbl, new_name, name, key});
                 }
+
+                savedItem = await findById(socket, res.id);
             }
 
-            const findById = findByIdImpl({
-                name,
-                tbl,
-                details_fragment,
-                orgs_fragment,
-            });
-            return findById(socket, res.id);
+            return savedItem;
         }
     };
 };

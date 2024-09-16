@@ -633,6 +633,9 @@ exports.employee_details_fragment = `
       name
     }
   }
+  trainer_training_list:trainer_training_matrix_list{
+    id
+  }
   supervisor_employee_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count

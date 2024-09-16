@@ -15,7 +15,7 @@ module.exports = (
         const { id } = attrs;
         delete attrs.id;
 
-        const auth = await socket.getAuth();
+        const auth = socket ? await socket.getAuth() : null;
 
         const findById = findByIdImpl({
             name,
@@ -27,8 +27,8 @@ module.exports = (
         const item = await findById(socket, id);
         if (!item) return;
 
-        if (isFunction(uploadUpdate)) {
-            const { new_name, key } = uploadUpdate(id);
+        if (uploadUpdate && isFunction(uploadUpdate)) {
+            const { new_name, key } = uploadUpdate(item);
             const docKey = key || 'doc';
             let { [docKey]: doc } = attrs;
 

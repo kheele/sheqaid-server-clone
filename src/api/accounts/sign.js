@@ -1,5 +1,17 @@
 const CustomUserClaims = require("../../fn/callables/graphql/CustomUserClaims");
 
+/**
+ * Signs out a user based on the provided session and access type.
+ * If the access type is "ContractorUser" or "Staff", it emits an event through the appropriate socket client.
+ * For other access types, it revokes the user's refresh tokens and ends the session.
+ *
+ * @param {Object} params - Parameters for signing out the user.
+ * @param {Object} params.session - The session object to destroy (if applicable).
+ * @param {string} params.sessionCookie - The session cookie to verify and revoke.
+ * @param {string} params.access_type - The type of access (e.g., "ContractorUser", "Staff") used to determine the socket client or processing method.
+ * @returns {Promise<boolean>} - A promise that resolves to `true` if the sign-out process is successful.
+ * @throws {Error} - Throws an error if there is an issue with emitting the event or revoking tokens.
+ */
 global.signOut = async ({session, sessionCookie, access_type}) => {
     if (access_type === 'ContractorUser') {
         return socketClientContractor.emit('emit', {
@@ -37,6 +49,17 @@ global.signOut = async ({session, sessionCookie, access_type}) => {
         then(() => true);
 };
 
+/**
+ * Re-authenticates a user based on the provided UID and access type.
+ * For specific access types, it emits an event through the appropriate socket client.
+ * For other access types, it creates a custom token using Firebase Authentication.
+ *
+ * @param {Object} params - Parameters for re-authenticating the user.
+ * @param {string} params.uid - The UID of the user to re-authenticate.
+ * @param {string} params.access_type - The type of access (e.g., "ContractorUser", "Staff") used to determine the socket client or processing method.
+ * @returns {Promise<Object|string>} - A promise that resolves to an object containing the custom token or an error string.
+ * @throws {Error} - Throws an error if there is an issue with emitting the event or creating the custom token.
+ */
 global.onReAuthUser = async ({uid, access_type}) => {
     if (!isValidAccessType(access_type)) {
         return;
@@ -106,6 +129,16 @@ global.onReAuthUser = async ({uid, access_type}) => {
     return tokenRes;
 };
 
+/**
+ * Handles user login by creating a session cookie from the provided ID token and CSRF token.
+ * Verifies the ID token and creates a session cookie with a specified expiration time.
+ *
+ * @param {Object} data - Parameters for logging in the user.
+ * @param {string} data.idToken - The ID token of the user.
+ * @param {string} data.csrfToken - The CSRF token for security verification.
+ * @returns {Promise<Object|string>} - A promise that resolves to an object containing `sessionCookie`, `options`, and `decodedIdToken`, or an error string if unauthorized.
+ * @throws {Error} - Throws an error if there is an issue with verifying the ID token or creating the session cookie.
+ */
 global.loginSession = async (data) => {
     console.log('loginSession')
     // Get the ID token passed and the CSRF token.
@@ -143,6 +176,18 @@ global.loginSession = async (data) => {
     });
 };
 
+/**
+ * Verifies the session cookie for the provided access type.
+ * If the access type is "ContractorUser" or "Staff", it emits an event through the appropriate socket client.
+ * For other access types, it verifies the session cookie using Firebase Authentication.
+ *
+ * @param {Object} params - Parameters for verifying the session.
+ * @param {Object} params.data - Additional data to send with the verification request.
+ * @param {string} params.sessionCookie - The session cookie to verify.
+ * @param {string} params.access_type - The type of access (e.g., "ContractorUser", "Staff") used to determine the socket client or processing method.
+ * @returns {Promise<Object>} - A promise that resolves to the decoded session claims.
+ * @throws {Error} - Throws an error if there is an issue with emitting the event or verifying the session cookie.
+ */
 global.verifySession = ({data, sessionCookie, access_type}) => {
     if (access_type === 'ContractorUser') {
         return socketClientContractor.emit('emit', {
@@ -171,6 +216,17 @@ global.verifySession = ({data, sessionCookie, access_type}) => {
     return admin.auth().verifySessionCookie(sessionCookie, true /** checkRevoked */);
 };
 
+/**
+ * Retrieves and verifies the decoded ID token from the provided session cookie based on the access type.
+ * If the access type is "ContractorUser" or "Staff", it emits an event through the appropriate socket client.
+ * For other access types, it verifies the session cookie using Firebase Authentication.
+ *
+ * @param {Object} params - Parameters for retrieving the decoded ID token.
+ * @param {string} params.sessionCookie - The session cookie to verify.
+ * @param {string} params.access_type - The type of access (e.g., "ContractorUser", "Staff") used to determine the socket client or processing method.
+ * @returns {Promise<Object>} - A promise that resolves to the decoded ID token.
+ * @throws {Error} - Throws an error if there is an issue with emitting the event or verifying the session cookie.
+ */
 global.getDecodedIdTokenFromSession = async ({sessionCookie, access_type}) => {
     if (access_type === 'ContractorUser') {
         return socketClientContractor.emit('emit', {

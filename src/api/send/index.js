@@ -7,6 +7,15 @@ const CheckUserByUsername = require("../../fn/callables/graphql/CheckUserByUsern
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendUserOTP">
+/**
+ * Sends a One-Time Password (OTP) to the user via email.
+ * Generates an OTP, stores it in the database, and sends it to the user's email address.
+ *
+ * @param {string} username - The email address of the user to send the OTP to.
+ * @param {string} access_type - The type of access (e.g., "ContractorUser", "Staff") to determine the authentication method.
+ * @returns {Promise<boolean|string>} - A promise that resolves to `true` if the OTP was sent successfully, or an error string if the user was not found or another error occurred.
+ * @throws {Error} - Throws an error if there is an issue with sending the OTP or querying the database.
+ */
 global.sendUserOTP = async (username, access_type) => {
     await authorize(access_type);
     if (!username)
@@ -52,6 +61,15 @@ global.sendUserOTP = async (username, access_type) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="confirmUserOTP">
+/**
+ * Confirms the OTP provided by the user.
+ * Validates the OTP by checking it against the stored OTP and checks for expiration.
+ *
+ * @param {Object} data - The data object containing `username` and `code` (OTP).
+ * @param {string} access_type - The type of access (e.g., "ContractorUser", "Staff") to determine the authentication method.
+ * @returns {Promise<Object|string>} - A promise that resolves to an object with `uid` and `customToken` if successful, or an error string if the OTP is invalid, expired, or another error occurred.
+ * @throws {Error} - Throws an error if there is an issue with OTP validation or creating a custom token.
+ */
 global.confirmUserOTP = async (data, access_type) => {
     await authorize(access_type);
     if (!data)
@@ -122,6 +140,15 @@ global.confirmUserOTP = async (data, access_type) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendForgotPass">
+/**
+ * Sends a password reset link to the user via email.
+ * Generates a reset password ID, stores it in the database, and sends an email with a reset link.
+ *
+ * @param {string} username - The email address of the user to send the password reset link to.
+ * @param {string} access_type - The type of access (e.g., "ContractorUser", "Staff") to determine the authentication method.
+ * @returns {Promise<boolean|string>} - A promise that resolves to `true` if the reset link was sent successfully, or an error string if the user was not found or another error occurred.
+ * @throws {Error} - Throws an error if there is an issue with sending the reset link or querying the database.
+ */
 global.sendForgotPass = async (username, access_type) => {
     await authorize(access_type);
     if (!username)
@@ -168,6 +195,17 @@ global.sendForgotPass = async (username, access_type) => {
 // </editor-fold>
 
 //<editor-fold desc="updateResetPassID">
+/**
+ * Updates the database with the new reset password ID for the user.
+ * Based on the access type, it updates the corresponding user record in the database with the reset password ID.
+ *
+ * @param {Object} data - The data object containing `username`, `reset_password_id`, and `access_type`.
+ * @param {string} data.username - The username of the user to update (email or other identifier).
+ * @param {string} data.reset_password_id - The new reset password ID to store.
+ * @param {string} data.access_type - The type of access (e.g., "ContractorUser", "Staff") to determine the mutation query.
+ * @returns {Promise<boolean|string>} - A promise that resolves to `true` if the update was successful, or an error string if the user was not found or another error occurred.
+ * @throws {Error} - Throws an error if there is an issue with updating the reset password ID or querying the database.
+ */
 const updateResetPassID = async ({username, reset_password_id, access_type}) => {
     const queryData = CheckUserByUsername[access_type];
     if (!queryData) {

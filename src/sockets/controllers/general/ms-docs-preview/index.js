@@ -8,7 +8,7 @@ eventManager.on("ms-docs-preview/upload", async (socket, file) => {
 	const { contentType } = file;
 
 	const fn = isFileType(contentType, ['doc', 'docx']) ?
-		wordPreviewUrl : isFileType(contentType, ['xsl', 'xslx']) ?
+		wordPreviewUrl : isFileType(contentType, ['xls', 'xlsx']) ?
 			excelPreviewUrl : isFileType(contentType, ['ppt', 'pptx']) ?
 				pptPreviewUrl :
 				null;

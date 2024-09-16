@@ -4,6 +4,18 @@ const path = require('path');
 const os = require('os');
 const Excel = require('exceljs');
 
+/**
+ * Creates an Excel file with multiple sheets based on the provided data.
+ *
+ * @param {Object} data - The data to create the Excel file.
+ * @param {string} data.folder - The folder path where the file will be saved.
+ * @param {string} data.fileName - The name of the Excel file to create.
+ * @param {Array<Object>} data.sheets - An array of sheet objects to include in the file.
+ * @param {string} data.sheets.sheetName - The name of the sheet.
+ * @param {Array<Object>} data.sheets.columns - The columns configuration for the sheet.
+ * @param {Array<Array>} data.sheets.rows - The rows data for the sheet.
+ * @returns {Promise<string|null>} - A promise that resolves to the data URI of the created Excel file or `null` if the data is invalid.
+ */
 const createExcelFileSheets = async (data) => {
 	if (!data) {
 		return null;
@@ -79,6 +91,17 @@ const createExcelFileSheets = async (data) => {
 };
 exports.createExcelFileSheets = createExcelFileSheets;
 
+/**
+ * Creates an Excel file with a single sheet based on the provided data.
+ *
+ * @param {Object} data - The data to create the Excel file.
+ * @param {string} data.folder - The folder path where the file will be saved.
+ * @param {string} data.fileName - The name of the Excel file to create.
+ * @param {string} data.sheetName - The name of the sheet.
+ * @param {Array<Object>} data.columns - The columns configuration for the sheet.
+ * @param {Array<Array>} data.rows - The rows data for the sheet.
+ * @returns {Promise<string|null>} - A promise that resolves to the data URI of the created Excel file or `null` if the data is invalid.
+ */
 const createExcelFile = async (data) => {
 	if (!data) {
 		return null;
@@ -151,6 +174,14 @@ const createExcelFile = async (data) => {
 };
 exports.createExcelFile = createExcelFile;
 
+/**
+ * Reads an Excel file from a base64 encoded data URL and converts it to JSON format.
+ *
+ * @param {Object} data - The data to read and convert.
+ * @param {string} data.path - The base64 encoded data URL of the Excel file.
+ * @param {Array<Object>} data.validHeaderNames - An array of valid header names for validation.
+ * @returns {Promise<Object|null>} - A promise that resolves to the converted JSON data or `null` if the data is invalid.
+ */
 exports.onReadAsJson = async (data) => {
 	if (!data) {
 		return null;
@@ -198,6 +229,11 @@ exports.onReadAsJson = async (data) => {
 	return convertExcelToJson(cols, rows, validHeaderNames);
 };
 
+/**
+ * Deletes a temporary file.
+ *
+ * @param {string} tempFile - The path to the temporary file to delete.
+ */
 const deleteTmpFile = (tempFile) => {
 	fs.stat(tempFile, (err, stats) => {
 		if (err) {
@@ -210,6 +246,14 @@ const deleteTmpFile = (tempFile) => {
 	});
 };
 
+/**
+ * Converts Excel rows to JSON format based on the column headers and valid header names.
+ *
+ * @param {Object} cols - The column headers from the Excel file.
+ * @param {Array<Object>} rows - The rows data from the Excel file.
+ * @param {Array<Object>} validHeaderNames - An array of valid header names for validation.
+ * @returns {Array<Object>} - An array of JSON objects representing the converted rows.
+ */
 const convertExcelToJson = (cols, rows, validHeaderNames) => {
 	createExcelHeaderColsKeys(cols, validHeaderNames);
 	const colsKeys = Object.keys(cols).filter(k => {
@@ -248,6 +292,12 @@ const convertExcelToJson = (cols, rows, validHeaderNames) => {
 	return rows.map(getRowVal);
 };
 
+/**
+ * Creates column key mappings based on valid header names.
+ *
+ * @param {Object} cols - The column headers from the Excel file.
+ * @param {Array<Object>} validHeaderNames - An array of valid header names for validation.
+ */
 const createExcelHeaderColsKeys = (cols, validHeaderNames) => {
 	const colsKeys = Object.keys(cols);
 	
@@ -271,6 +321,13 @@ const createExcelHeaderColsKeys = (cols, validHeaderNames) => {
 	}
 };
 
+/**
+ * Gets errors related to missing or invalid headers in the Excel file.
+ *
+ * @param {Object} cols - The column headers from the Excel file.
+ * @param {Array<Object>} validHeaderNames - An array of valid header names for validation.
+ * @returns {Array<Object>} - An array of errors related to missing or invalid headers.
+ */
 const getExcelHeaderErrors = (cols, validHeaderNames) => {
 	const colsKeys = Object.keys(cols);
 	

@@ -1,4 +1,10 @@
 // <editor-fold defaultstate="collapsed" desc="createDoc">
+/**
+ * Creates a new document in Google Drive.
+ *
+ * @param {string} title - The title of the new document.
+ * @returns {Promise<{data: string}> | null} - A promise that resolves to the file ID of the created document or null if the title is not provided.
+ */
 exports.createDoc = async (title) => {
 	if (!title)
 		return;
@@ -11,6 +17,12 @@ exports.createDoc = async (title) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="editDoc">
+/**
+ * Edits a document in Google Drive based on its path.
+ *
+ * @param {string} path - The path of the document to edit.
+ * @returns {Promise<DriveUtils.File> | null} - A promise that resolves to the document file object or null if the path is not provided.
+ */
 exports.editDoc = async (path) => {
 	if (!path)
 		return;
@@ -52,6 +64,14 @@ exports.editDoc = async (path) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="editDocTitle">
+/**
+ * Updates the title of an existing document in Google Drive.
+ *
+ * @param {Object} body - The request body.
+ * @param {string} body.fileId - The ID of the document to update.
+ * @param {string} body.title - The new title for the document.
+ * @returns {Promise<string> | null} - A promise that resolves to the file ID of the updated document or null if the fileId or title is not provided.
+ */
 exports.editDocTitle = async (body) => {
 	if (!body) return;
 
@@ -69,6 +89,15 @@ exports.editDocTitle = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="updateDocUpload">
+/**
+ * Updates the document with a new file upload from Google Cloud Storage.
+ *
+ * @param {Object} body - The request body.
+ * @param {string} body.fileId - The ID of the document to update.
+ * @param {string} body.gcsUri - The Google Cloud Storage URI of the new file.
+ * @param {string} body.type - The type of the file being uploaded.
+ * @returns {Promise<string> | null} - A promise that resolves to the file ID of the updated document or null if fileId, gcsUri, or type is not provided.
+ */
 exports.updateDocUpload = async (body) => {
 	if (!body) return;
 
@@ -85,6 +114,12 @@ exports.updateDocUpload = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="removeDoc">
+/**
+ * Removes a document from Google Drive based on its ID.
+ *
+ * @param {string} id - The ID of the document to remove.
+ * @returns {Promise<string> | null} - A promise that resolves to the file ID of the removed document or null if the ID is not provided.
+ */
 exports.removeDoc = async (id) => {
 	if (!id) return;
 
@@ -96,6 +131,12 @@ exports.removeDoc = async (id) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="viewDoc">
+/**
+ * Retrieves a document from Google Drive based on its path.
+ *
+ * @param {string} path - The path of the document to view.
+ * @returns {Promise<DriveUtils.File> | null} - A promise that resolves to the document file object or null if the path is not provided.
+ */
 exports.viewDoc = async (path) => {
 	if (!path) return;
 
@@ -107,6 +148,12 @@ exports.viewDoc = async (path) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="wordPreviewUrl">
+/**
+ * Generates a preview URL for a Word document.
+ *
+ * @param {string} dataUrl - The data URL of the Word document.
+ * @returns {Promise<string> | null} - A promise that resolves to the preview URL of the Word document or null if the dataUrl is not provided.
+ */
 exports.wordPreviewUrl = async (dataUrl) => {
 	if (!dataUrl) return;
 
@@ -117,6 +164,12 @@ exports.wordPreviewUrl = async (dataUrl) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="excelPreviewUrl">
+/**
+ * Generates a preview URL for an Excel document.
+ *
+ * @param {string} dataUrl - The data URL of the Excel document.
+ * @returns {Promise<string> | null} - A promise that resolves to the preview URL of the Excel document or null if the dataUrl is not provided.
+ */
 exports.excelPreviewUrl = async (dataUrl) => {
 	if (!dataUrl) return;
 
@@ -127,6 +180,12 @@ exports.excelPreviewUrl = async (dataUrl) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="pptPreviewUrl">
+/**
+ * Generates a preview URL for a PowerPoint document.
+ *
+ * @param {string} dataUrl - The data URL of the PowerPoint document.
+ * @returns {Promise<string> | null} - A promise that resolves to the preview URL of the PowerPoint document or null if the dataUrl is not provided.
+ */
 exports.pptPreviewUrl = async (dataUrl) => {
 	if (!dataUrl) return;
 

@@ -44,9 +44,12 @@ const getContentType = (datauri_or_buffer) => {
 };
 
 global.uploadFile = async (doc, filePath) => {
-    if(doc.buffer) {
+    if (doc.buffer || (doc.path && doc.path.buffer)) {
+        if(doc.path && doc.path.buffer) {
+            doc.buffer = doc.path;
+        }
         // console.log('doc.buffer', doc.buffer);
-        try{
+        try {
             doc.buffer = Buffer.from(doc.buffer.data);
         } catch (err) {
             doc.buffer = Buffer.from(doc.buffer);
@@ -164,8 +167,17 @@ global.uploadFilesUpdate = async ({id, doc, key, new_name, onUpdate}) => {
 
     // console.log('uploadFilesUpdate', doc);
 
-    const {buffer} = doc;
-    if (buffer) {
+    const {path, buffer} = doc;
+    if (buffer || path) {
+        if(path) {
+            delete doc.path;
+            if (path.buffer) {
+                doc = path;
+            } else if(isString(path)) {
+                doc.buffer = Buffer.from(path);
+                doc.contentType = path.split(';')[0].split(':')[1];
+            }
+        }
         key = key || 'doc';
 
         attrs[key] = await uploadFile(doc, new_name);

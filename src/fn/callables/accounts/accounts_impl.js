@@ -3,6 +3,14 @@ const updateUser = require("../queries/updateUser");
 const CheckUserByResetPassId = require("../graphql/CheckUserByResetPassId");
 
 //<editor-fold desc="convertIdToBigint">
+/**
+ * Converts a Hasura Relay ID into a BigInt database ID.
+ * If the input is already a number, returns it as-is.
+ * If the input is a string, decodes it from Base64 and extracts the actual database ID.
+ *
+ * @param {string|number} encodedHasuraRelayID - The encoded Hasura Relay ID or a number.
+ * @returns {number|string} - The actual database ID or the original input if decoding fails.
+ */
 global.convertIdToBigint = (encodedHasuraRelayID) => {
     try {
         if (isNumber(encodedHasuraRelayID)) return encodedHasuraRelayID;
@@ -22,6 +30,14 @@ global.convertIdToBigint = (encodedHasuraRelayID) => {
 //</editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="onSetCustomUserClaims">
+/**
+ * Sets custom user claims based on the provided access type.
+ * Queries user data from the database, processes the user data, and assigns custom claims.
+ *
+ * @param {Object} decodedIdToken - The decoded authentication token containing user information.
+ * @param {string} access_type - The type of access (e.g., "User", "ContractorUser", "Staff") used to determine the query and claims.
+ * @returns {Promise<Object|null>} - A promise that resolves to an object with `loggedUser`, `customToken`, and `customClaims`, or null in case of error.
+ */
 exports.onSetCustomUserClaims = async (data, decodedIdToken, access_type) => {
     await authorize(access_type);
 
@@ -120,6 +136,13 @@ exports.onSetCustomUserClaims = async (data, decodedIdToken, access_type) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="onResetPassword">
+/**
+ * Resets the user password based on the reset token and updates the user record in the database.
+ *
+ * @param {Object} data - The data object containing the reset password ID and new password.
+ * @param {string} access_type - The type of user access (e.g., "User", "ContractorUser", "Staff").
+ * @returns {Promise<string|boolean|null>} - A promise that resolves to true if the password is successfully reset, or returns an error message.
+ */
 exports.onResetPassword = async (data, access_type) => {
     await authorize(access_type);
 

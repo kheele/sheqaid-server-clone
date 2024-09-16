@@ -5,6 +5,8 @@ const findImpl = require("../../../modules/findImpl");
 const findByIdImpl = require("../../../modules/findByIdImpl");
 const listImpl = require("../../../modules/listImpl");
 const {signable_doc_template_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {findByIdTemplate} = require("../../../../../fn/callables/triggered-events/documents/signable-docs/funs_find");
+const {findByIdDocusealTemplate} = require("../../../../../docuseal/find");
 
 const {DOCUSEAL_API_URL, DOCUSEAL_API_KEY, DOCUSEAL_USER_EMAIL} = process.env;
 
@@ -13,7 +15,7 @@ const args = {
     tbl: "signable_doc_templates",
     details_fragment,
     orgs_fragment: null,
-    uploadUpdate: (id) => ({
+    uploadUpdate: ({id}) => ({
     	new_name: `documents/signable-doc-templates/${id}/doc`,
     	key: 'doc',
     }),
@@ -70,13 +72,13 @@ eventManager.on(`${path}/findById`, findByIdImpl(args));
 // });
 
 eventManager.on(`${path}/create`, async (socket, input) => {
-    const fn = createImpl(args);
-    return fn.apply(this, [socket, input]).then(res => {
+    const create = createImpl(args);
+    return create.apply(this, [socket, input]).then(async res => {
         if (!res) return;
 
         console.log(`${path}/create`, res);
 
-        const {id, data, data: {name: templateName, doc}} = res;
+        const {id, data, data: {name: templateName, doc, employee_submitter_list}} = res;
 
         const token = jwt.sign({
             user_email: DOCUSEAL_USER_EMAIL,
@@ -84,6 +86,11 @@ eventManager.on(`${path}/create`, async (socket, input) => {
             external_id: id,
             document_urls: [doc.dlUrls[0]],
         }, DOCUSEAL_API_KEY);
+
+        // const template = await findByIdDocusealTemplate(id);
+        // if(template) {
+        //
+        // }
 
         return {
             template: data,
@@ -124,7 +131,7 @@ eventManager.on(`${path}/update`, async (socket, _attrs) => {
             'X-Auth-Token': DOCUSEAL_API_KEY,
         }
     }).then((res) => res.json()).then(async (data) => {
-        const fn = updateImpl(args);
+        const update = updateImpl(args);
 
         const {
             id: external_id,
@@ -145,7 +152,7 @@ eventManager.on(`${path}/update`, async (socket, _attrs) => {
 
         // const { rows: templateRows } = await db.query('UPDATE templates SET external_id = $1, name = $2, slug = $3, preview_image_url = $4, submitters = $5 WHERE id = $6 RETURNING *',
         // [data.id, data.name, data.slug, data.documents[0]?.preview_image_url, data.submitters.map(JSON.stringify), templateId]);
-        return fn.apply(this, [socket, attrs]).then(res => {
+        return update.apply(this, [socket, attrs]).then(res => {
             if (!res) return;
 
             const {id, data, data: {name: templateName, doc}} = res;

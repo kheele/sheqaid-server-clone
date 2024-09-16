@@ -61,10 +61,14 @@ const args = {
 		}
 	`,
 	// orgs_fragment: null,
-	uploadUpdate: (id) => ({
-		new_name: `employees/docs/${id}/doc`,
+	uploadUpdate: ({id, data:{employee_id}}) => ({
+		new_name: `employees/${employee_id}/docs/expenses/${id}/Expense-doc-${Dates.formatTimestamp(new Date())}`,
 		key: 'doc',
 	}),
+	// onUploadComplete: (id) => ({
+	// 	new_name: `employees/docs/${id}/doc`,
+	// 	key: 'doc',
+	// }),
 };
 
 const path = "employees/docs/expenses/";
@@ -77,7 +81,7 @@ eventManager.on(`${path}create`, createImpl(args));
 
 // eventManager.on(`${path}findById`, findByIdImpl(args));
 
-// eventManager.on("employees/docs/expenses/findById", findByIdImpl);
+eventManager.on("employees/docs/expenses/findById", findByIdImpl);
 
 eventManager.on("employees/docs/expenses/listByLogged", listImpl);
 

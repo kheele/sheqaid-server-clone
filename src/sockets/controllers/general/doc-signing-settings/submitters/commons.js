@@ -99,6 +99,20 @@ const signable_doc_submitter_details_fragment = `
 		${employee_basic_personal_details_fragment}
 	}
 	submission_id
+	submission{
+		id
+		status
+		slug
+		created_at
+		updated_at
+		docuseal_id
+		external_id
+		template_id
+		doc_template{
+			id
+			name
+		}
+	}
 `;
 exports.signable_doc_submitter_details_fragment = signable_doc_submitter_details_fragment;
 //</editor-fold>

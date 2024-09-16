@@ -34,7 +34,7 @@ module.exports = (config) => {
             orgs_filter = [],
             //
             ...others
-        } = data;
+        } = data || {};
 
         let remove_args;
         if (data) {

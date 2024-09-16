@@ -6,6 +6,13 @@ const {onSetCustomUserClaims, onResetPassword} = require('./accounts_impl');
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendWelcomeEmail">
+/**
+ * Sends a welcome email based on the item_type specified in the body data.
+ * Queries and processes the recipient details to send the appropriate email.
+ *
+ * @param {Object} body - Contains the data used to determine the recipient and type of email.
+ * @returns {Promise<void>} - A promise that resolves when the email is sent.
+ */
 exports.sendWelcomeEmail = async (body) => {
 	await authorize();
 	
@@ -44,6 +51,13 @@ exports.sendWelcomeEmail = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendWelcomeOTP">
+/**
+ * Sends a welcome OTP email based on the item_type specified in the body data.
+ * Processes the recipient details to send the OTP email if new_item.password_otp is present.
+ *
+ * @param {Object} body - Contains the data used to determine the recipient and type of OTP email.
+ * @returns {Promise<void>} - A promise that resolves when the OTP email is sent.
+ */
 exports.sendWelcomeOTP = async (body) => {
 	await authorize();
 	
@@ -85,6 +99,13 @@ exports.sendWelcomeOTP = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendNewContractorSiteEmail">
+/**
+ * Sends an email notification when a new contractor site is assigned.
+ * Retrieves contractor and site details and sends notifications to relevant users.
+ *
+ * @param {Object} body - Contains the data used to determine the recipient and type of notification email.
+ * @returns {Promise<void>} - A promise that resolves when the notification emails are sent.
+ */
 exports.sendNewContractorSiteEmail = async (body) => {
 	await authorize();
 	
@@ -181,6 +202,13 @@ exports.sendNewContractorSiteEmail = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendUpdateStatusContractorSiteEmail">
+/**
+ * Sends an email notification when the status of a contractor site is updated.
+ * Retrieves contractor and site details and sends notifications to relevant users about the status change.
+ *
+ * @param {Object} body - Contains the data used to determine the recipient and type of status update notification email.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the emails are sent successfully, otherwise false.
+ */
 exports.sendUpdateStatusContractorSiteEmail = async (body) => {
 	await authorize();
 	
@@ -282,15 +310,37 @@ exports.sendUpdateStatusContractorSiteEmail = async (body) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="onSetCustomUserClaims">
+/**
+ * Handles the custom user claims assignment based on the provided access type.
+ * Queries user data from the database, processes the user data, and assigns custom claims.
+ *
+ * @param {Object} decodedIdToken - The decoded authentication token containing user information.
+ * @param {string} access_type - The type of access (e.g., "User", "ContractorUser") used to determine the query and claims.
+ * @returns {Promise<Object|null>} - A promise that resolves to an object with `loggedUser`, `customToken`, and `customClaims`, or null in case of error.
+ */
 exports.onSetCustomUserClaims = onSetCustomUserClaims;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="onResetPassword">
+/**
+ * Handles password reset requests.
+ * Processes the password reset for the user based on the provided information.
+ *
+ * @param {Object} body - Contains the data used to process the password reset.
+ * @returns {Promise<void>} - A promise that resolves when the password reset is processed.
+ */
 exports.onResetPassword = onResetPassword;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="unexported">
 // <editor-fold defaultstate="collapsed" desc="sendWelcomeEmailContractor">
+/**
+ * Sends a welcome email to a contractor.
+ * Constructs and sends a welcome email containing account setup information to the contractor.
+ *
+ * @param {Object} data - Contains the data used to generate and send the welcome email to the contractor.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the email is sent successfully, otherwise false.
+ */
 const sendWelcomeEmailContractor = async (data) => {
 	const {
 		table: {
@@ -347,6 +397,13 @@ const sendWelcomeEmailContractor = async (data) => {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendWelcomeOTPContractor">
+/**
+ * Sends a welcome OTP email to a contractor.
+ * Constructs and sends an OTP email to the contractor for account setup.
+ *
+ * @param {Object} data - Contains the data used to generate and send the OTP email to the contractor.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the email is sent successfully, otherwise false.
+ */
 const sendWelcomeOTPContractor = async (data) => {
 	const {
 		table: {
@@ -397,6 +454,16 @@ const sendWelcomeOTPContractor = async (data) => {
 // </editor-fold>
 
 //<editor-fold desc="getAppDownloadOptionMsg">
+/**
+ * Generates a message containing app download options.
+ * Provides different download options based on the user type and access requirements.
+ *
+ * @param {Object} params - Parameters to determine the message content, including user type and access options.
+ * @param {boolean} [params.isEmployee=false] - Indicates if the user is an employee.
+ * @param {boolean} [params.isContractor=false] - Indicates if the user is a contractor.
+ * @param {boolean} [params.showOnlyAccess=false] - Indicates if only access options should be shown.
+ * @returns {string} - The generated message containing app download options.
+ */
 global.getAppDownloadOptionMsg = (params = {}) => {
 	const {isEmployee = false, isContractor = false, showOnlyAccess = false} = params || {};
 	
