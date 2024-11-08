@@ -10,6 +10,7 @@ module.exports = (config) => {
             orgs_fragment: orgs_fragment_override,
             where: __where,
             order_by,
+            limit,
             skipRemoved = false,
             getVariablesAndQueryConfig,
         } = config;
@@ -64,7 +65,7 @@ module.exports = (config) => {
         } else {
             let {
                 offset = 0,
-                limit = 50,
+                limit: _limit = 50,
                 //
                 removed = false,
                 written_off = false,
@@ -81,6 +82,8 @@ module.exports = (config) => {
                 //
                 ...others
             } = data || {};
+
+            limit = isNumber(limit) ? limit : _limit;
 
             console.log('listImpl1', orgs_filter)
             // const orgs_filter = noFilter ? [] : socket.orgsFilter(data);

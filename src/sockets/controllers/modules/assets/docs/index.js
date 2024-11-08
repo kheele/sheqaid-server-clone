@@ -3,6 +3,8 @@ const listImpl = require('./listImpl');
 const {asset_basic_details_fragment} = require("../commons");
 const {orgs_fragment} = require("../../../../../graphql/Fragments");
 const exportExcelImpl = require("../../exportExcelImpl");
+const createImpl = require('../../createImpl');
+const upsertImpl = require("../../upsertImpl");
 
 const details_fragment = `
   id
@@ -26,9 +28,31 @@ const details_fragment = `
   }
 `;
 
-eventManager.on("assets/docs/findById", findByIdImpl({
-	name: "AssetDoc", tbl: "asset_docs", details_fragment,
-}));
+const args = {
+	name: "AssetDoc",
+	tbl: "asset_docs",
+	details_fragment,
+	orgs_fragment: null,
+};
+
+eventManager.on("assets/docs/create", async (socket, input) => {
+	const create = createImpl({
+		...args,
+		uploadUpdate: ({id}) => ({
+			new_name: `documents/${id}/doc`,
+			key: 'doc',
+		}),
+	});
+
+	const item = await create(socket, input);
+
+	const findById = findByIdImpl(args);
+	return whenFileReady(socket, item, findById);
+});
+
+eventManager.on("assets/docs/upsert", upsertImpl(args));
+
+eventManager.on("assets/docs/findById", findByIdImpl(args));
 
 eventManager.on("assets/docs/listByLogged", listImpl);
 

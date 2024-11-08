@@ -15,6 +15,7 @@ require("./permissions-settings-sheq");
 require("./send");
 require("./send-msg");
 require("./orgs-auth");
+require("./locations");
 require("./manuals");
 require("./files");
 require("./settings");

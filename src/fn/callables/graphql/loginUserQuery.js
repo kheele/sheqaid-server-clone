@@ -1,23 +1,23 @@
 
 const module_fragment = `
     id
-                  borderColor
-                  desc
-                  discount
-                  faIconLeft
-                  faIconRight
-                  has_update
-                  hover
-                  key
-                  price
-                  sort
-                  status
-                  svgIconLeft
-                  svgIconRight
-                  title
-                  plugin{
-                    key
-                  }
+    borderColor
+    desc
+    discount
+    faIconLeft
+    faIconRight
+    has_update
+    hover
+    key
+    price
+    sort
+    status
+    svgIconLeft
+    svgIconRight
+    title
+    plugin {
+        key
+    }
 `;
 
 exports.query = `

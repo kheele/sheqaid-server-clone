@@ -71,3 +71,14 @@ exports.run = async () => {
     run(1,);
     // run(1, 'path.path.path');
 };
+
+// fetch(
+//     'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyA-s7Ue49oUq6A9S0eqbeFsQ5BAJnDjQsU',
+//     {
+//     method: 'POST',
+//     body: JSON.stringify({
+//         contents:[{parts:[{text:"create excel analytics: [[user: 'bas', admin: yes]]"}]}]
+//     }),
+// }).then(res => res.text()).then(res => {
+//     console.log(res);
+// });

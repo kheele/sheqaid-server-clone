@@ -29,56 +29,58 @@ eventManager.on("error-reporting/onCreate", async (socket, input) => {
 		selected_contractor_site_id,
 		user_id,
 	} = input;
-	
+
+	delete input.orgs_filter;
+
 	const data = await insertGraphQL({
 		mutation: `
 			mutation insertErrorReportingMutation($object: default_error_reporting_insert_input!) {
-		    insert_default_error_reporting_one(
-		      object: $object
-		    ) {
-		      id
-		      #
-		      company{
-		        name
-		      }
-		      client{
-		        name
-		      }
-		      project{
-		        name
-		      }
-		      site{
-		        name
-		      }
-		      #
-					selected_client{
-		        name
-		      }
-					selected_project{
-		        name
-		      }
-					selected_site{
-		        name
-		      }
-					contractor{
-		        name
-		      }
-					logged_contractor{
-		        name
-		      }
-					selected_contractor_site{
-		        name
-		      }
-					user{
+				insert_default_error_reporting_one(
+				  object: $object
+				) {
+				  id
+				  #
+				  company{
+					name
+				  }
+				  client{
+					name
+				  }
+				  project{
+					name
+				  }
+				  site{
+					name
+				  }
+				  #
+						selected_client{
+					name
+				  }
+						selected_project{
+					name
+				  }
+						selected_site{
+					name
+				  }
+						contractor{
+					name
+				  }
+						logged_contractor{
+					name
+				  }
+						selected_contractor_site{
+					name
+				  }
+				  user{
 						fname
 						lname
 						username
-					}
-		    }
-		  }
+				  }
+		    	}
+		  	}
 		`,
 		input,
-		operationName: "createErrorReporting",
+		operationName: "insertErrorReportingMutation",
 	});
 	
 	const {
@@ -98,6 +100,8 @@ eventManager.on("error-reporting/onCreate", async (socket, input) => {
 	const {data: user_data = {}} = user;
 	
 	const {fname, lname, username, email} = user_data;
+
+	const d = Dates.formatDateTime(new Date());
 	
 	const opts = {
 		from: '"SHEQ Aid - Support" <no-reply@sheqsolve.com>',

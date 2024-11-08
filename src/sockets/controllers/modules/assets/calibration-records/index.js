@@ -2,6 +2,7 @@ const findByIdImpl = require('../../findByIdImpl');
 const listImpl = require('../../listImpl');
 const {orgs_fragment, asset_basic_details_fragment} = require("../../../../../graphql/Fragments");
 const {getVariablesAndQueryConfig} = require("./commons");
+const upsertImpl = require("../../upsertImpl");
 
 //<editor-fold desc="calibration_record_inc_fragment">
 const calibration_record_inc_fragment = `
@@ -16,19 +17,18 @@ const calibration_record_inc_fragment = `
 `;
 //</editor-fold>
 
+eventManager.on("assets/calibration-records/upsert", upsertImpl({
+    name: "AssetCalibrationRecordList",
+    tbl: "asset_calibration_record",
+    details_fragment: calibration_record_inc_fragment,
+    orgs_fragment: null,
+}));
+
 eventManager.on("assets/calibration-records/findById", findByIdImpl({
     name: "AssetCalibrationRecordList",
     tbl: "asset_calibration_record",
-    details_fragment: `
-	    id
-          removed
-          next_calibration_interval
-          next_calibration_date
-          asset{
-            id
-            ${orgs_fragment}
-          }
-    `,
+    details_fragment: calibration_record_inc_fragment,
+    orgs_fragment: null,
 }));
 
 eventManager.on("assets/calibration-records/listByLogged", listImpl({
@@ -61,10 +61,21 @@ eventManager.on("assets/calibration-records/listByLogged", listImpl({
                 calibration_record_list_aggregate: {
                   count: {
                     predicate: {_gt: 0},
-                    filter: {removed: {_eq: ${removed}}${filter}}
+                    filter: {
+                      #calibration_list_aggregate: {
+                      #  count: {
+                      #    predicate: {_gt: 0},
+                      #    filter: {
+                      #      removed: {_eq: false}
+                      #    }
+                      #  }
+                      #},
+                      removed: {_eq: ${removed}}${filter}
+                    }
                   }
                 },
-                calibration_record_list: {removed: {_eq: ${removed}}${filter}}
+                calibration_record_list: {removed: {_eq: ${removed}}${filter}},
+                calibration_last_completed_date: {_is_null: false}
                 ${filterAsset}
             `;
         }
@@ -104,139 +115,139 @@ eventManager.on("assets/calibration-records/listByLogged", listImpl({
             return `
                 ${asset_basic_details_fragment}
 
-                  calibration_last_completed_date
+                calibration_last_completed_date
         
-                  upcoming_calibration_list:calibration_record_list(
-                    where: {
-                      removed: {_eq: false}, 
-                      next_calibration_date: {_gt: "now()"}, 
-                      is_completed:{_eq: false}
-                    }, 
-                    order_by: {next_calibration_date: desc_nulls_last}
-                  ){
-                    ${calibration_record_inc_fragment}
-                  }
-                  last_calibration_list:calibration_record_list(
-                    where: {removed: {_eq: false}, next_calibration_date: {_lte: "now()"}},
-                    order_by: {next_calibration_date: desc_nulls_last},
-                    limit: 1
-                  ){
-                    ${calibration_record_inc_fragment}
-                  }
+                upcoming_calibration_list:calibration_record_list(
+                  where: {
+                    removed: {_eq: false}, 
+                    next_calibration_date: {_gt: "now()"}, 
+                    is_completed:{_eq: false}
+                  }, 
+                  order_by: {next_calibration_date: desc_nulls_last}
+                ){
+                  ${calibration_record_inc_fragment}
+                }
+                last_calibration_list:calibration_record_list(
+                  where: {removed: {_eq: false}, next_calibration_date: {_lte: "now()"}},
+                  order_by: {next_calibration_date: desc_nulls_last},
+                  limit: 1
+                ){
+                  ${calibration_record_inc_fragment}
+                }
         
-                  past_calibration_list_aggregate:calibration_record_list_aggregate(
-                    where: {removed: {_eq: false}, next_calibration_date: {_lte: "now()"}}
-                  ){
-                    aggregate{
-                      count
-                    }
+                past_calibration_list_aggregate:calibration_record_list_aggregate(
+                  where: {removed: {_eq: false}, next_calibration_date: {_lte: "now()"}}
+                ){
+                  aggregate{
+                    count
                   }
-                  past_completed_before_calibration_list_aggregate:calibration_record_list_aggregate(
-                    where: {
-                      removed: {_eq: false}, 
-                      next_calibration_date: {_lte: "now()"},
-                      is_completed_before: {_eq: true}
-                    }
-                  ){
-                    aggregate{
-                      count
-                    }
+                }
+                past_completed_before_calibration_list_aggregate:calibration_record_list_aggregate(
+                  where: {
+                    removed: {_eq: false}, 
+                    next_calibration_date: {_lte: "now()"},
+                    is_completed_before: {_eq: true}
                   }
-                  past_completed_after_calibration_list_aggregate:calibration_record_list_aggregate(
-                    where: {
-                      removed: {_eq: false}, 
-                      next_calibration_date: {_lte: "now()"},
-                      is_completed_after: {_eq: true}
-                    }
-                  ){
-                    aggregate{
-                      count
-                    }
+                ){
+                  aggregate{
+                    count
                   }
+                }
+                past_completed_after_calibration_list_aggregate:calibration_record_list_aggregate(
+                  where: {
+                    removed: {_eq: false}, 
+                    next_calibration_date: {_lte: "now()"},
+                    is_completed_after: {_eq: true}
+                  }
+                ){
+                  aggregate{
+                    count
+                  }
+                }
         
-                  ${orgs_fragment}
+                ${orgs_fragment}
             `;
         }
         if (view === 'Upcoming Calibrations') {
             return `
                 id
-                  removed
-                  next_calibration_interval
-                  next_calibration_date
-                  
-                  asset{
-                    ${asset_basic_details_fragment}
-                    calibration_record_list(where: {removed: {_eq: false}}){
-                      id
-                      next_calibration_interval
-                      next_calibration_date
-                    }
-                    ${orgs_fragment}
+                removed
+                next_calibration_interval
+                next_calibration_date
+                
+                asset{
+                  ${asset_basic_details_fragment}
+                  calibration_record_list(where: {removed: {_eq: false}}){
+                    id
+                    next_calibration_interval
+                    next_calibration_date
                   }
+                  ${orgs_fragment}
+                }
             `;
         }
         if (view === 'Past Calibrations') {
             return `
                 id
+                removed
+                next_calibration_interval
+                next_calibration_date
+        
+                is_completed
+                is_completed_before
+                is_completed_after
+                completed_date
+                completed_day_count
+        
+                calibration_list(where: {removed: {_eq: false}}, order_by: {calibration_date: desc}){
+                  id
                   removed
+                  calibrating_company
+                  reference_standard
+                  certificate_num
+                  calibration_date
+                }
+                
+                asset{
+                  ${asset_basic_details_fragment}
+                  calibration_record_list(where: {removed: {_eq: false}}){
+                    id
+                    next_calibration_interval
+                    next_calibration_date
+                  }
+                  ${orgs_fragment}
+                }
+            `;
+        }
+        if (view === 'Calibration History') {
+            return `
+                id
+                removed
+                calibrating_company
+                reference_standard
+                certificate_num
+                calibration_date
+        
+                scheduled_date
+                is_completed_after
+                is_completed_before
+                completed_day_count
+        
+                calibration_record_id
+                calibration_record{
                   next_calibration_interval
                   next_calibration_date
-        
-                  is_completed
-                  is_completed_before
-                  is_completed_after
-                  completed_date
-                  completed_day_count
-        
-                  calibration_list(where: {removed: {_eq: false}}, order_by: {calibration_date: desc}){
-                    id
-                    removed
-                    calibrating_company
-                    reference_standard
-                    certificate_num
-                    calibration_date
-                  }
                   
                   asset{
                     ${asset_basic_details_fragment}
-                    calibration_record_list(where: {removed: {_eq: false}}){
+                    calibration_record_list(where: {removed: {_eq: ${removed}}}){
                       id
                       next_calibration_interval
                       next_calibration_date
                     }
                     ${orgs_fragment}
                   }
-            `;
-        }
-        if (view === 'Calibration History') {
-            return `
-                id
-                  removed
-                  calibrating_company
-                  reference_standard
-                  certificate_num
-                  calibration_date
-        
-                  scheduled_date
-                  is_completed_after
-                  is_completed_before
-                  completed_day_count
-        
-                  calibration_record_id
-                  calibration_record{
-                    next_calibration_interval
-                    next_calibration_date
-                    
-                    asset{
-                      ${asset_basic_details_fragment}
-                      calibration_record_list(where: {removed: {_eq: ${removed}}}){
-                        id
-                        next_calibration_interval
-                        next_calibration_date
-                      }
-                      ${orgs_fragment}
-                    }
-                  }
+                }
             `;
         }
     },

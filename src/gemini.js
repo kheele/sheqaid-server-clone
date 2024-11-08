@@ -54,11 +54,8 @@ async function readFile(directoryPath) {
 async function process(file) {
     const result = await model.generateContent(
         [
-            "You must behave as a JavaScript documentation creator. " +
-            "You will create documentation from the file code you are given." +
-            "Create documentation comments. " +
-            "Don't explain anything, just create comments. " +
-            "Don't create extra code.",
+            "Create JavaScript documentation comments from the file code you are given." +
+            "Do not explain anything, just create comments and do not create your own code. Just add comments on the code I give you.",
             {
                 inlineData: {
                     data: Buffer.from(file).toString("base64"),

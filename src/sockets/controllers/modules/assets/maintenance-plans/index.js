@@ -1,9 +1,10 @@
 const findByIdImpl = require('../../findByIdImpl');
+const upsertImpl = require("../../upsertImpl");
 const listImpl = require('./listImpl');
 const {orgs_fragment} = require("../../../../../graphql/Fragments");
 
 const details_fragment = `
-	id
+  id
   removed
   next_service_hrs_or_km
   asset{
@@ -12,8 +13,12 @@ const details_fragment = `
   }
 `;
 
+eventManager.on("assets/maintenance-plans/upsert", upsertImpl({
+    name: "AssetMaintenancePlanList", tbl: "asset_maintenance_plan", details_fragment, orgs_fragment: null,
+}));
+
 eventManager.on("assets/maintenance-plans/findById", findByIdImpl({
-	name: "AssetMaintenancePlanList", tbl: "asset_maintenance_plan", details_fragment,
+	name: "AssetMaintenancePlanList", tbl: "asset_maintenance_plan", details_fragment, orgs_fragment: null,
 }));
 
 eventManager.on("assets/maintenance-plans/listByLogged", listImpl);

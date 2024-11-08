@@ -1,4 +1,6 @@
 const findByIdImpl = require('../../findByIdImpl');
+const deleteImpl = require('../../deleteImpl');
+const upsertImpl = require("../../upsertImpl");
 
 const details_fragment = `
   id
@@ -10,5 +12,22 @@ const details_fragment = `
 `;
 
 eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/findById", findByIdImpl({
-	name: "AssetMonitoringPlanWorkingHrsOrKmListItem", tbl: "asset_monitoring_plan_working_distance_or_time", details_fragment,
+	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
+	tbl: "asset_monitoring_plan_working_distance_or_time",
+	details_fragment,
+	orgs_fragment: null,
+}));
+
+eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/delete", deleteImpl({
+	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
+	tbl: "asset_monitoring_plan_working_distance_or_time",
+	details_fragment,
+	orgs_fragment: null,
+}));
+
+eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/upsert", upsertImpl({
+	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
+	tbl: "asset_monitoring_plan_working_distance_or_time",
+	details_fragment,
+	orgs_fragment: null,
 }));

@@ -250,36 +250,36 @@ query getNCRExpiryQuery($today_date: date, $mon_date: date) {
 
 // <editor-fold defaultstate="collapsed" desc="onNCRExpiry">
 exports.onNCRExpiry = async (data) => {
-	// await authorize();
+    // await authorize();
 
-	const item = await getRelayOne({
-		query,
-		operationName: "getNCRExpiryQuery",
-		variables: {
-			today_date: new Date(),
-			mon_date: new Date().addMonths(1),
-		},
-		multi_queries: true,
-	});
-	if (!item) {
-		// res.send();
-		return;
-	}
+    const item = await getRelayOne({
+        query,
+        operationName: "getNCRExpiryQuery",
+        variables: {
+            today_date: new Date(),
+            mon_date: new Date().addMonths(1),
+        },
+        multi_queries: true,
+    });
+    if (!item) {
+        // res.send();
+        return;
+    }
 
-	console.log('onNCRExpiry', item)
+    console.log('onNCRExpiry', item)
 
-	const {
-		user_list = [],
-		employee_list =[],
-	} = item;
+    const {
+        user_list = [],
+        employee_list =[],
+    } = item;
 
-	if(!user_list.isEmpty()) {
-		// await send__users(user_list);
-	}
+    if(!user_list.isEmpty()) {
+        // await send__users(user_list);
+    }
 
-	if(!employee_list.isEmpty()) {
-		await send__employees(employee_list);
-	}
+    if(!employee_list.isEmpty()) {
+        await send__employees(employee_list);
+    }
 
 };
 // </editor-fold>

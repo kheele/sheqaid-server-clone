@@ -29,6 +29,20 @@ global.execWhen = (test, max) => {
     });
 };
 
+global.whenFileReady = async (socket, res, findById, key = 'doc') => {
+    if(!res) return;
+
+    return execWhen(async () => {
+        const item = await findById(socket, res.id);
+        if(item) {
+            const {id, data: {[key]: doc}} = item;
+            if(doc && doc.dlUrls) {
+                return item;
+            }
+        }
+    });
+};
+
 global.onDriver = () => {
     return authorize().then(auth => google.drive({auth, version: 'v3'}));
 };
