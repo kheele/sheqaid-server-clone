@@ -1,5 +1,5 @@
-const listImpl = require('../../modules/listImpl');
-const findByIdImpl = require('../../modules/findByIdImpl');
+const listImpl = require('../../../modules/listImpl');
+const findByIdImpl = require('../../../modules/findByIdImpl');
 const {settings_categories_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 
 const args = {

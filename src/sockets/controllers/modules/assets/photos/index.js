@@ -1,18 +1,26 @@
-const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require('./listImpl');
+const upsertImpl = require("../../upsertImpl");
 
 const details_fragment = `
   id
   doc
   is_default
-	asset_id
+  asset_id
   asset{
     id
   }
 `;
 
-eventManager.on("assets/photos/findById", findByIdImpl({
-	name: "AssetPhoto", tbl: "asset_photos", details_fragment,
-}));
+const args = {
+	name: "AssetPhoto",
+	tbl: "asset_photos",
+	details_fragment,
+	orgs_fragment: null,
+	uploadUpdate: ({id, data:{asset_id}}) => ({
+		new_name: `assets/${asset_id}/photos/documents/${id}/doc`,
+		key: 'doc',
+	}),
+};
 
-eventManager.on("assets/photos/listByLogged", listImpl);
+const path = 'assets/photos';
+
+eventManager.on(`${path}/upsert`, upsertImpl(args));

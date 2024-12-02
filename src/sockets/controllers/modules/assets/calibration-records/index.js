@@ -1,8 +1,10 @@
 const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require('../../listImpl');
+const listByLoggedImpl = require('../../listByLoggedImpl');
 const {orgs_fragment, asset_basic_details_fragment} = require("../../../../../graphql/Fragments");
 const {getVariablesAndQueryConfig} = require("./commons");
+const createImpl = require("../../createImpl");
 const upsertImpl = require("../../upsertImpl");
+const deleteImpl = require("../../deleteImpl");
 
 //<editor-fold desc="calibration_record_inc_fragment">
 const calibration_record_inc_fragment = `
@@ -10,6 +12,14 @@ const calibration_record_inc_fragment = `
   removed
   next_calibration_interval
   next_calibration_date
+  calibration_list {
+	id
+	calibration_record_id
+	calibrating_company
+	reference_standard
+	certificate_num
+	calibration_date
+  }
   asset{
     id
     ${orgs_fragment}
@@ -17,21 +27,24 @@ const calibration_record_inc_fragment = `
 `;
 //</editor-fold>
 
-eventManager.on("assets/calibration-records/upsert", upsertImpl({
-    name: "AssetCalibrationRecordList",
+const args = {
+    name: "AssetCalibrationRecord",
     tbl: "asset_calibration_record",
     details_fragment: calibration_record_inc_fragment,
     orgs_fragment: null,
-}));
+};
 
-eventManager.on("assets/calibration-records/findById", findByIdImpl({
-    name: "AssetCalibrationRecordList",
-    tbl: "asset_calibration_record",
-    details_fragment: calibration_record_inc_fragment,
-    orgs_fragment: null,
-}));
+const path = 'assets/calibration-records';
 
-eventManager.on("assets/calibration-records/listByLogged", listImpl({
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/upsert`, upsertImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/delete`, deleteImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
     name: 'AssetCalibrationRecords',
     tbl: data => {
         const {

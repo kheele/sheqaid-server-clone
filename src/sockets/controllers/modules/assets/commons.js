@@ -1,7 +1,244 @@
 const {
 	employee_personal_details_fragment,
-	personal_details_other_fragment,
 } = require("../../../../graphql/Fragments");
+
+exports.onProcessFormData = onProcessFormData = async ({formData, target_asset_id, isParent, isChild, company_id}) => {
+	const {
+		site,
+		project,
+		client,
+		//1
+		owning_company,
+		name,
+		asset_type,
+		desc,
+		manufacturer,
+		model,
+		reg_num,
+		serial_num,
+		location,
+		toolkit,
+		condition,
+		barcode,
+		qr_code,
+		notes,
+		//2
+		photo_list,
+		//3
+		responsible_person,
+		//4
+		doc_list,
+		//5
+		acquisition_date,
+		vendor,
+		acquisition_value,
+		warranty_expiry,
+		reference_num,
+		warranty_certificate,
+		//6
+		depreciation_method,
+		asset_cost,
+		salvage_value,
+		depreciation_years,
+		depreciation_factor,
+		partial_year_depreciation,
+		//7
+		monitoring_plan_working_distance_or_time_list,
+		monitoring_plan_fuel_usage_list,
+		//8
+		maintenance_plan_list,
+		next_service_hrs_or_km,
+		//9
+		calibration_record_list,
+		next_calibration_date,
+		next_calibration_interval,
+		//10
+		asset_parent_list,
+		asset_children_list,
+	} = formData;
+
+	return {
+		//0
+		company_id,
+		client_id: client && client.id,
+		project_id: project && project.id,
+		site_id: site && site.id,
+		//1 done
+		asset_detail: {
+			data: {
+				owning_company,
+				name,
+				asset_type,
+				desc,
+				manufacturer,
+				model,
+				reg_num,
+				serial_num,
+				location,
+				toolkit,
+				condition,
+				barcode,
+				qr_code,
+				notes,
+			},
+		},
+		//2 done
+		photo_list: photo_list ? {
+			data: photo_list,
+		} : null,
+		//3 done
+		responsible_person_id: responsible_person && responsible_person.id,
+		//4 done
+		doc_list: {
+			data: await Promise.all((doc_list || []).map(async ({expiry, doc, ...others}) => ({
+				...others,
+				expiry: Dates.formatDateSQL(expiry),
+				doc,
+			}))),
+		},
+		//5 done
+		purchase_info: (
+			vendor || Dates.formatDateSQL(acquisition_date) || acquisition_value ||
+			Dates.formatDateSQL(warranty_expiry) || reference_num || warranty_certificate
+		) ? {
+			data: {
+				vendor,
+				acquisition_date: Dates.formatDateSQL(acquisition_date),
+				acquisition_value,
+				warranty_expiry: Dates.formatDateSQL(warranty_expiry),
+				reference_num,
+				warranty_certificate,
+			}
+		} : null,
+		//6 done
+		depreciation: (depreciation_method ||
+			asset_cost ||
+			salvage_value ||
+			depreciation_years ||
+			depreciation_factor ||
+			partial_year_depreciation
+		) ? {
+			data: {
+				depreciation_method,
+				asset_cost,
+				salvage_value,
+				depreciation_years,
+				depreciation_factor,
+				partial_year_depreciation,
+			}
+		} : null,
+		//7 done
+		monitoring_plan_list: (
+			(monitoring_plan_working_distance_or_time_list || []).isNotEmpty() ||
+			(monitoring_plan_fuel_usage_list || []).isNotEmpty()
+		) ? {
+			data: {
+				fuel_usage_list: {
+					data: (await Promise.all((monitoring_plan_fuel_usage_list || []).map(async (
+						{
+							refilled_fuel,
+							current_hrs_or_km,
+							working_hrs_or_km,
+							date,
+							receipt,
+							cost,
+						}
+					) => (
+						{
+							refilled_fuel,
+							current_hrs_or_km,
+							date: Dates.formatDateSQL(date),
+							receipt,
+							cost,
+						}
+					)))).filter(v => !!v)
+				},
+				working_distance_or_time_list: {
+					data: (monitoring_plan_working_distance_or_time_list || []).map((
+						{
+							working_hrs_or_km_opening,
+							working_hrs_or_km_closing,
+							working_hrs_or_km,
+							date
+						}
+					) => (
+						{
+							working_hrs_or_km_opening,
+							working_hrs_or_km_closing,
+							date: Dates.formatDateSQL(date),
+						}
+					)).filter(v => !!v)
+				},
+			},
+		} : null,
+		//8 done
+		maintenance_plan_list: ((maintenance_plan_list || []).isNotEmpty() || next_service_hrs_or_km) ? {
+			data: [
+				{
+					plan_list: {
+						data: (maintenance_plan_list || []).map((
+							{
+								reason_for_service,
+								service,
+								service_date,
+								service_hrs_or_km,
+								parts_used,
+								cost_and_receipt
+							}
+						) => ({
+							reason_for_service,
+							service,
+							service_date: Dates.formatDateSQL(service_date),
+							service_hrs_or_km,
+							parts_used,
+							cost_and_receipt,
+						})),
+					},
+					next_service_hrs_or_km,
+				}
+			].filter(v => !!v),
+		} : null,
+		//9 done
+		calibration_record_list: ((calibration_record_list || []).isNotEmpty() || next_calibration_interval || Dates.formatDateSQL(next_calibration_date)) ? {
+			data: [
+				{
+					calibration_list: {
+						data: (calibration_record_list || []).map((
+							{
+								calibrating_company,
+								reference_standard,
+								certificate_num,
+								calibration_date
+							}
+						) => ({
+							calibrating_company,
+							reference_standard,
+							certificate_num,
+							calibration_date: Dates.formatDateSQL(calibration_date),
+						})),
+					},
+					next_calibration_interval,
+					next_calibration_date: Dates.formatDateSQL(next_calibration_date),
+				}
+			].filter(v => !!v),
+		} : null,
+		//10
+		asset_parent_list: isParent ? {
+			data: [{parent_asset_id: target_asset_id}],
+		} : isChild ? null : {
+			data: await Promise.all((asset_parent_list || []).map(async v => ({
+				parent_asset: {data: await onProcessFormData({formData: v, target_asset_id, isParent, isChild, company_id})},
+			}))),
+		},
+		asset_children_list: isChild ? {
+			data: [{child_asset_id: target_asset_id}],
+		} : isParent ? null : {
+			data: await Promise.all((asset_children_list || []).map(async v => ({
+				child_asset: {data: await onProcessFormData({formData: v, target_asset_id, isParent, isChild, company_id})},
+			}))),
+		},
+	};
+};
 
 //<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (

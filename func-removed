@@ -1,0 +1,9 @@
+//Assets
+export const deleteAssetCalibrationRecordListItem = _delete("assets/calibration-record-list");
+export const deleteAssetMaintenancePlanListItem = _delete("assets/maintenance-plan-list");
+export const deleteAssetMonitoringPlanFuelUsageListItem = _delete("assets/monitoring-plan-fuel-usage-list");
+export const deleteAssetMonitoringPlanWorkingHrsOrKmListItem = _delete("assets/monitoring-plan-working-hrs-or-km-list");
+export const deleteAssets = _delete("assets");
+
+export const insertAsset = create("assets");
+export const insertAssetCalibrationRecord = create("assets/calibration-records");

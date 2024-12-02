@@ -50,13 +50,14 @@ module.exports = (
                 const { id } = res;
                 if (keys) {
                     await Promise.all(keys.map(async key => {
-                        return await upload({input, id, tbl, new_name, name, key});
+                        await upload({input, id, tbl, new_name, name, key});
                     }));
+                    savedItem = await whenFileReady(socket, res, findById, keys);
                 } else {
                     await upload({input, id, tbl, new_name, name, key});
+                    savedItem = await whenFileReady(socket, res, findById, [key]);
                 }
 
-                savedItem = await findById(socket, res.id);
             }
 
             return savedItem;

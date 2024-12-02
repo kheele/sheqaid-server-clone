@@ -1,96 +1,74 @@
 const listImpl = require('../../modules/listImpl');
 const findByIdImpl = require('../../modules/findByIdImpl');
-const findImpl = require('../../modules/findImpl');
-const {settings_categories_details_fragment: details_fragment} = require("./commons");
 const updateImpl = require("../../modules/updateImpl");
 const deleteImpl = require("../../modules/deleteImpl");
+const upsertImpl = require("../../modules/upsertImpl");
 
 const args = {
-	name: "NotificationSettings",
-	tbl: "settings_categories",
-	details_fragment,
-	orgs_fragment: null,
+    name: "NotificationSettings",
+    tbl: "notifications_settings",
+    details_fragment: `
+		id
+	`,
+    orgs_fragment: null,
 };
 
 const path = "notification-settings";
 
-eventManager.on(`${path}/create`, async (socket, data) => {
-	const {
-		key,
-		// notification_settings_id,
-		user_id,
-	} = data;
+eventManager.on(`${path}/upsert`, async (socket, data) => {
+    let {
+        user_id,
+        input: key,
+        notifications_settings,
+    } = data;
 
-	console.log(path, data);
+    if (notifications_settings) {
+        const attrs = {[key]: action === 'ADDED'};
+        notifications_settings = {id: notifications_settings.id, ...attrs};
+    } else {
+        notifications_settings = {
+            [key]: action === 'ADDED',
+        };
+    }
 
-	const find = findImpl({
-		name: `NotificationSettings`,
-		tbl: `notifications_settings`,
-		details_fragment: `
-			id
-			${key}
-			user_list{
-				id
-			}
-		`,
-		orgs_fragment: null,
-		where: ({data, filters}) => {
-			const {
-				key,
-				user_id,
-			} = data;
+    const upsert = upsertImpl(args);
+    const item = await upsert(socket, notifications_settings);
+    if (item) {
+        if (!notifications_settings.id) {//for insertion
+            const update = updateImpl({
+                name: "Users",
+                tbl: "default_users",
+                details_fragment: `
+                    id
+                `,
+            });
 
-			return `
-				user_list: {id: {_eq: ${user_id}}}
-			`;
-		},
-	});
+            await update(socket, {id: user_id, notifications_settings_id: item.id});
 
-	const res = await find(socket, data);
-
-	console.log('find', res);
-
-	const update = updateImpl({
-		name: `NotificationSettings`,
-		tbl: `notifications_settings`,
-		details_fragment: `
-			id
-			${key}
-			user_list{
-				id
-			}
-		`,
-		orgs_fragment: null,
-	});
-
-	const attrs = {
-		id: res.id,
-		[key]: true,
-	};
-
-	console.log('attrs', attrs);
-
-	return update(socket, attrs);
+            const findById = findByIdImpl(args);
+            return findById(socket, item.id);
+        }
+    }
 });
 
 eventManager.on(`${path}/delete`, deleteImpl({
-	...args,
+    ...args,
 }));
 
 eventManager.on(`${path}/findById`, findByIdImpl({
-	...args,
+    ...args,
 }));
 
 eventManager.on(`${path}/listByLogged`, async (socket, data) => {
-	const {
-		key,
-		user_id,
-	} = data;
+    const {
+        key,
+        user_id,
+    } = data;
 
-	const list = listImpl({
-		name: `User`,
-		tbl: `default_users`,
-		details_fragment: `
+    const list = listImpl({
+        name: `User`,
+        tbl: `default_users`,
+        details_fragment: `
 			id
 			auth_id
 			created_at
@@ -101,25 +79,25 @@ eventManager.on(`${path}/listByLogged`, async (socket, data) => {
 			phone
 			profile_pic
 		`,
-		where: ({data, filters}) => {
-			const {
-				removed = false,
-			} = data;
+        where: ({data, filters}) => {
+            const {
+                removed = false,
+            } = data;
 
-			const {filter} = filters;
+            const {filter} = filters;
 
-			return `
+            return `
 				removed: {_eq: ${removed}},
 				${filter},
 				notifications_settings: {${key}: {_eq: true}}
 			`;
-		},
-		order_by: `order_by: {lname: asc}`,
-		getVariablesAndQueryConfig: ({orgs_filter}) => ({
-			filter: orgs_filter.join(','),
-		}),
-	});
+        },
+        order_by: `order_by: {lname: asc}`,
+        getVariablesAndQueryConfig: ({orgs_filter}) => ({
+            filter: orgs_filter.join(','),
+        }),
+    });
 
-	return list(socket, data);
+    return list(socket, data);
 });
 //

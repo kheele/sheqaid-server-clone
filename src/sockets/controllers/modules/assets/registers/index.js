@@ -1,12 +1,11 @@
 const {
 	employee_personal_details_fragment,
-	personal_details_other_fragment,
 } = require("../../../../../graphql/Fragments");
 const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require("../../listImpl");
+const listByLoggedImpl = require("../../listByLoggedImpl");
 
 const details_fragment = `
-	id
+  id
   created_at
   due_return_date
   returned_time
@@ -23,14 +22,18 @@ const details_fragment = `
     ${employee_personal_details_fragment}
   }
 `;
-
-eventManager.on("assets/registers/findById", findByIdImpl({
+const args = {
 	name: "AssetRegisterListItem",
 	tbl: "asset_register_list",
 	details_fragment,
-}));
+	// orgs_fragment: null,
+};
 
-eventManager.on("assets/registers/create", async (socket, data) => {
+const path = 'assets/registers';
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/create`, async (socket, data) => {
 	if(!data) return;
 	
 	const {
@@ -84,4 +87,12 @@ eventManager.on("assets/registers/create", async (socket, data) => {
 	}).then(res => res && res.returning);
 });
 
-eventManager.on("assets/registers/listByLogged", listImpl);
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
+	...args,
+	details_fragment: data => {
+		const {data_export} = data;
+		return data_export ? asset_export_details_fragment : asset_basic_details_fragment;
+	},
+	order_by: "order_by: [{asset_detail:{asset_type: asc}}, {asset_detail:{name: asc}},]",
+	// getVariablesAndQueryConfig,
+}));

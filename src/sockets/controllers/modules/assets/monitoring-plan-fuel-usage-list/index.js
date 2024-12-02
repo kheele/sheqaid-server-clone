@@ -13,23 +13,17 @@ const details_fragment = `
   cost
 `;
 
-eventManager.on("assets/monitoring-plan-fuel-usage-list/findById", findByIdImpl({
+const args = {
 	name: "AssetMonitoringPlanFuelUsageListItem",
 	tbl: "asset_monitoring_plan_fuel_usage",
 	details_fragment,
 	orgs_fragment: null,
-}));
+};
 
-eventManager.on("assets/monitoring-plan-fuel-usage-list/delete", deleteImpl({
-	name: "AssetMonitoringPlanFuelUsageListItem",
-	tbl: "asset_monitoring_plan_fuel_usage",
-	details_fragment,
-	orgs_fragment: null,
-}));
+const path = 'assets/monitoring-plan-fuel-usage-list';
 
-eventManager.on("assets/monitoring-plan-fuel-usage-list/upsert", upsertImpl({
-	name: "AssetMonitoringPlanFuelUsageListItem",
-	tbl: "asset_monitoring_plan_fuel_usage",
-	details_fragment,
-	orgs_fragment: null,
-}));
+eventManager.on(`${path}/upsert`, upsertImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/delete`, deleteImpl(args));

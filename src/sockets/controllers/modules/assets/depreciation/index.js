@@ -1,18 +1,26 @@
 const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require('./listImpl');
+const createImpl = require("../../createImpl");
+const upsertImpl = require("../../upsertImpl");
 
-const details_fragment = `
-	id
-  depreciation_method
-  asset_cost
-  salvage_value
-  depreciation_years
-  depreciation_factor
-  partial_year_depreciation
-`;
+const args = {
+	name: "AssetDepreciation",
+	tbl: "asset_depreciation",
+	details_fragment: `
+		id
+		depreciation_method
+		asset_cost
+		salvage_value
+		depreciation_years
+		depreciation_factor
+		partial_year_depreciation
+	`,
+	orgs_fragment: null,
+};
 
-eventManager.on("assets/depreciation/findById", findByIdImpl({
-	name: "AssetDepreciation", tbl: "asset_depreciation", details_fragment,
-}));
+const path = 'assets/depreciation';
 
-eventManager.on("assets/depreciation/listByLogged", listImpl);
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/upsert`, upsertImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));

@@ -1,7 +1,7 @@
 const {orgs_fragment} = require("../../../../../graphql/Fragments");
 const {incident_quick_details_fragment} = require('./commons');
 
-//<editor-fold desc="listImpl">
+//<editor-fold desc="findByIdImpl">
 module.exports = async (socket, id) => {
     return getGraphQLOne({
         query: `

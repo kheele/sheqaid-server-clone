@@ -1,7 +1,9 @@
 const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require('../../listImpl');
+const listByLoggedImpl = require('../../listByLoggedImpl');
 const {getVariablesAndQueryConfig} = require("./commons");
 const {orgs_fragment, asset_basic_details_fragment} = require("../../../../../graphql/Fragments");
+const createImpl = require("../../createImpl");
+const upsertImpl = require("../../upsertImpl");
 
 const args = {
     name: "AssetCalibrationRecordList",
@@ -14,6 +16,7 @@ const args = {
         certificate_num
         calibration_date
     `,
+    orgs_fragment: null,
 };
 
 //<editor-fold desc="calibration_record_inc_fragment">
@@ -29,9 +32,15 @@ const calibration_record_inc_fragment = `
 `;
 //</editor-fold>
 
-eventManager.on("assets/calibration-record-list/findById", findByIdImpl(args));
+const path = 'assets/calibration-record-list';
 
-eventManager.on("assets/calibration-record-list/listByLogged", listImpl({
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/upsert`, upsertImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
     ...args,
     where: ({data, filters}) => {
         const {

@@ -11,23 +11,17 @@ const details_fragment = `
   date
 `;
 
-eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/findById", findByIdImpl({
+const args = {
 	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
 	tbl: "asset_monitoring_plan_working_distance_or_time",
 	details_fragment,
 	orgs_fragment: null,
-}));
+};
 
-eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/delete", deleteImpl({
-	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
-	tbl: "asset_monitoring_plan_working_distance_or_time",
-	details_fragment,
-	orgs_fragment: null,
-}));
+const path = 'assets/monitoring-plan-working-hrs-or-km-list';
 
-eventManager.on("assets/monitoring-plan-working-hrs-or-km-list/upsert", upsertImpl({
-	name: "AssetMonitoringPlanWorkingHrsOrKmListItem",
-	tbl: "asset_monitoring_plan_working_distance_or_time",
-	details_fragment,
-	orgs_fragment: null,
-}));
+eventManager.on(`${path}/upsert`, upsertImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/delete`, deleteImpl(args));

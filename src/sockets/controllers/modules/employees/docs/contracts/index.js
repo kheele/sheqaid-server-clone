@@ -19,6 +19,18 @@ const {
 } = require("../dateRangeDashboardImpl");
 
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../../findByIdEmployeeDateRangeDashboardStatsImpl");
+const updateImpl = require("../../../updateImpl");
+const {inc_fragment} = require("./commons");
+
+eventManager.on("employees/docs/contracts/update", updateImpl({
+	name: 'Competency',
+	tbl: 'hr_employees_docs_competencies',
+	details_fragment: inc_fragment,
+	uploadUpdate: ({employee, id}) => ({
+		new_name: `employees/${employee.id}/docs/contracts/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date())}`,
+		key: 'doc',
+	}),
+}));
 
 eventManager.on("employees/docs/contracts/findById", findByIdImpl);
 

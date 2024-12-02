@@ -1,4 +1,4 @@
-//<editor-fold desc="listImpl">
+//<editor-fold desc="findByIdDashboardImpl">
 module.exports = async (socket, data) => {
     if(!data) return;
 

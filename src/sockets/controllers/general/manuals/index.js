@@ -13,7 +13,7 @@ eventManager.on("manuals/findById", findByIdImpl({
 	...args,
 }));
 
-eventManager.on("manuals/listAll", listImpl({
+eventManager.on("manuals/list", listImpl({
 	...args,
 	order_by: "order_by: {name: asc}",
 	getVariablesAndQueryConfig,

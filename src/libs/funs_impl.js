@@ -1,4 +1,3 @@
-
 global.execWhen = (test, max) => {
     return new Promise((resolve, reject) => {
         const exec = async (n) => {
@@ -7,38 +6,42 @@ global.execWhen = (test, max) => {
                 try {
                     res = await res;
                 } catch (ex) {
-                    if(max && n === max-1) {
+                    if (max && n === max - 1) {
                         reject(ex);
                         return;
                     }
-                    setImmediate(() => exec(n+1));
+                    setImmediate(() => exec(n + 1));
                     return;
                 }
             }
             if (res) {
                 resolve(res);
             } else {
-                if(max && n === max-1) {
+                if (max && n === max - 1) {
                     reject();
                     return;
                 }
-                setImmediate(() => exec(n+1));
+                setImmediate(() => exec(n + 1));
             }
         };
         exec(0);
     });
 };
 
-global.whenFileReady = async (socket, res, findById, key = 'doc') => {
-    if(!res) return;
+global.whenFileReady = async (socket, res, findById, keys = ['doc']) => {
+    if (!res) return;
 
     return execWhen(async () => {
         const item = await findById(socket, res.id);
-        if(item) {
-            const {id, data: {[key]: doc}} = item;
-            if(doc && doc.dlUrls) {
-                return item;
+        if (item) {
+            for (let n = 0; n <= keys.length; n++) {
+                const key = keys[n];
+                const {id, data: {[key]: doc}} = item;
+                if (!doc || !doc.dlUrls) {
+                    return;
+                }
             }
+            return item;
         }
     });
 };
@@ -63,7 +66,7 @@ global.getTriggeredEventsData = (body, name) => {
         }
     } = body.data;
 
-    if(Array.isArray(name)) {
+    if (Array.isArray(name)) {
         if (schema !== "public" || !name.contains(table_name) || !new_item) {
             return;
         }

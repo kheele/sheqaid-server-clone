@@ -1,113 +1,86 @@
+const createImpl = require("../../modules/createImpl");
 const getName = v => {
-	if (!v) {
-		return 'N/A';
-	}
-	
+	if (!v) return 'N/A';
 	return v.name;
 };
 
-eventManager.on("error-reporting/onCreate", async (socket, input) => {
-	if (!input) return;
-	
-	const {
-		message,
-		stack,
-		error_info,
-		//
-		access_type,
-		//
-		company_id,
-		client_id,
-		project_id,
-		site_id,
-		selected_client_id,
-		selected_project_id,
-		selected_site_id,
-		//
-		contractor_id,
-		logged_contractor_id,
-		selected_contractor_site_id,
-		user_id,
-	} = input;
+const args = {
+	name: "ErrorReporting",
+	tbl: "default_error_reporting",
+	details_fragment: `
+		id
+		#
+		company{
+			name
+		}
+		client{
+			name
+		}
+		project{
+			name
+		}
+		site{
+			name
+		}
+		#
+		selected_client{
+			name
+		}
+		selected_project{
+			name
+		}
+		selected_site{
+			name
+		}
+		contractor{
+			name
+		}
+		logged_contractor{
+			name
+		}
+		selected_contractor_site{
+			name
+		}
+		user{
+			fname
+			lname
+			username
+		}
+	`,
+	orgs_fragment: null,
+};
 
-	delete input.orgs_filter;
+const path = 'error-reporting';
 
-	const data = await insertGraphQL({
-		mutation: `
-			mutation insertErrorReportingMutation($object: default_error_reporting_insert_input!) {
-				insert_default_error_reporting_one(
-				  object: $object
-				) {
-				  id
-				  #
-				  company{
-					name
-				  }
-				  client{
-					name
-				  }
-				  project{
-					name
-				  }
-				  site{
-					name
-				  }
-				  #
-						selected_client{
-					name
-				  }
-						selected_project{
-					name
-				  }
-						selected_site{
-					name
-				  }
-						contractor{
-					name
-				  }
-						logged_contractor{
-					name
-				  }
-						selected_contractor_site{
-					name
-				  }
-				  user{
-						fname
-						lname
-						username
-				  }
-		    	}
-		  	}
-		`,
-		input,
-		operationName: "insertErrorReportingMutation",
-	});
-	
-	const {
-		company,
-		client,
-		project,
-		site,
-		selected_client,
-		selected_project,
-		selected_site,
-		contractor,
-		logged_contractor,
-		selected_contractor_site,
-		user = {},
-	} = data;
-	
-	const {data: user_data = {}} = user;
-	
-	const {fname, lname, username, email} = user_data;
+eventManager.on(`${path}/create`, async (socket, input) => {
+	const create = createImpl(args);
+	const item = await create(socket, input);
+	if(item) {
+		const {
+			data: {
+				company,
+				client,
+				project,
+				site,
+				selected_client,
+				selected_project,
+				selected_site,
+				contractor,
+				logged_contractor,
+				selected_contractor_site,
+				user = {},
+			}
+		} = item;
 
-	const d = Dates.formatDateTime(new Date());
-	
-	const opts = {
-		from: '"SHEQ Aid - Support" <no-reply@sheqsolve.com>',
-		to: "support@sheqsolve.com",
-		subject: 'Error Reporting',
-		html: '<h3>System Error</h3>\n\
+		const {fname, lname, username, email} = user || {};
+
+		const d = Dates.formatDateTime(new Date());
+
+		const opts = {
+			from: '"SHEQ Aid - Support" <no-reply@sheqsolve.com>',
+			to: "support@sheqsolve.com",
+			subject: 'Error Reporting',
+			html: '<h3>System Error</h3>\n\
                 <p><b>------Loaction Details------</b></p>\n\
                 <p>Company: ' + getName(company) + '</p>\n\
                 <p>Client: ' + getName(client) + '</p>\n\
@@ -130,8 +103,9 @@ eventManager.on("error-reporting/onCreate", async (socket, input) => {
                 <p>' + stack + '</p>\n\
                 <p><b>------Error Info Details------</b></p>\n\
                 <p>' + error_info + '</p>'
-	};
-	
-	await EmailUtils.send(opts);
-	return true;
+		};
+
+		await EmailUtils.send(opts);
+		return true;
+	}
 });

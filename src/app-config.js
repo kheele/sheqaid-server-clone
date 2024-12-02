@@ -10,7 +10,16 @@ const redisClient = createClient({ url: ENDPOINT_REDIS });
 const pubClient = createClient({ url: ENDPOINT_REDIS });
 const subClient = pubClient.duplicate();
 
-redisClient.connect();
+const redisConnect = () => {
+	redisClient.connect().then(res => {
+		console.log('redisConnect success');
+	}).catch(err => {
+		console.error('redisConnect error:', err);
+		redisConnect();
+	});
+};
+
+redisConnect();
 
 const sessionMiddleware = session({
 	secret: COOKIE_SECRET,

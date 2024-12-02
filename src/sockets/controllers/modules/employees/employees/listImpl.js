@@ -59,7 +59,7 @@ module.exports = async (socket, data) => {
 					removed: {_eq: ${removed}},
 					${filter}
 			    },
-	            order_by: {lname: asc},
+	            order_by: {employment_num: asc},
 	            offset: ${offset},
 	            ${limit > 0 ? `limit: ${limit}` : ''}
 			) {

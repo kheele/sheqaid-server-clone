@@ -1,9 +1,9 @@
-const listImpl = require('../../modules/listImpl');
-const findByIdImpl = require('../../modules/findByIdImpl');
-const findImpl = require("../../modules/findImpl");
-const updateImpl = require("../../modules/updateImpl");
+const listImpl = require('../../../modules/listImpl');
+const findByIdImpl = require('../../../modules/findByIdImpl');
+const findImpl = require("../../../modules/findImpl");
+const updateImpl = require("../../../modules/updateImpl");
 
-const path = "permissions-settings-sheq";
+const path = "permissions-settings-hr";
 
 eventManager.on(`${path}/create`, async (socket, data) => {
 	const {
@@ -71,6 +71,7 @@ eventManager.on(`${path}/create`, async (socket, data) => {
 eventManager.on(`${path}/listByLogged`, async (socket, data) => {
 	const {
 		module_id,
+		client_id,
 	} = data;
 
 	const list = listImpl({
@@ -108,6 +109,53 @@ eventManager.on(`${path}/listByLogged`, async (socket, data) => {
 			filter: orgs_filter.join(','),
 		}),
 	});
+	// const list = listImpl({
+	// 	name: `User`,
+	// 	tbl: `default_manager_module`,
+	// 	details_fragment: `
+	// 		id
+	// 		title
+	// 		key
+	// 		manager_plugin_id
+	// 		plugin{
+	// 			id
+	// 		}
+	// 	`,
+	// 	orgs_fragment: null,
+	// 	where: ({data, filters}) => {
+	// 		const {
+	// 			removed = false,
+	// 		} = data;
+	//
+	// 		console.log('data', data)
+	//
+	// 		const {filter} = filters;
+	//
+	// 		if(company_id === client_id) {
+	// 			return `
+	// 				status: {_eq: "Installed"},
+	// 				${filter},
+	// 				company_list: {company_id: {_eq: ${company_id}}}
+	// 			`;
+	// 		}
+	// 		if(client_id) {
+	// 			return `
+	// 				status: {_eq: "Installed"},
+	// 				${filter},
+	// 				company_list: {client_id: {_eq: ${client_id}}}
+	// 			`;
+	// 		}
+	// 		return `
+	// 			status: {_eq: "Installed"},
+	// 			${filter},
+	// 			company_list: {company_id: {_eq: ${company_id}}}
+	// 		`;
+	// 	},
+	// 	order_by: `order_by: {title: asc}`,
+	// 	getVariablesAndQueryConfig: ({orgs_filter}) => ({
+	// 		filter: `plugin:{key:{_eq: "plugin_hr_management"}}`,
+	// 	}),
+	// });
 
 	return list(socket, data);
 });
