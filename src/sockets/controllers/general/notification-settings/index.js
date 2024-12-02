@@ -18,6 +18,7 @@ const path = "notification-settings";
 eventManager.on(`${path}/upsert`, async (socket, data) => {
     let {
         user_id,
+        contractor_user_id,
         input: key,
         notifications_settings,
     } = data;
@@ -37,13 +38,13 @@ eventManager.on(`${path}/upsert`, async (socket, data) => {
         if (!notifications_settings.id) {//for insertion
             const update = updateImpl({
                 name: "Users",
-                tbl: "default_users",
+                tbl: user_id ? "default_users" : "default_contractor_users",
                 details_fragment: `
                     id
                 `,
             });
 
-            await update(socket, {id: user_id, notifications_settings_id: item.id});
+            await update(socket, {id: user_id || contractor_user_id, notifications_settings_id: item.id});
 
             const findById = findByIdImpl(args);
             return findById(socket, item.id);
