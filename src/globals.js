@@ -27,7 +27,7 @@ global.isDevelopment = !isProduction;
 
 //
 
-const config = {
+const configAuthGeneral = {
 	apiKey: "AIzaSyBsbSRsokaAGLjZCjPrCNrfK8OYU-2fJoQ",
 	authDomain: "sheqsolve.firebaseapp.com",
 	databaseURL: "https://sheqsolve.firebaseio.com",
@@ -60,6 +60,8 @@ const config_hr = {
 
 global.admin = require('firebase-admin');
 admin.initializeApp();
+global.adminAuthGeneral = admin.initializeApp(configAuthGeneral, 'adminAuthGeneral');
+
 global.admin2 = admin.initializeApp(config2, 'admin2');
 global.admin_hr = admin.initializeApp(config_hr, 'admin_hr');
 
@@ -72,6 +74,7 @@ global.adminStorage = new Storage({
 require('./libs/objects.util');
 require('./libs/date-utils');
 global.EmailUtils = require('./libs/email.util');
+global.SendEmailUtils = require('./libs/send.email.util.js');
 global.DriveUtils = require('./libs/drive.utils');
 
 require('./libs/funs_impl');
@@ -79,4 +82,5 @@ require('./libs/graphql_impl');
 require('./libs/auth_impl');
 require('./libs/files_impl');
 require('./libs/face.util');
+require('./libs/users.utils.js');
 require('./graphql/convertMutations');

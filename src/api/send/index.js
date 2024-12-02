@@ -3,7 +3,6 @@ const {v4: uuidv4} = require("uuid");
 const {query: getByAuthIdOTPQuery} = require("../../fn/callables/graphql/getByAuthIdOTPQuery");
 const {mutation: updateOTPMutation} = require("../../fn/callables/graphql/updateOTPMutation");
 const {mutation: insertOTPMutation} = require("../../fn/callables/graphql/insertOTPMutation");
-const CheckUserByUsername = require("../../fn/callables/graphql/CheckUserByUsername");
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="sendUserOTP">
@@ -207,11 +206,6 @@ global.sendForgotPass = async (username, access_type) => {
  * @throws {Error} - Throws an error if there is an issue with updating the reset password ID or querying the database.
  */
 const updateResetPassID = async ({username, reset_password_id, access_type}) => {
-    const queryData = CheckUserByUsername[access_type];
-    if (!queryData) {
-        return null;
-    }
-
     const queries = {
         User: {
             mutation: `
@@ -248,10 +242,7 @@ const updateResetPassID = async ({username, reset_password_id, access_type}) => 
         },
     };
 
-    const item = await getRelayOne({
-        ...queryData,
-        variables: {username},
-    });
+    const item = await checkByUsernameUserTypeImpl({username, access_type});
     console.log('CheckUserByUsername item', item)
     if (!item) {
         return 'NO_DB_USER';
