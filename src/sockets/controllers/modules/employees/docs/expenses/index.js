@@ -4,24 +4,17 @@ const createImpl = require("../../../createImpl");
 const findByIdImpl = require('./findByIdImpl');
 const listImpl = require('./listImpl');
 const {
-	findByIdEmployeeDashboardStats,
-	//
-	findByIdCompanyDashboardStats,
-	findByIdClientDashboardStats,
-	findByIdProjectDashboardStats,
-	findByIdSiteDashboardStats,
-	findByIdContractorDashboardStats
-} = require("../dashboardImpl");
+	getHRDocsDashboardFragment, hrDocsDashboardMapResults
+} = require("../hrDocsDashboardImpl");
 
 const {
-	findByIdCompanyDateRangeDashboardStats,
-	findByIdClientDateRangeDashboardStats,
-	findByIdProjectDateRangeDashboardStats,
-	findByIdSiteDateRangeDashboardStats,
-	findByIdContractorDateRangeDashboardStats,
-} = require("../dateRangeDashboardImpl");
+	getDateRangeDashboardFragment,
+} = require("../hrDocsDateRangeDashboardImpl");
 
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../../findByIdEmployeeDateRangeDashboardStatsImpl");
+const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../../findByIdOrgDateRangeDashboardStatsImpl");
+const {findByIdOrgDashboardStatsImpl} = require("../../../findByIdOrgDashboardStatsImpl");
+const {findByIdEmployeeDashboardStats} = require("../../../findByIdEmployeeDashboardStatsImpl");
 
 const args = {
 	name: "Expenses",
@@ -246,7 +239,7 @@ const details_fragment_dashboard_date_range = `
 	}
 `;
 
-eventManager.on(`employees/docs/expenses/dashboard`, findByIdEmployeeDashboardStats({
+eventManager.on(`employees/docs/expenses/dashboard/single`, findByIdEmployeeDashboardStats({
 	name: "Expenses",
 	// listName: "expense_list",
 	onCreateQuery: async (data, operationName) => {
@@ -273,7 +266,7 @@ eventManager.on(`employees/docs/expenses/dashboard`, findByIdEmployeeDashboardSt
 	},
 }));
 
-eventManager.on(`employees/docs/expenses/dashboard/date-range`, findByIdEmployeeDateRangeDashboardStats({
+eventManager.on(`employees/docs/expenses/dashboard/date-range/single`, findByIdEmployeeDateRangeDashboardStats({
 	name: "Expenses",
 	// listName: "expense_list",
 	onCreateQuery: async (data, operationName) => {
@@ -307,30 +300,23 @@ eventManager.on(`employees/docs/expenses/dashboard/date-range`, findByIdEmployee
 	},
 }));
 
-[
-	{org: "company", fn: findByIdCompanyDashboardStats},
-	{org: "client", fn: findByIdClientDashboardStats},
-	{org: "project", fn: findByIdProjectDashboardStats},
-	{org: "site", fn: findByIdSiteDashboardStats},
-	{org: "contractor", fn: findByIdContractorDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`employees/docs/expenses/${org}/dashboard`, fn({
-		name: "Expenses",
-		listName: "expense_list",
-		onCreateQuery: async (data, operationName, tbl) => {
-			const {
-				id,
-				mon,
-				mon2,
-				mon3,
-				//
-				// site_id, project_id, client_id, company_id,
-			} = data;
-			
-			return getGraphQLOne({
-				// variables: {id, mon, mon2, mon3},
-				variables: {id},
-				query: `
+eventManager.on(`employees/docs/expenses/dashboard`, findByIdOrgDashboardStatsImpl({
+	name: "Expenses",
+	listName: "expense_list",
+	onCreateQuery: async (data, operationName, tbl) => {
+		const {
+			id,
+			mon,
+			mon2,
+			mon3,
+			//
+			// site_id, project_id, client_id, company_id,
+		} = data;
+
+		return getGraphQLOne({
+			// variables: {id, mon, mon2, mon3},
+			variables: {id},
+			query: `
 		      query ${operationName}($id: bigint) {
 		        ${tbl}(
 		            where: {id: {_eq: $id},},
@@ -339,36 +325,28 @@ eventManager.on(`employees/docs/expenses/dashboard/date-range`, findByIdEmployee
 		        }
 		      }
 		    `,
-				operationName,
-			});
-		},
-	}));
-});
+			operationName,
+		});
+	},
+}));
 
-[
-	{org: "company", fn: findByIdCompanyDateRangeDashboardStats},
-	{org: "client", fn: findByIdClientDateRangeDashboardStats},
-	{org: "project", fn: findByIdProjectDateRangeDashboardStats},
-	{org: "site", fn: findByIdSiteDateRangeDashboardStats},
-	{org: "contractor", fn: findByIdContractorDateRangeDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`employees/docs/expenses/${org}/dashboard/date-range`, fn({
-		name: "Expenses",
-		listName: "expense_list",
-		onCreateQuery: async (data, operationName, tbl) => {
-			const {
-				id,
-				dates,
-				//
-				// site_id, project_id, client_id, company_id,
-			} = data;
-			
-			return Promise.all(
-				dates.map(async date => {
-					const {start: dateStart, end: dateEnd} = date;
-					const stats = await getGraphQLOne({
-						variables: {id, dateStart, dateEnd},
-						query: `
+eventManager.on(`employees/docs/expenses/dashboard/date-range`, findByIdOrgDateRangeDashboardStatsImpl({
+	name: "Expenses",
+	listName: "expense_list",
+	onCreateQuery: async (data, operationName, tbl) => {
+		const {
+			id,
+			dates,
+			//
+			// site_id, project_id, client_id, company_id,
+		} = data;
+
+		return Promise.all(
+			dates.map(async date => {
+				const {start: dateStart, end: dateEnd} = date;
+				const stats = await getGraphQLOne({
+					variables: {id, dateStart, dateEnd},
+					query: `
 				      query ${operationName}($id: bigint, $dateStart: date, $dateEnd: date) {
 				        ${tbl}(
 				            where: {id: {_eq: $id}},
@@ -377,15 +355,14 @@ eventManager.on(`employees/docs/expenses/dashboard/date-range`, findByIdEmployee
 				        }
 				      }
 				    `,
-						operationName,
-					});
-					
-					if (!stats) return {id, month_year: Dates.parse(dateStart).formatMonthYear(), count: 0};
-					
-					const {id: _id, data: {list_aggregate: {aggregate: {count}}}} = stats;
-					return {id, month_year: Dates.parse(dateStart).formatMonthYear(), count};
-				})
-			);
-		},
-	}));
-});
+					operationName,
+				});
+
+				if (!stats) return {id, month_year: Dates.parse(dateStart).formatMonthYear(), count: 0};
+
+				const {id: _id, data: {list_aggregate: {aggregate: {count}}}} = stats;
+				return {id, month_year: Dates.parse(dateStart).formatMonthYear(), count};
+			})
+		);
+	},
+}));

@@ -9,39 +9,53 @@ const args = {
 	tbl: "default_error_reporting",
 	details_fragment: `
 		id
+		message
+		stack
+		error_info
 		#
 		company{
+			id
 			name
 		}
 		client{
+			id
 			name
 		}
 		project{
+			id
 			name
 		}
 		site{
+			id
 			name
 		}
 		#
 		selected_client{
+			id
 			name
 		}
 		selected_project{
+			id
 			name
 		}
 		selected_site{
+			id
 			name
 		}
 		contractor{
+			id
 			name
 		}
 		logged_contractor{
+			id
 			name
 		}
 		selected_contractor_site{
+			id
 			name
 		}
 		user{
+			id
 			fname
 			lname
 			username
@@ -69,6 +83,10 @@ eventManager.on(`${path}/create`, async (socket, input) => {
 				logged_contractor,
 				selected_contractor_site,
 				user = {},
+				//
+				message,
+				stack,
+				error_info,
 			}
 		} = item;
 

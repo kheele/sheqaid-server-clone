@@ -1,34 +1,87 @@
 //<editor-fold desc="findByIdOrgHRDashboardStatsImpl">
-const findByIdOrgHRDashboardStatsImpl = (
-	{
-		org,
-		org_id_key,
+const getArgs = async (socket) => {
+	//logged_contractor_id, selected_contractor_client_id, selected_contractor_site_id,
+	//access_type
+	const is = await socket.is();
+	if (!is) return;
+
+	const {isConsultant, isNoProjects, isContractorView} = is;
+	const decodedIdToken = await socket.getDecodedIdToken();
+	if (!decodedIdToken) return;
+	const {
+		company_id,
+		selected_client_id,
+		selected_project_id,
+		selected_site_id,
+		logged_contractor_id
+	} = decodedIdToken;
+
+	let org, org_id_key, id;
+	if (isContractorView) {
+		id = logged_contractor_id;
+		org_id_key = "contractor_id";
+		org = "Contractor";
+	} else {
+		if (isConsultant) {
+			if (selected_site_id) {
+				id = selected_site_id;
+				org_id_key = "site_id";
+				org = "Site";
+			} else if (selected_project_id) {
+				id = selected_project_id;
+				org_id_key = "project_id";
+				org = "Project";
+			} else if (selected_client_id) {
+				id = selected_client_id;
+				org_id_key = "client_id";
+				org = "Client";
+			} else {
+				id = company_id;
+				org_id_key = "company_id";
+				org = "Company";
+			}
+		} else if (!isNoProjects) {//client with projects
+			if (selected_site_id) {
+				id = selected_site_id;
+				org_id_key = "site_id";
+				org = "Site";
+			} else if (selected_project_id) {
+				id = selected_project_id;
+				org_id_key = "project_id";
+				org = "Project";
+			} else {
+				id = company_id;
+				org_id_key = "company_id";
+				org = "Company";
+			}
+		} else {
+			id = company_id;
+			org_id_key = "company_id";
+			org = "Company";
+		}
 	}
-) => {
-	const operationName = `findById${org}HRDashboardStatsQuery`;
-	
+
+	return {org, org_id_key, id};
+};
+
+exports.findByIdOrgHRDashboardStatsImpl = () => {
 	return async (socket, data) => {
+		const args = await getArgs(socket, data);
+		if (!args) return;
+
+		const {org, org_id_key, id} = args;
+
+		const operationName = `findById${org}HRDashboardStatsQuery`;
+
 		const {
-			id,
+			// id,
 			mon,
 			mon2,
 			mon3,
 			//
 			// site_id, project_id, client_id, company_id,
 		} = data;
-		
-		// const id = site_id || project_id || client_id || company_id;
-		// let tbl;
-		// if(site_id) {
-		// 	tbl = "default_sites";
-		// } else if(project_id) {
-		// 	tbl = "default_projects";
-		// } else if(client_id) {
-		// 	tbl = "default_clients";
-		// } else {
-		// 	tbl = "default_companies";
-		// }
-		
+
 		return getGraphQLOne({
 			variables: {id, mon, mon2, mon3},
 			multi_queries: true,
@@ -724,38 +777,3 @@ const findByIdOrgHRDashboardStatsImpl = (
 	};
 };
 //</editor-fold>
-
-exports.findByIdCompanyHRDashboardStats = () => {
-	return findByIdOrgHRDashboardStatsImpl({
-		org: "Company",
-		org_id_key: "company_id",
-	});
-};
-
-exports.findByIdClientHRDashboardStats = () => {
-	return findByIdOrgHRDashboardStatsImpl({
-		org: "Client",
-		org_id_key: "client_id",
-	});
-};
-
-exports.findByIdProjectHRDashboardStats = () => {
-	return findByIdOrgHRDashboardStatsImpl({
-		org: "Project",
-		org_id_key: "project_id",
-	});
-};
-
-exports.findByIdSiteHRDashboardStats = () => {
-	return findByIdOrgHRDashboardStatsImpl({
-		org: "Site",
-		org_id_key: "site_id",
-	});
-};
-
-exports.findByIdContractorHRDashboardStats = () => {
-	return findByIdOrgHRDashboardStatsImpl({
-		org: "Contractor",
-		org_id_key: "contractor_id",
-	});
-};

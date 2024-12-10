@@ -1,6 +1,7 @@
 const findByIdImpl = require('../findByIdImpl');
 const listImpl = require('../listImpl');
 const {site_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const createImpl = require("../createImpl");
 
 const args = {
 	name: "Sites",
@@ -22,9 +23,23 @@ const args = {
 	`,
 };
 
-eventManager.on("sites/findById", findByIdImpl(args));
+const path = 'sites';
 
-eventManager.on("sites/listByLogged", listImpl({
+eventManager.on(`${path}/create`, async (socket, input) => {
+	const create = createImpl(args);
+
+	const loggedUser = await socket.getLoggedUser();
+	if(!loggedUser) return;
+	const { user:{id: user_id, company:{id: company_id}}} = loggedUser;
+	input.user_id = user_id;
+	input.company_id = company_id;
+
+	return create(socket, input);
+});
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listImpl({
 	...args,
 	details_fragment,
 	order_by: "order_by: {name: asc}",

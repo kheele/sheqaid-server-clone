@@ -16,8 +16,6 @@ module.exports = (
         console.log('upsertImpl:', attrs);
         const { id } = attrs;
 
-        const auth = socket ? await socket.getAuth() : null;
-
         if(id) {
             const findById = findByIdImpl({
                 name,

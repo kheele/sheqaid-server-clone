@@ -7,6 +7,7 @@ const args = {
 		id
         value
 	`,
+	skipRemoved: true,
 	orgs_fragment: null,
 };
 

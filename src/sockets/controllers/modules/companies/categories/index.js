@@ -1,18 +1,22 @@
 const findByIdImpl = require('../../findByIdImpl');
 const listImpl = require('../../listImpl');
-const {company_category_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {getVariablesAndQueryConfig} = require("./commons");
 
 const args = {
 	name: "CompanyCategory",
 	tbl: "default_company_categories",
-	details_fragment,
+	details_fragment: `
+		id
+  		name
+	`,
 };
 
-eventManager.on("companies/categories/findById", findByIdImpl(args));
+const path = 'companies/categories';
 
-eventManager.on("companies/categories/listByLogged", listImpl({
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/list`, listImpl({
 	...args,
-	details_fragment,
 	order_by: "order_by: {name: asc}",
 	getVariablesAndQueryConfig,
 }));

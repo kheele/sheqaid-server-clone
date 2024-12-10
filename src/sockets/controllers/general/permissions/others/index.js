@@ -18,6 +18,7 @@ const args = {
 			value
       	}
 	`,
+    skipRemoved: true,
     orgs_fragment: null,
 };
 

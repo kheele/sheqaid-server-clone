@@ -57,13 +57,33 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
     io.engine.use(sessionMiddleware);
 
     io.use((socket, next) => {
-        if(!socket.getAuth) {
+        if (!socket.getAuth) {
             socket.getAuth = getAuth.bind(socket);
         }
-        if(!socket.injectCreate) {
+        if (!socket.getDecodedIdToken) {
+            socket.getDecodedIdToken = getDecodedIdToken.bind(socket);
+        }
+        if (!socket.getLoggedUser) {
+            socket.getLoggedUser = getLoggedUser.bind(socket);
+        }
+        //
+        if (!socket.is) {
+            socket.is = is.bind(socket);
+        }
+        if (!socket.isContractorAuth) {
+            socket.isContractorAuth = isContractorAuth.bind(socket);
+        }
+        if (!socket.isContractorView) {
+            socket.isContractorView = isContractorView.bind(socket);
+        }
+        if (!socket.isContractorViewVisited) {
+            socket.isContractorViewVisited = isContractorViewVisited.bind(socket);
+        }
+        //
+        if (!socket.injectCreate) {
             socket.injectCreate = injectCreate.bind(socket);
         }
-        if(!socket.orgsFilter) {
+        if (!socket.orgsFilter) {
             socket.orgsFilter = orgsFilter.bind(socket);
         }
         next();
@@ -213,12 +233,12 @@ function orgsFilter(orgs) {
     } = orgs || {};
 
     // console.log("orgsFilter2", orgs);
-    if(excCompany) return [];
+    if (excCompany) return [];
 
     const {session} = this.request;
     const {decodedIdToken} = session;
 
-    if(!decodedIdToken) return;
+    if (!decodedIdToken) return;
 
     const {
         company_id,
@@ -385,38 +405,81 @@ function orgsFilter(orgs) {
 }
 
 async function getAuth(token) {
-    if(token) {
-        const decodedIdToken = await admin.auth().verifyIdToken(token);
-        if(!decodedIdToken) return;
-        let {
-            sub,
-            access_type,
-        } = decodedIdToken;
-        console.log("getAuth from_client_token access_type sub token decodedIdToken", access_type, sub, token, decodedIdToken);
-
-        return {token, user_auth_id: sub, user_access_type: access_type};
-    }
-
-    const {request:{session}, handshake: {auth}} = this;
-
-    if(!session) return;
-    if(!auth) return;
-
-    const {decodedIdToken} = session;
-    if(!decodedIdToken) return;
-
-    token = auth.token;
-    if(!token) return;
+    const decodedIdToken = await this.getDecodedIdToken(token);
+    if (!decodedIdToken) return;
 
     let {
         sub,
         access_type,
     } = decodedIdToken;
-    if(isFunction(sub)) {
+
+    if (isFunction(sub)) {
         sub = sub();
     }
 
-    console.log("getAuth from_session access_type sub token decodedIdToken", access_type, sub, token, decodedIdToken);
+    console.log("getAuth from_client_token access_type sub token decodedIdToken", access_type, sub, token, decodedIdToken);
 
     return {token, user_auth_id: sub, user_access_type: access_type};
 }
+
+async function getDecodedIdToken(token) {
+    if (token) {
+        return await admin.auth().verifyIdToken(token);
+    }
+
+    const {request: {session}, handshake: {auth}} = this;
+
+    if (!session) return;
+    if (!auth) return;
+
+    const {decodedIdToken} = session;
+    return decodedIdToken;
+}
+
+async function getLoggedUser(token) {
+    const decodedIdToken = await this.getDecodedIdToken(token);
+    if (!decodedIdToken) return;
+    const {loggedUser} = decodedIdToken;
+    return loggedUser;
+}
+
+async function isContractorAuth() {
+    const {session} = this.request;
+    const {isContractor} = session.decodedIdToken || {};
+    return isContractor;
+}
+
+async function isContractorView(token) {
+    const decodedIdToken = await this.getDecodedIdToken(token);
+    if (!decodedIdToken) return false;
+    const {logged_contractor_id} = decodedIdToken;
+    return !!logged_contractor_id;
+}
+
+async function isContractorViewVisited(token) {
+    const isContractorView = await this.isContractorView(token);
+    if (!isContractorView) return false;
+    return !this.isContractorAuth(token);
+}
+
+async function isNoProjects() {
+    const {session} = this.request;
+    const {isNoProjects} = session.decodedIdToken || {};
+    return isNoProjects;
+}
+
+async function isConsultant() {
+    const {session} = this.request;
+    const {isConsultant} = session.decodedIdToken || {};
+    return isConsultant;
+}
+
+async function is(token) {
+    const {session} = this.request;
+    const {isConsultant, isContractor, isNoProjects} = session.decodedIdToken || {};
+
+    const isContractorView = await this.isContractorView(token);
+    return {isConsultant, isContractor, isNoProjects, isContractorView};
+}
+
+// currentCustomClaims 172 {"access_type":"User","company_id":18,"loggedUser":{"user":{"id":57,"auth_id":"lYHm7dG8sYeibbOKyBvntUx22jL2"},"company":{"id":18}},"isNoProjects":false,"isConsultant":true}

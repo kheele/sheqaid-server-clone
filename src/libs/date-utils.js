@@ -370,12 +370,13 @@ const moment = require('moment');
 
         static getMonthsStartAndEndDateRange(startDate, endDate) {
             const dates = [];
-            if(!isDate(startDate)) {
+            if(!!startDate) {
                 startDate = Dates.parse(startDate);
             }
-            if(!isDate(endDate)) {
+            if(!!endDate) {
                 endDate = Dates.parse(endDate);
             }
+
             let currDate = startDate;
             if(!endDate) {
                 endDate = startDate;

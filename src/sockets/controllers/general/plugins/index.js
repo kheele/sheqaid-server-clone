@@ -33,6 +33,7 @@ const args = {
             }
         }
 	`,
+	skipRemoved: true,
 	orgs_fragment: null,
 };
 

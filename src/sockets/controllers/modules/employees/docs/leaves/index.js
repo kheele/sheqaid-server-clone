@@ -1,26 +1,19 @@
 const findByIdImpl = require('./findByIdImpl');
 const listImpl = require('./listImpl');
 const {
-	findByIdEmployeeDashboardStats,
-	//
-	findByIdCompanyDashboardStats,
-	findByIdClientDashboardStats,
-	findByIdProjectDashboardStats,
-	findByIdSiteDashboardStats,
-	findByIdContractorDashboardStats
-} = require("../dashboardImpl");
+	getHRDocsDashboardFragment, hrDocsDashboardMapResults
+} = require("../hrDocsDashboardImpl");
 
 const {
-	findByIdCompanyDateRangeDashboardStats,
-	findByIdClientDateRangeDashboardStats,
-	findByIdProjectDateRangeDashboardStats,
-	findByIdSiteDateRangeDashboardStats,
-	findByIdContractorDateRangeDashboardStats,
-} = require("../dateRangeDashboardImpl");
+	getDateRangeDashboardFragment,
+} = require("../hrDocsDateRangeDashboardImpl");
 
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../../findByIdEmployeeDateRangeDashboardStatsImpl");
 const updateImpl = require("../../../updateImpl");
 const {inc_fragment} = require("../competencies/commons");
+const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../../findByIdOrgDateRangeDashboardStatsImpl");
+const {findByIdOrgDashboardStatsImpl} = require("../../../findByIdOrgDashboardStatsImpl");
+const {findByIdEmployeeDashboardStats} = require("../../../findByIdEmployeeDashboardStatsImpl");
 
 eventManager.on("employees/docs/competencies/update", updateImpl({
 	name: 'Competency',
@@ -36,38 +29,26 @@ eventManager.on("employees/docs/leaves/findById", findByIdImpl);
 
 eventManager.on("employees/docs/leaves/listByLogged", listImpl);
 
-eventManager.on(`employees/docs/leaves/dashboard`, findByIdEmployeeDashboardStats({
+eventManager.on(`employees/docs/leaves/dashboard/single`, findByIdEmployeeDashboardStats({
+	name: "Leaves",
+	listName: "leave_list",
+	mapResults: hrDocsDashboardMapResults,
+}));
+
+eventManager.on(`employees/docs/leaves/dashboard/date-range/single`, findByIdEmployeeDateRangeDashboardStats({
 	name: "Leaves",
 	listName: "leave_list"
 }));
 
-eventManager.on(`employees/docs/leaves/dashboard/date-range`, findByIdEmployeeDateRangeDashboardStats({
+eventManager.on(`employees/docs/leaves/dashboard`, findByIdOrgDashboardStatsImpl({
 	name: "Leaves",
-	listName: "leave_list"
+	listName: "leave_list",
+	details_fragment: getHRDocsDashboardFragment("leave_list"),
+	mapResults: hrDocsDashboardMapResults,
 }));
 
-[
-	{org: "company", fn: findByIdCompanyDashboardStats},
-	{org: "client", fn: findByIdClientDashboardStats},
-	{org: "project", fn: findByIdProjectDashboardStats},
-	{org: "site", fn: findByIdSiteDashboardStats},
-	{org: "contractor", fn: findByIdContractorDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`employees/docs/leaves/${org}/dashboard`, fn({
-		name: "Leaves",
-		listName: "leave_list"
-	}));
-});
-
-[
-	{org: "company", fn: findByIdCompanyDateRangeDashboardStats},
-	{org: "client", fn: findByIdClientDateRangeDashboardStats},
-	{org: "project", fn: findByIdProjectDateRangeDashboardStats},
-	{org: "site", fn: findByIdSiteDateRangeDashboardStats},
-	{org: "contractor", fn: findByIdContractorDateRangeDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`employees/docs/leaves/${org}/dashboard/date-range`, fn({
-		name: "Leaves",
-		listName: "leave_list"
-	}));
-});
+eventManager.on(`employees/docs/leaves/dashboard/date-range`, findByIdOrgDateRangeDashboardStatsImpl({
+	name: "Leaves",
+	listName: "leave_list",
+	details_fragment: getDateRangeDashboardFragment("leave_list"),
+}));

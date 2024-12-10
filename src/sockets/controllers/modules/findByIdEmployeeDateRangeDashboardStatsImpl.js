@@ -1,5 +1,11 @@
 //<editor-fold desc="findByIdEmployeeDateRangeDashboardStats">
-const findByIdEmployeeDateRangeDashboardStats = (
+const getArgs = async (socket, data) => {
+	const {monStart, monEnd} = data;
+	const dates = Dates.getMonthsStartAndEndDateRangeSQL(monStart, monEnd);
+	return {dates};
+};
+
+exports.findByIdEmployeeDateRangeDashboardStats = (
 	{
 		name,
 		listName,
@@ -8,30 +14,17 @@ const findByIdEmployeeDateRangeDashboardStats = (
 		onCreateQuery,
 	}
 ) => {
-	const operationName = `findByIdEmployeeHR${name}DateRangeDashboardStatsQuery`;
-	
 	return async (socket, data) => {
-		const {
-			id,
-			dates,
-			//
-			// site_id, project_id, client_id, company_id,
-		} = data;
-		
-		// const id = site_id || project_id || client_id || company_id;
-		// let tbl;
-		// if(site_id) {
-		// 	tbl = "default_sites";
-		// } else if(project_id) {
-		// 	tbl = "default_projects";
-		// } else if(client_id) {
-		// 	tbl = "default_clients";
-		// } else {
-		// 	tbl = "default_companies";
-		// }
-		
+		const args = await getArgs(socket, data);
+		if (!args) return;
+
+		const {dates} = args;
+		const {id} = data;
+
+		const operationName = `findByIdEmployeeHR${name}DateRangeDashboardStatsQuery`;
+
 		if(onCreateQuery) {
-			return onCreateQuery(data, operationName);
+			return onCreateQuery({...data, dates}, operationName);
 		}
 		
 		return Promise.all(
@@ -40,22 +33,22 @@ const findByIdEmployeeDateRangeDashboardStats = (
 				const stats = await getGraphQLOne({
 					variables: {id, dateStart, dateEnd},
 					query: `
-			      query ${operationName}($id: bigint, $dateStart: date, $dateEnd: date) {
-			        hr_employees(where: {id: {_eq: $id}}) {
-                id
-                #${listName}
-                list_aggregate:${listName}_aggregate(where: {
-                  removed: {_eq: false},
-	                ${isContract ? 'contract_details: {' : ''}expiry_date: {_gte: $dateStart, _lte: $dateEnd}${isContract ? '}' : ''}
-	                ${type ? `, type: {_eq: "${type}"}` : ''}
-                }){
-                  aggregate{
-                    count
-                  }
-                }
-              }
-			      }
-			    `,
+						  query ${operationName}($id: bigint, $dateStart: date, $dateEnd: date) {
+							hr_employees(where: {id: {_eq: $id}}) {
+								id
+								#${listName}
+								list_aggregate:${listName}_aggregate(where: {
+						  			removed: {_eq: false},
+									${isContract ? 'contract_details: {' : ''}expiry_date: {_gte: $dateStart, _lte: $dateEnd}${isContract ? '}' : ''}
+									${type ? `, type: {_eq: "${type}"}` : ''}
+								}){
+						  			aggregate{
+										count
+						  			}
+								}
+					  		}
+			      		 }
+			    	`,
 					operationName,
 				});
 				
@@ -67,5 +60,4 @@ const findByIdEmployeeDateRangeDashboardStats = (
 		);
 	};
 };
-exports.findByIdEmployeeDateRangeDashboardStats = findByIdEmployeeDateRangeDashboardStats;
 //</editor-fold>

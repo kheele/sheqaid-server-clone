@@ -31,27 +31,3 @@ exports.getVariablesAndQueryConfig = (
     return {filter};
 };
 //</editor-fold>
-
-//<editor-fold desc="departments_details_fragment">
-exports.departments_details_fragment = `
-  id
-  created_at
-  name
-  removed
-  ppe_type_list_aggregate{
-    aggregate{
-      count
-    }
-  }
-  employee_list_aggregate{
-    aggregate{
-      count
-    }
-  }
-  responsible_document_list_aggregate{
-    aggregate{
-      count
-    }
-  }
-`;
-//</editor-fold>

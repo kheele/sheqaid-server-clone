@@ -21,6 +21,8 @@ global.sendRelay = async (args) => {
         }
     }
 
+    console.log('hasura relay headers:', headers);
+
     const result = await fetch(process.env.ENDPOINT_HASURA_RELAY, {
         method: "POST",
         headers: {
@@ -70,6 +72,8 @@ global.sendGraphQL = async (args) => {
             headers['X-Hasura-User-Access-Type'] = user_access_type;
         }
     }
+
+    console.log('hasura headers:', headers);
 
     if (mutation) {
         return fetch(process.env.ENDPOINT_HASURA_GRAPHQL, {

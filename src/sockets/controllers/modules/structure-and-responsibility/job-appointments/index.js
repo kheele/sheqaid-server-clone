@@ -1,21 +1,15 @@
 const findByIdImpl = require('./findByIdImpl');
 const listImpl = require('./listImpl');
 const {
-	findByIdCompanyDashboardStats,
-	findByIdClientDashboardStats,
-	findByIdProjectDashboardStats,
-	findByIdSiteDashboardStats,
-	findByIdContractorDashboardStats
-} = require("../../employees/docs/dashboardImpl");
+	getHRDocsDashboardFragment, hrDocsDashboardMapResults
+} = require("../../employees/docs/hrDocsDashboardImpl");
 const {findByIdEmployeeDashboardStats} = require("../../findByIdEmployeeDashboardStatsImpl");
 const {
-	findByIdCompanyDateRangeDashboardStats,
-	findByIdClientDateRangeDashboardStats,
-	findByIdProjectDateRangeDashboardStats,
-	findByIdSiteDateRangeDashboardStats,
-	findByIdContractorDateRangeDashboardStats
-} = require("../../employees/docs/dateRangeDashboardImpl");
+	getDateRangeDashboardFragment
+} = require("../../employees/docs/hrDocsDateRangeDashboardImpl");
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../findByIdEmployeeDateRangeDashboardStatsImpl");
+const {findByIdOrgDashboardStatsImpl} = require("../../findByIdOrgDashboardStatsImpl");
+const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../findByIdOrgDateRangeDashboardStatsImpl");
 
 eventManager.on("structure-and-responsibility/job-appointments/findById", findByIdImpl);
 
@@ -31,28 +25,15 @@ eventManager.on(`structure-and-responsibility/job-appointments/dashboard/date-ra
 	listName: "job_appointment_list",
 }));
 
-[
-	{org: "company", fn: findByIdCompanyDashboardStats},
-	{org: "client", fn: findByIdClientDashboardStats},
-	{org: "project", fn: findByIdProjectDashboardStats},
-	{org: "site", fn: findByIdSiteDashboardStats},
-	{org: "contractor", fn: findByIdContractorDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`structure-and-responsibility/job-appointments/${org}/dashboard`, fn({
-		name: "JobAppointments",
-		listName: "job_appointment_list",
-	}));
-});
+eventManager.on(`structure-and-responsibility/job-appointments/dashboard`, findByIdOrgDashboardStatsImpl({
+	name: "JobAppointments",
+	listName: "job_appointment_list",
+	details_fragment: getHRDocsDashboardFragment("job_appointment_list"),
+	mapResults: hrDocsDashboardMapResults,
+}));
 
-[
-	{org: "company", fn: findByIdCompanyDateRangeDashboardStats},
-	{org: "client", fn: findByIdClientDateRangeDashboardStats},
-	{org: "project", fn: findByIdProjectDateRangeDashboardStats},
-	{org: "site", fn: findByIdSiteDateRangeDashboardStats},
-	{org: "contractor", fn: findByIdContractorDateRangeDashboardStats},
-].forEach(({org, fn}) => {
-	eventManager.on(`structure-and-responsibility/job-appointments/${org}/dashboard/date-range`, fn({
-		name: "JobAppointments",
-		listName: "job_appointment_list",
-	}));
-});
+eventManager.on(`structure-and-responsibility/job-appointments/dashboard/date-range`, findByIdOrgDateRangeDashboardStatsImpl({
+	name: "JobAppointments",
+	listName: "job_appointment_list",
+	details_fragment: getDateRangeDashboardFragment("job_appointment_list"),
+}));

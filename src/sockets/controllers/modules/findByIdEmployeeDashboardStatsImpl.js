@@ -1,5 +1,5 @@
 //<editor-fold desc="findByIdEmployeeDashboardStats">
-const findByIdEmployeeDashboardStats = (
+exports.findByIdEmployeeDashboardStats = (
 	{
 		name,
 		listName,
@@ -9,9 +9,9 @@ const findByIdEmployeeDashboardStats = (
 		mapResults,
 	}
 ) => {
-	const operationName = `findByIdEmployeeHR${name}DashboardStatsQuery`;
-	
 	return async (socket, data) => {
+		const operationName = `findByIdEmployeeHR${name}DashboardStatsQuery`;
+
 		const {
 			id,
 			mon,
@@ -20,20 +20,8 @@ const findByIdEmployeeDashboardStats = (
 			//
 			// site_id, project_id, client_id, company_id,
 		} = data;
-		
-		// const id = site_id || project_id || client_id || company_id;
-		// let tbl;
-		// if(site_id) {
-		// 	tbl = "default_sites";
-		// } else if(project_id) {
-		// 	tbl = "default_projects";
-		// } else if(client_id) {
-		// 	tbl = "default_clients";
-		// } else {
-		// 	tbl = "default_companies";
-		// }
-		
-		console.log('socket.decodedIdToken', socket.request.session.decodedIdToken)
+
+		// console.log('socket.decodedIdToken', socket.request.session.decodedIdToken)
 		
 		let promise;
 		if(onCreateQuery) {
@@ -125,5 +113,4 @@ const findByIdEmployeeDashboardStats = (
 		return promise;
 	};
 };
-exports.findByIdEmployeeDashboardStats = findByIdEmployeeDashboardStats;
 //</editor-fold>

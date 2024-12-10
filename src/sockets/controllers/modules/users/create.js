@@ -111,7 +111,10 @@ exports.create = (args) => async (socket, input) => {
         },
     };
 
-    const {company_id, user_id} = socket.session;
+    const loggedUser = await socket.getLoggedUser();
+    if(!loggedUser) return;
+    const { user:{id: user_id, company:{id: company_id}}} = loggedUser;
+
     data.user_id = user_id;
     data.company_id = company_id;
 

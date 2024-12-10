@@ -2,6 +2,7 @@ require("./auth");
 require("./graphql");
 
 require("./accounts");
+require("./audit-logs");
 require("./error-reporting");
 require("./doc-signing-settings");
 require("./excel");

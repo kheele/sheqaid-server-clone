@@ -30,10 +30,3 @@ exports.getVariablesAndQueryConfig = (
 	return {filter};
 };
 //</editor-fold>
-
-//<editor-fold desc="company_category_details_fragment">
-exports.company_category_details_fragment = `
-  id
-  name
-`;
-//</editor-fold>

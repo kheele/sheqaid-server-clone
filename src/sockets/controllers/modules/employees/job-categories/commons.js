@@ -7,6 +7,7 @@ exports.getVariablesAndQueryConfig = (
         id,
         //
         name,
+        job_category_owner,
         //
         site_id, project_id, client_id,
         //
@@ -23,6 +24,9 @@ exports.getVariablesAndQueryConfig = (
         if (name) {
             filter.push(`name: {_ilike: "%${name}%"}`);
         }
+        if (job_category_owner) {
+            filter.push(`job_category_owner: {_eq: "${job_category_owner}"}`);
+        }
     }
 
     filter = filter.join(',');
@@ -30,18 +34,4 @@ exports.getVariablesAndQueryConfig = (
 
     return {filter};
 };
-//</editor-fold>
-
-//<editor-fold desc="job_categories_details_fragment">
-exports.job_categories_details_fragment = `
-  id
-  created_at
-  name
-  job_category_owner
-  job_position_list_aggregate{
-    aggregate{
-      count
-    }
-  }
-`;
 //</editor-fold>

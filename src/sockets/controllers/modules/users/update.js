@@ -11,8 +11,8 @@ exports.update = (args) => async (socket, attrs) => {
         password_conf,
     } = attrs;
 
-    const item = await findByIdUser(socket, id);
-    if (!item) return;
+    const dbUser = await findByIdUser(socket, id);
+    if (!dbUser) return;
 
     if (password_conf) {
         delete attrs.password_conf;
@@ -32,19 +32,9 @@ exports.update = (args) => async (socket, attrs) => {
     }
 
     if (username || phone) {
-        const {session} = socket.request;
-        const {decodedIdToken} = session;
-
-        if(!decodedIdToken) return;
-
-        const { company_id, auth_id} = decodedIdToken;
-
-        // const {company_id, user_id} = socket.session;
-        // data.user_id = user_id;
-        // data.company_id = company_id;
-
-        const {loggedUser, loggedUserAuth, login: {currAuth}} = storage;
-        const {email: old_username, phoneNumber: old_phone} = loggedUserAuth;
+        const decodedIdToken = await socket.getDecodedIdToken();
+        if (!decodedIdToken) return;
+        const {loggedUser, email: old_username, phone_number: old_phone} = decodedIdToken;
 
         const {username: new_username, phone: new_phone} = attrs;
         console.log('users update new_username new_phone', new_username, new_phone)
@@ -53,43 +43,41 @@ exports.update = (args) => async (socket, attrs) => {
                 return "PASSWORD_CONF_REQUIRED";
             }
 
-            const updateUsernameImpl = async (fnName, new_value, credental) => {
+            const updateUsernameImpl = async (uid, {authProviderType, new_value, old_value}) => {
                 try {
-                    await loggedUserAuth.reauthenticateWithCredential(credental);
-                    try {
-                        await loggedUserAuth[fnName](new_value);
-                        return new_value;
-                    } catch (err) {
-                        throw err;
-                    }
+                    const verified = await socket.emit('users/reauthenticateWithCredential', {
+                        authProviderType,
+                        old_value,
+                        password_conf,
+                    });
+                    if(verified === true || verified === 'AUTH_WRONG_PASSWORD') return verified;
+                    if(!verified) return 'CANT_UPDATE_OTHER_USER_EMAIL_OR_PHONE';
+
+                    await admin.auth().updateUser(uid, {
+                        [authProviderType]: new_value
+                    });
+                    return new_value;
                 } catch (err) {
                     throw err;
                 }
             };
 
-            if (username) {
-                try {
-                    loggedUser.user.data.username = await updateUsernameImpl(
-                        'updateEmail',
-                        new_username,
-                        firebase.auth.EmailAuthProvider.credential(old_username, password_conf)
-                    );
-                } catch (err) {
-                    console.error(err);
-                    throw err;
-                }
-            }
-            if (phone) {
-                try {
-                    loggedUser.user.data.phone = await updateUsernameImpl(
-                        'updatePhoneNumber',
-                        new_phone,
-                        firebase.auth.EmailAuthProvider.credential(old_username, password_conf)
-                    );
-                } catch (err) {
-                    console.error(err);
-                    throw err;
-                }
+            try {
+                const verified = await updateUsernameImpl(dbUser.data.auth_id, username ? {
+                    authProviderType: 'email',
+                    new_value: new_username,
+                    old_value: old_username
+                } : {
+                    authProviderType: 'phone_number',
+                    new_value: new_phone,
+                    old_value: old_phone
+                });
+
+                if(verified === 'AUTH_WRONG_PASSWORD') return verified;
+                if(!verified) return;
+            } catch (err) {
+                console.error(err);
+                throw err;
             }
         } else {
             //cant update other user email

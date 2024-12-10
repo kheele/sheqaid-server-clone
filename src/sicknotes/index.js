@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const items = require('./items');
+// const items = require('./items');
 
 router.get('/verify/index/:uuid', (req, res) => {
     const { uuid } = req.params;
