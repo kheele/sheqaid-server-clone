@@ -4,8 +4,8 @@
 # misc
 npm-debug.log
 #Dockerfile
-certs
-documents
-firebase
+/certs
+/documents
+/firebase
 .env
 /src/sicknotes/
