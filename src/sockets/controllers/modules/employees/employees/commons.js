@@ -700,12 +700,9 @@ exports.employee_details_fragment = `
 `;
 //</editor-fold>
 
-//<editor-fold desc="employee_details_fragment">
+//<editor-fold desc="employee_details_list_fragment">
 exports.employee_details_list_fragment = ({incContractors}) => `
     ${employee_personal_details_fragment}
-    employment_num
-    employment_date
-    removed
     
     job_observation_list_aggregate(where: {removed: {_eq: false}}){
         aggregate{

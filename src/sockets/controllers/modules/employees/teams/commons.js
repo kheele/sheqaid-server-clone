@@ -85,7 +85,12 @@ exports.teams_details_one_fragment = `
     lname
     email
     phone
+    profile_pic
     job_position{
+      id
+      name
+    }
+    department{
       id
       name
     }
@@ -106,8 +111,17 @@ exports.teams_details_one_fragment = `
     fname
     lname
     full_name
+    profile_pic
     email
     phone
+    job_position{
+      id
+      name
+    }
+    department{
+      id
+      name
+    }
   }
           
   ppe_type_list{
