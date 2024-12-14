@@ -1,35 +1,37 @@
 //<editor-fold desc="findByIdEmployeeDashboardStats">
-exports.findByIdEmployeeDashboardStats = (
-	{
-		name,
-		listName,
-		isContract,
-		type,
-		onCreateQuery,
-		mapResults,
-	}
-) => {
-	return async (socket, data) => {
-		const operationName = `findByIdEmployeeHR${name}DashboardStatsQuery`;
+exports.findByIdEmployeeDashboardStats = (config) => {
+    return async (socket, data) => {
+        if (!data) return;
 
-		const {
-			id,
-			mon,
-			mon2,
-			mon3,
-			//
-			// site_id, project_id, client_id, company_id,
-		} = data;
+        const {
+            name,
+            listName,
+            isContract,
+            type,
+            onCreateQuery,
+            mapResults,
+        } = config;
 
-		// console.log('socket.decodedIdToken', socket.request.session.decodedIdToken)
-		
-		let promise;
-		if(onCreateQuery) {
-			promise = onCreateQuery(data, operationName);
-		} else {
-			promise = getGraphQLOne({
-				variables: {id, mon, mon2, mon3},
-				query: `
+        const operationName = `findByIdEmployeeHR${name}DashboardStatsQuery`;
+
+        const {
+            id,
+            mon,
+            mon2,
+            mon3,
+            //
+            // site_id, project_id, client_id, company_id,
+        } = data;
+
+        // console.log('socket.decodedIdToken', socket.request.session.decodedIdToken)
+
+        let promise;
+        if (onCreateQuery) {
+            promise = onCreateQuery(data, operationName);
+        } else {
+            promise = getGraphQLOne({
+                variables: {id, mon, mon2, mon3},
+                query: `
 	      query ${operationName}($id: bigint, $mon: date, $mon2: date, $mon3: date) {
 	        hr_employees(where: {id: {_eq: $id}}) {
             id
@@ -102,15 +104,15 @@ exports.findByIdEmployeeDashboardStats = (
           }
 	      }
 	    `,
-				operationName,
-			});
-		}
-		
-		if (mapResults) {
-			promise = promise.then(mapResults(id));
-		}
-		
-		return promise;
-	};
+                operationName,
+            });
+        }
+
+        if (mapResults) {
+            promise = promise.then(mapResults(id));
+        }
+
+        return promise;
+    };
 };
 //</editor-fold>

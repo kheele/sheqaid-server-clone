@@ -1,5 +1,5 @@
-const findByIdImpl = require('./findByIdImpl');
-const listImpl = require('./listImpl');
+const findByIdImpl = require("../../../findByIdImpl");
+const listHRDocsByLogged = require('./listHRDocsByLogged');
 const {
 	getHRDocsDashboardFragment, hrDocsDashboardMapResults
 } = require("../hrDocsDashboardImpl");
@@ -10,24 +10,31 @@ const {
 
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../../findByIdEmployeeDateRangeDashboardStatsImpl");
 const updateImpl = require("../../../updateImpl");
-const {inc_fragment} = require("../competencies/commons");
+const {inc_fragment} = require("./commons");
 const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../../findByIdOrgDateRangeDashboardStatsImpl");
 const {findByIdOrgDashboardStatsImpl} = require("../../../findByIdOrgDashboardStatsImpl");
 const {findByIdEmployeeDashboardStats} = require("../../../findByIdEmployeeDashboardStatsImpl");
+const createImpl = require("../../../createImpl");
 
-eventManager.on("employees/docs/competencies/update", updateImpl({
-	name: 'Competency',
-	tbl: 'hr_employees_docs_competencies',
-	details_fragment: inc_fragment,
-	uploadUpdate: ({employee, id}) => ({
-		new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date())}`,
+const args = {
+	name: 'Medical',
+	tbl: 'hr_employees_docs_medicals',
+	details_fragment: inc_fragment({inc_employee: true}),
+	uploadUpdate: ({id, data: {employee}}) => ({
+		new_name: `employees/${employee.id}/docs/medicals/${id}/Medical-doc-${Dates.formatTimestamp(new Date())}`,
 		key: 'doc',
 	}),
-}));
+};
 
-eventManager.on("employees/docs/medicals/findById", findByIdImpl);
+const path = `employees/docs/medicals`;
 
-eventManager.on("employees/docs/medicals/listByLogged", listImpl);
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listHRDocsByLogged);
 
 eventManager.on(`employees/docs/medicals/dashboard/single`, findByIdEmployeeDashboardStats({
 	name: "Medicals",

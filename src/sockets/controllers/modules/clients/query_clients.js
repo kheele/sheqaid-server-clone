@@ -1,6 +1,6 @@
 const findByIdImpl = require("../findByIdImpl");
 const findImpl = require("../findImpl");
-const {details_fragment_one} = require("./commons");
+const {details_fragment} = require("./commons");
 
 const args = {
     name: "Clients",
@@ -8,13 +8,14 @@ const args = {
     details_fragment: `
         id
     `,
+    orgs_fragment: null,
 };
 
 //<editor-fold desc="findByIdClient">
 exports.findByIdClient = async (socket, id) => {
     const findById = findByIdImpl({
         ...args,
-        details_fragment: details_fragment_one,
+        details_fragment,
         orgs_fragment: `
             company {
                 id
@@ -28,10 +29,7 @@ exports.findByIdClient = async (socket, id) => {
 
 //<editor-fold desc="checkClientExistById">
 exports.checkClientExistById = async (socket, id) => {
-    const findById = findByIdImpl({
-        ...args,
-        orgs_fragment: null,
-    });
+    const findById = findByIdImpl(args);
     return findById(socket, id);
 };
 //</editor-fold>

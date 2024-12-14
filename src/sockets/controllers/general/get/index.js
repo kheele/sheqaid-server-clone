@@ -17,7 +17,7 @@ class Cntr extends ACntr {
 		const {access_type, username} = data;
 		
 		if (isValidAccessType(access_type)) {
-			return getUserUidByUsername(username, access_type);
+			return getUserUidByUsernameImpl(username, access_type);
 		}
 	}
 

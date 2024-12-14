@@ -30,8 +30,8 @@ exports.getVariablesAndQueryConfig = (
 };
 //</editor-fold>
 
-//<editor-fold desc="project_details_fragment">
-const project_details_fragment = `
+//<editor-fold desc="details_fragment">
+exports.details_fragment = `
     id
     created_at
     name
@@ -85,5 +85,4 @@ const project_details_fragment = `
       }
     }
 `;
-exports.project_details_fragment = project_details_fragment;
 //</editor-fold>

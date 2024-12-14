@@ -1,5 +1,5 @@
 //<editor-fold desc="getFragment">
-exports.getHRDocsDashboardFragment = (listName, isContract) => {
+exports.getHRDocsDashboardFragment = (socket, listName, isContract) => {
 	return `
 			id
 	    

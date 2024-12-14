@@ -1,9 +1,19 @@
-const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
-const {findByUsernameDuplicateUser, findByPhoneDuplicateUser, findByIdUser} = require("./query_users");
+const {findByUsernameDuplicateUser, findByPhoneDuplicateUser} = require("./query_users");
+const {user_details_fragment: details_fragment} = require("./commons");
 
-//<editor-fold desc="create">
-exports.update = (args) => async (socket, attrs) => {
+const args = {
+    name: "User",
+    tbl: "default_users",
+    details_fragment,
+    uploadUpdate: ({id}) => ({
+        new_name: `users/${id}/profile-pic`,
+        key: 'profile-pic',
+    }),
+};
+
+//<editor-fold desc="updateUser">
+exports.updateUser = async (socket, attrs) => {
     const {
         id,
         username,
@@ -11,7 +21,7 @@ exports.update = (args) => async (socket, attrs) => {
         password_conf,
     } = attrs;
 
-    const dbUser = await findByIdUser(socket, id);
+    const dbUser = await checkByIdUser(id);
     if (!dbUser) return;
 
     if (password_conf) {

@@ -1,7 +1,8 @@
-
-//<editor-fold desc="getVariablesAndQueryConfig">
 const {signable_doc_template_details_fragment} = require("../../../general/doc-signing-settings/templates/commons");
 const {signable_doc_submitter_details_fragment} = require("../../../general/doc-signing-settings/submitters/commons");
+const {employee_personal_details_fragment} = require("../../../../../graphql/Fragments");
+
+//<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (
     {
         orgs_filter = [],
@@ -101,7 +102,7 @@ exports.getVariablesAndQueryConfig = (
 //<editor-fold desc="employee_details_fragment">
 exports.employee_details_fragment = `
   id
-  created_at,
+  created_at
   removed
   fname
   lname
@@ -688,9 +689,98 @@ exports.employee_details_fragment = `
     id
     name
   }
+  contractor_client{
+    id
+    name
+  }
   contractor {
     id
     name
   }
+`;
+//</editor-fold>
+
+//<editor-fold desc="employee_details_fragment">
+exports.employee_details_list_fragment = ({incContractors}) => `
+    ${employee_personal_details_fragment}
+    employment_num
+    employment_date
+    removed
+    
+    job_observation_list_aggregate(where: {removed: {_eq: false}}){
+        aggregate{
+            count
+        }
+    }
+    job_observation_list{
+        id
+        name
+    }
+		  
+    medical_list_aggregate(where: {removed: {_eq: false}}){
+        aggregate{
+            count
+        }
+    }
+    leave_list_aggregate(where: {removed: {_eq: false}}){
+        aggregate{
+            count
+        }
+    }
+    ppe_type_list_aggregate{
+        aggregate{
+            count
+        }
+    }
+    trainer_training_list_aggregate:trainer_training_matrix_list_aggregate{
+        aggregate{
+            count
+        }
+    }
+    warning_list_aggregate(where: {removed: {_eq: false}}){
+        aggregate{
+            count
+        }
+    }
+    supervisor_employee_list_aggregate(where: {removed: {_eq: false}}){
+        aggregate{
+            count
+        }
+    }
+    supervisor{
+        ${employee_personal_details_fragment}
+    }
+    linked_user {
+        id
+        fname
+        lname
+        username
+        phone
+    }
+    department {
+        id
+        name
+    }
+    job_position {
+        id
+        name
+        job_category{
+            id
+            name
+        }
+    }
+    ${incContractors ? `
+    contractor_site {
+        id
+        name
+    }
+    contractor_client {
+        id
+        name
+    }
+    contractor {
+        id
+        name
+    }` : ''}
 `;
 //</editor-fold>

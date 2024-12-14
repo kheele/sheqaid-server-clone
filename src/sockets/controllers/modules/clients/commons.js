@@ -30,7 +30,7 @@ exports.getVariablesAndQueryConfig = (
 };
 //</editor-fold>
 
-exports.details_fragment_one = `
+exports.details_fragment = `
     id
     created_at
     name

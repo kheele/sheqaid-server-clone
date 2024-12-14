@@ -65,56 +65,54 @@ exports.getVariablesAndQueryConfig = (
 
 //<editor-fold desc="ppe_item_one_details_fragment">
 exports.ppe_item_one_details_fragment = `
-  id
-  created_at
-  removed
-  serial_num
-  purchase_date
-  condition
-  notes
-  profile_pic
-
-  ppe_type{
     id
-    name
-    unit
-  }
-
-  employee_list{
-    employee{
-      ${employee_basic_personal_details_fragment}
+    removed
+    created_at
+    notes
+    profile_pic
+    serial_num
+    purchase_date
+    condition
+    ppe_type{
+        id
+        name
+        unit
     }
-  }
-
-  employee_list_aggregate{
-    aggregate {
-      count
+    
+    employee_list{
+        employee{
+          ${employee_basic_personal_details_fragment}
+        }
     }
-  }
+
+    employee_list_aggregate{
+        aggregate {
+            count
+        }
+    }
 `;
 //</editor-fold>
 
 //<editor-fold desc="ppe_item_details_fragment">
 exports.ppe_item_details_fragment = `
-  id
-  created_at
-  removed
-  serial_num
-  purchase_date
-  condition
-  notes
-  profile_pic
-  
-  ppe_type{
     id
-    name
-    unit
-  }
-
-  employee_list_aggregate{
-    aggregate {
-      count
+    removed
+    created_at
+    notes
+    profile_pic
+    serial_num
+    purchase_date
+    condition
+    ppe_type{
+        id
+        name
+        unit
     }
-  }
+    
+    employee_list_aggregate{
+        aggregate {
+            count
+        }
+    }
 `;
 //</editor-fold>

@@ -5,18 +5,20 @@ const getArgs = async (socket, data) => {
 	return {dates};
 };
 
-exports.findByIdEmployeeDateRangeDashboardStats = (
-	{
-		name,
-		listName,
-		isContract,
-		type,
-		onCreateQuery,
-	}
-) => {
+exports.findByIdEmployeeDateRangeDashboardStats = (config) => {
 	return async (socket, data) => {
+		if (!data) return;
+
 		const args = await getArgs(socket, data);
 		if (!args) return;
+
+		const {
+			name,
+			listName,
+			isContract,
+			type,
+			onCreateQuery,
+		} = config
 
 		const {dates} = args;
 		const {id} = data;

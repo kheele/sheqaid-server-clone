@@ -1,3 +1,5 @@
+const getDetailsFragment = require("./getDetailsFragment");
+
 //<editor-fold desc="listImpl">
 const getArgs = async (socket, data) => {
     const {monStart, monEnd} = data;
@@ -67,18 +69,20 @@ const getArgs = async (socket, data) => {
     return {org, tbl, id, dates};
 };
 
-exports.findByIdOrgDateRangeDashboardStatsImpl = (
-    {
-        name,
-        // org,
-        // tbl,
-        details_fragment,
-        onCreateQuery,
-    }
-) => {
+exports.findByIdOrgDateRangeDashboardStatsImpl = (config) => {
     return async (socket, data) => {
+        if (!data) return;
+
         const args = await getArgs(socket, data);
         if (!args) return;
+
+        let {
+            name,
+            // org,
+            // tbl,
+            details_fragment,
+            onCreateQuery,
+        } = config;
 
         const {org, tbl, id, dates} = args;
 
@@ -87,6 +91,8 @@ exports.findByIdOrgDateRangeDashboardStatsImpl = (
         if (onCreateQuery) {
             return onCreateQuery({...data, id, dates}, operationName, tbl);
         }
+
+        details_fragment = await getDetailsFragment({socket, data, details_fragment});
 
         return Promise.all(
             dates.map(async date => {

@@ -30,8 +30,8 @@ exports.getVariablesAndQueryConfig = (
 };
 //</editor-fold>
 
-//<editor-fold desc="site_details_fragment">
-const site_details_fragment = `
+//<editor-fold desc="details_fragment">
+exports.details_fragment = `
     id
     created_at
     name
@@ -85,5 +85,4 @@ const site_details_fragment = `
       }
     }
 `;
-exports.site_details_fragment = site_details_fragment;
 //</editor-fold>

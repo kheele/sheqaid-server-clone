@@ -62,7 +62,7 @@ eventManager.on("assets/findById", findByIdImpl({
 
 eventManager.on("assets/listByLogged", listByLoggedImpl({
     ...args,
-    details_fragment: data => {
+    details_fragment: (socket, data) => {
         const {data_export} = data;
         return data_export ? asset_export_details_fragment : asset_basic_details_fragment;
     },
@@ -77,7 +77,7 @@ eventManager.on("assets/export-excel", exportExcelImpl({
     name: "Assets",
     listImpl: listByLoggedImpl({
         ...args,
-        details_fragment: _data => asset_export_details_fragment,
+        details_fragment: (socket, data) => asset_export_details_fragment,
         order_by: "order_by: [{asset_detail:{asset_type: asc}}, {asset_detail:{name: asc}},]",
         getVariablesAndQueryConfig,
     }),

@@ -1,4 +1,5 @@
 require('./attendance');
+require('./dependents');
 require('./employees');
 require('./employees-external');
 require('./docs');
@@ -7,6 +8,7 @@ require('./job-categories');
 require('./job-positions');
 require('./job-observations');
 require('./job-observation-types');
+require('./next-of-kins');
 require('./ppe_items');
 require('./ppe_types');
 require('./teams');

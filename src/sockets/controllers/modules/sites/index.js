@@ -1,7 +1,9 @@
 const findByIdImpl = require('../findByIdImpl');
-const listImpl = require('../listImpl');
-const {site_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const createImpl = require("../createImpl");
+const listByLoggedImpl = require("../listByLoggedImpl");
+const updateImpl = require("../updateImpl");
+const getDetailsFragment = require("../getDetailsFragment");
 
 const args = {
 	name: "Sites",
@@ -37,40 +39,68 @@ eventManager.on(`${path}/create`, async (socket, input) => {
 	return create(socket, input);
 });
 
+eventManager.on(`${path}/update`, updateImpl(args));
+
 eventManager.on(`${path}/findById`, findByIdImpl(args));
 
-eventManager.on(`${path}/listByLogged`, listImpl({
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
 	...args,
-	details_fragment,
 	order_by: "order_by: {name: asc}",
-	getVariablesAndQueryConfig: (
-		{
-			orgs_filter = [],
-			//
-			id,
-			//
-			name,
-			//
-			site_id, project_id, client_id,
-			//
-			exact_orgs = false,
-		}
-	) => {
-		//<editor-fold desc="variables, filters">
-		let filter = orgs_filter || [];//orgsFilter({socket, site_id, project_id, client_id, exact_orgs});
+	getVariablesAndQueryConfig,
+	orgs_filter: async (socket, data) => {
+		const is = await socket.is();
+		if (!is) return;
 
-		if (id) {
-			filter.push(`id: {_eq: ${id}}`);
-		} else {
-			if (name) {
-				filter.push(`name: {_ilike: "%${name}%"}`);
+		const {isConsultant, isNoProjects, isContractorView} = is;
+		const decodedIdToken = await socket.getDecodedIdToken();
+		if (!decodedIdToken) return;
+
+		const {
+			company_id,
+			my_client,
+			my_project,
+			my_site,
+			contractor_id,
+
+			selected_client_id,
+			selected_project_id,
+			selected_site_id,
+			logged_contractor_id,
+
+			selected_contractor_client_id,
+			selected_contractor_site_id,
+
+			// access_type,
+			// loggedUser: {user: {id: user_id}},
+		} = decodedIdToken;
+
+		if (my_site) {
+			return [`id: {_eq: ${my_site.id}}`];
+		}
+		if (my_project) {
+			return [`project_id: {_eq: ${my_project.id}}`];
+		}
+		if (my_client) {
+			if (selected_project_id) {
+				return [`project_id: {_eq: ${selected_project_id}}`];
+			}
+			return [`client_id: {_eq: ${my_client.id}}`];
+		}
+
+		if (isConsultant) {
+			if (selected_project_id) {
+				return [`project_id: {_eq: ${selected_project_id}}`];
+			}
+			if (selected_client_id) {
+				return [`client_id: {_eq: ${selected_client_id}}`];
+			}
+			return [];
+		} else if(!isNoProjects) {//client with projects
+			if (selected_project_id) {
+				return [`project_id: {_eq: ${selected_project_id}}`];
 			}
 		}
 
-		filter = filter.join(',');
-		//</editor-fold>
-
-		return {filter};
-	}
+		return [`company_id: {_eq: ${company_id}}`];
+	},
 }));
-//

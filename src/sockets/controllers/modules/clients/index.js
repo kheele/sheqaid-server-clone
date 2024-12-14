@@ -1,123 +1,23 @@
-const findByIdImpl = require('../findByIdImpl');
-const listByLoggedImpl = require('../listByLoggedImpl');
-const {getVariablesAndQueryConfig} = require("./commons");
+const listByLoggedSkipRemovedImpl = require('../listByLoggedSkipRemovedImpl');
+const {details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
-const {findClientByContractorEmail, checkDuplicateClientByContractorEmail, findByIdClient, checkClientExistById} = require("./query_clients");
+const {
+    findClientByContractorEmail,
+    checkDuplicateClientByContractorEmail,
+    findByIdClient,
+    checkClientExistById
+} = require("./query_clients");
 
 const args = {
-	name: "Clients",
-	tbl: "default_clients",
-	details_fragment: `
-		id
-        created_at
-        name
-        address
-        contractor_email
-        email
-        phone
-        profile_pic
-        linked_contractor {
-            id
-            name
-            username
-        }
-        module_list {
-            id
-            price
-            module {
-                id
-                borderColor
-                desc
-                discount
-                faIconLeft
-                faIconRight
-                has_update
-                hover
-                key
-                price
-                sort
-                status
-                svgIconLeft
-                svgIconRight
-                title
-                plugin{
-                	key
-                }
-            }
-        }
-        sector_list{
-            id
-            sector {
-                id
-                name
-            }
-        }
-        project_list{
-            id
-            name
-            site_list {
-                id
-                name
-            }
-        }
-        site_list{
-            id
-            name
-        }
-        project_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        site_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        contractor_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        user_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        employee_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        team_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        incident_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        training_matrix_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-        asset_list_aggregate {
-            aggregate {
-                count
-            }
-        }
-	`,
-	order_by: "order_by: {name: asc}",
-	uploadUpdate: ({id}) => ({
-		new_name: `clients/${id}/profile-pic`,
-		key: 'profile_pic',
-	}),
-	getVariablesAndQueryConfig,
-	orgs_fragment: `
+    name: "Clients",
+    tbl: "default_clients",
+    details_fragment,
+    uploadUpdate: ({id}) => ({
+        new_name: `clients/${id}/profile-pic`,
+        key: 'profile_pic',
+    }),
+    orgs_fragment: `
 		company {
 			id
 			name
@@ -128,63 +28,106 @@ const args = {
 const path = 'clients';
 
 eventManager.on(`${path}/create`, async (socket, input) => {
-	const create = createImpl(args);
+    const create = createImpl(args);
 
-	const {
-		name,
-		business_id,
-		phone,
-		email,
-		contractor_email,
-		address,
-		profile_pic,
-		sector_list
-	} = input;
+    const {
+        name,
+        business_id,
+        phone,
+        email,
+        contractor_email,
+        address,
+        profile_pic,
+        sector_list
+    } = input;
 
-	const loggedUser = await socket.getLoggedUser();
-	if(!loggedUser) return;
-	const { user:{id: user_id, company:{id: company_id}}} = loggedUser;
-	input.user_id = user_id;
-	input.company_id = company_id;
+    const loggedUser = await socket.getLoggedUser();
+    if (!loggedUser) return;
+    const {user: {id: user_id, company: {id: company_id}}} = loggedUser;
+    input.user_id = user_id;
+    input.company_id = company_id;
 
-	if(contractor_email) {
-		const existingItem = await findClientByContractorEmail(socket, contractor_email);
-		if (existingItem) {
-			return "DUP_CONTRACTOR_EMAIL";
-		}
-	}
+    if (contractor_email) {
+        const existingItem = await findClientByContractorEmail(socket, contractor_email);
+        if (existingItem) {
+            return "DUP_CONTRACTOR_EMAIL";
+        }
+    }
 
-	return create(socket, input);
+    return create(socket, input);
 });
 
 eventManager.on(`${path}/update`, async (socket, input) => {
-	const update = updateImpl(args);
+    const update = updateImpl(args);
 
-	const {
-		id,
-		name,
-		business_id,
-		phone,
-		email,
-		contractor_email,
-		address,
-		profile_pic,
-		sector_list
-	} = input;
+    const {
+        id,
+        name,
+        business_id,
+        phone,
+        email,
+        contractor_email,
+        address,
+        profile_pic,
+        sector_list
+    } = input;
 
-	const item = await checkClientExistById(socket, id);
-	if (!item) return;
+    const item = await checkClientExistById(socket, id);
+    if (!item) return;
 
-	if(contractor_email) {
-		const existingItem = await checkDuplicateClientByContractorEmail(socket, {id, contractor_email});
-		if (existingItem) {
-			return "DUP_CONTRACTOR_EMAIL";
-		}
-	}
+    if (contractor_email) {
+        const existingItem = await checkDuplicateClientByContractorEmail(socket, {id, contractor_email});
+        if (existingItem) {
+            return "DUP_CONTRACTOR_EMAIL";
+        }
+    }
 
-	return update(socket, input);
+    return update(socket, input);
 });
 
-eventManager.on(`${path}/findById`, findByIdImpl(args));
+eventManager.on(`${path}/findById`, findByIdClient);
 
-eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+eventManager.on(`${path}/listByLogged`, listByLoggedSkipRemovedImpl({
+    ...args,
+    order_by: "order_by: {name: asc}",
+    getVariablesAndQueryConfig,
+    orgs_filter: async (socket, data) => {
+        const is = await socket.is();
+        if (!is) return;
+
+        const {isConsultant, isNoProjects, isContractorView} = is;
+        const decodedIdToken = await socket.getDecodedIdToken();
+        if (!decodedIdToken) return;
+
+        const {
+            company_id,
+            my_client,
+            my_project,
+            my_site,
+            contractor_id,
+
+            selected_client_id,
+            selected_project_id,
+            selected_site_id,
+            logged_contractor_id,
+
+            selected_contractor_client_id,
+            selected_contractor_site_id,
+
+            // access_type,
+            // loggedUser: {user: {id: user_id}},
+        } = decodedIdToken;
+
+        if (my_site) {
+            return [`site_list: {id: {_eq: ${my_site.id}}}`];
+        }
+        if (my_project) {
+            return [`project_list: {id: {_eq: ${my_project.id}}}`];
+        }
+        if (my_client) {
+            return [`id: {_eq: ${my_client.id}}`];
+        }
+
+        return [`company_id: {_eq: ${company_id}}`];
+    },
+}));

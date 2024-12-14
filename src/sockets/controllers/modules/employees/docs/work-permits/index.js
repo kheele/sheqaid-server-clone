@@ -1,5 +1,5 @@
-const findByIdImpl = require('./findByIdImpl');
-const listImpl = require('./listImpl');
+const findByIdImpl = require("../../../findByIdImpl");
+const listHRDocsByLogged = require('./listHRDocsByLogged');
 const {
 	getHRDocsDashboardFragment, hrDocsDashboardMapResults
 } = require("../hrDocsDashboardImpl");
@@ -14,20 +14,27 @@ const {inc_fragment} = require("./commons");
 const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../../findByIdOrgDateRangeDashboardStatsImpl");
 const {findByIdOrgDashboardStatsImpl} = require("../../../findByIdOrgDashboardStatsImpl");
 const {findByIdEmployeeDashboardStats} = require("../../../findByIdEmployeeDashboardStatsImpl");
+const createImpl = require("../../../createImpl");
 
-eventManager.on("employees/docs/work-permits/update", updateImpl({
+const args = {
 	name: 'Work-Permit',
 	tbl: 'hr_employees_docs_work_permits',
-	details_fragment: inc_fragment,
-	uploadUpdate: ({employee, id}) => ({
+	details_fragment: inc_fragment({inc_employee: true}),
+	uploadUpdate: ({id, data: {employee}}) => ({
 		new_name: `employees/${employee.id}/docs/work-permits/${id}/Work-Permit-doc-${Dates.formatTimestamp(new Date())}`,
 		key: 'doc',
 	}),
-}));
+};
 
-eventManager.on("employees/docs/work-permits/findById", findByIdImpl);
+const path = `employees/docs/work-permits`;
 
-eventManager.on("employees/docs/work-permits/listByLogged", listImpl);
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listHRDocsByLogged);
 
 eventManager.on(`employees/docs/work-permits/dashboard/single`, findByIdEmployeeDashboardStats({
 	name: "WorkPermits",

@@ -1,9 +1,20 @@
 const { v4: uuidv4 } = require('uuid');
 const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
+const {user_details_fragment: details_fragment} = require("./commons");
 
-//<editor-fold desc="create">
-exports.create = (args) => async (socket, input) => {
+const args = {
+    name: "User",
+    tbl: "default_users",
+    details_fragment,
+    uploadUpdate: ({id}) => ({
+        new_name: `users/${id}/profile-pic`,
+        key: 'profile_pic',
+    }),
+};
+
+//<editor-fold desc="createUser">
+exports.createUser = async (socket, input) => {
     let {
         //
         linked_employee_id,
@@ -122,7 +133,7 @@ exports.create = (args) => async (socket, input) => {
     const newUser = await create(socket, data);
     if (newUser) {
         if (linked_employee_id) {
-            const update = updateImpl({
+            const _updateEmployee = updateImpl({
                 name: "Employees",
                 tbl: "hr_employees",
                 details_fragment: `
@@ -130,7 +141,7 @@ exports.create = (args) => async (socket, input) => {
                 `,
             });
 
-            await update(socket, {
+            await _updateEmployee(socket, {
                 id: linked_employee_id,
                 linked_user_id: newUser.id,
             });
@@ -161,7 +172,7 @@ exports.create = (args) => async (socket, input) => {
             return await adminAuthGeneral.auth().createUserWithEmailAndPassword(username, password).then(userCredential => userCredential.user.uid).then(onComplete);
         } catch (err) {
             if (err.code === "auth/email-already-in-use") {
-                const uid = await getUserUidByUsername(username, "User");
+                const uid = await getUserUidByUsername(username);
                 if (uid) {
                     return onComplete(uid, false);
                 }

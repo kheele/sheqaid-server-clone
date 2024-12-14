@@ -1,26 +1,28 @@
 const findByIdImpl = require("./findByIdImpl");
 
 //<editor-fold desc="deleteImpl">
-module.exports = (
-    {
-        name, 
-        tbl, 
-        details_fragment, 
-        orgs_fragment,
-    }
-) => {
-	return async (socket, id) => {
-		console.log('deleteImpl:', id);
+module.exports = (config) => {
+    return async (socket, id) => {
+        if (!id) return;
+
+        const {
+            name,
+            tbl,
+            details_fragment,
+            orgs_fragment,
+        } = config;
+
+        console.log('deleteImpl:', id);
 
         const auth = await socket.getAuth();
 
         const findById = findByIdImpl({
-            name, 
-            tbl, 
+            name,
+            tbl,
             details_fragment,
             orgs_fragment,
         })
-        
+
         const item = await findById(socket, id);
         if (!item) return;
 

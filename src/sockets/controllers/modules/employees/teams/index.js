@@ -1,78 +1,29 @@
-const findByIdImpl = require("../../findByIdImpl");
-const createImpl = require("../../createImpl");
-const updateImpl = require("../../updateImpl");
 const findImpl = require("../../findImpl");
-const listByLoggedImpl = require("../../listByLoggedImpl");
-const {getVariablesAndQueryConfig} = require("./commons");
+const listByLoggedSkipRemovedImpl = require("../../listByLoggedSkipRemovedImpl");
+const {getVariablesAndQueryConfig, teams_details_fragment, teams_details_one_fragment} = require("./commons");
+const {findByIdTeam} = require("./query_teams");
+const {createTeam} = require("./create");
+const {updateTeam} = require("./update");
 
 const args = {
     name: "Teams",
     tbl: "default_teams",
-    details_fragment: `
-        id
-            created_at
-            name
-            status
-            
-            supervisor {
-                id
-                fname
-                lname
-                email
-                phone
-                job_position{
-                    id
-                    name
-                }
-            }
-            
-            employee_list_aggregate{
-                aggregate{
-                    count
-                }
-            }
-            ppe_type_list_aggregate{
-                aggregate{
-                    count
-                }
-            }
-    `,
+    details_fragment: teams_details_fragment,
     order_by: `{name: asc}`,
     getVariablesAndQueryConfig,
 };
 
 const path = 'teams';
 
-eventManager.on(`${path}/create`, async (socket, input) => {
-    const create = createImpl(args);
+eventManager.on(`${path}/create`, createTeam);
 
-    const {
-        employee_list
-    } = input;
+eventManager.on(`${path}/update`, updateTeam);
 
-    if(employee_list) {
-        delete input.employee_list;
-    }
-
-    const savedItem = await create(socket, input);
-    if(savedItem) {
-        if (employee_list) {
-            await Promise.all(employee_list.data.map(async ({id}) => {
-                return updateEmployee(({id, team_id: savedItem.id}));
-            }));
-        }
-
-        const findById = findByIdImpl(args);
-        return findById(socket, savedItem.id);
-    }
-});
-
-eventManager.on(`${path}/update`, updateImpl(args));
-
-eventManager.on(`${path}/findById`, findByIdImpl(args));
+eventManager.on(`${path}/findById`, findByIdTeam);
 
 eventManager.on(`${path}/findBy`, findImpl({
     ...args,
+    details_fragment: teams_details_one_fragment,
     where: ({data, filters}) => {
         const {
             name,
@@ -107,7 +58,7 @@ eventManager.on(`${path}/findBy`, findImpl({
             newFilter.push(`company_id:{_eq: ${company_id}}`);
         }
 
-        if(newFilter.isNotEmpty()) {
+        if (newFilter.isNotEmpty()) {
             newFilter = newFilter.join(', ');
             filter = filter ? `${filter}, ${newFilter}` : newFilter;
         }
@@ -116,4 +67,4 @@ eventManager.on(`${path}/findBy`, findImpl({
     },
 }));
 
-eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+eventManager.on(`${path}/listByLogged`, listByLoggedSkipRemovedImpl(args));

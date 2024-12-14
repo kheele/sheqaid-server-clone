@@ -1,4 +1,5 @@
 let {orgs_fragment} = require("../../../graphql/Fragments");
+const getDetailsFragment = require("./getDetailsFragment");
 
 //<editor-fold desc="listImpl">
 module.exports = (config) => {
@@ -9,6 +10,7 @@ module.exports = (config) => {
             details_fragment,
             orgs_fragment: orgs_fragment_override,
             where: __where,
+            orgs_filter: orgs_filter_override,
             order_by,
             limit,
             skipRemoved = false,
@@ -26,9 +28,19 @@ module.exports = (config) => {
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
 
         console.log('tbl------------', tbl, data)
+        name = isFunction(name) ? name(data) : name;
         tbl = isFunction(tbl) ? tbl(data) : tbl;
-        order_by = order_by ? (isFunction(order_by) ? order_by(data) : order_by) : null;
-        details_fragment = details_fragment ? (isFunction(details_fragment) ? details_fragment(data) : details_fragment) : null;
+        details_fragment = await getDetailsFragment({socket, data, details_fragment});
+
+        if(order_by) {
+            if(isFunction(order_by)) {
+                order_by = order_by(data);
+            }
+
+            if(order_by && !order_by.trim().startsWith("order_by")) {
+                order_by = `order_by: ${order_by}`;
+            }
+        }
 
         if (id) {
             return listGraphQL({
@@ -39,7 +51,7 @@ module.exports = (config) => {
                           id: {_eq: ${id}}
                         }
                       ) {
-                          ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
+                          ${details_fragment ? `${details_fragment},` : ''}
                           ${__orgs_fragment}
                       }
                     }
@@ -85,10 +97,16 @@ module.exports = (config) => {
 
             limit = isNumber(limit) ? limit : _limit;
 
-            console.log('listByLoggedImpl1', orgs_filter)
-            console.log('listByLoggedImpl2', socket && socket.orgsFilter(data))
+            let __orgs_filter;
+            if(orgs_filter_override) {
+                __orgs_filter = await orgs_filter_override(socket, data);
+            } else if(orgs_filter && orgs_filter.isNotEmpty()) {
+                __orgs_filter = orgs_filter;
+            } else {
+                __orgs_filter = socket.orgsFilter(data);
+            }
 
-            orgs_filter = (orgs_filter || []).isNotEmpty() ? orgs_filter : socket.orgsFilter(data);
+            console.log('listByLoggedImpl', __orgs_filter)
 
             let remove_args;
             if(data) {
@@ -102,7 +120,7 @@ module.exports = (config) => {
             }
 
             const filters = getVariablesAndQueryConfig ? getVariablesAndQueryConfig({
-                orgs_filter,
+                orgs_filter: __orgs_filter,
                 //
                 ...others,
                 //
@@ -110,7 +128,7 @@ module.exports = (config) => {
                 site_id, project_id, client_id, company_id,
                 //
                 exact_orgs
-            }) : {filter: orgs_filter.join(', ')};
+            }) : {filter: __orgs_filter.join(', ')};
 
             const {filter = ""} = filters;
 

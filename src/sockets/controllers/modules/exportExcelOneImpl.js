@@ -2,16 +2,16 @@ const {JsExcelTemplate} = require("../../../libs/JsExcelTemplate");
 const path = require("path");
 
 //<editor-fold desc="exportExcelImpl">
-module.exports = (
-	{
-		currDir,
-		name,
-		mapRow,
-		findByIdImpl,
-	}
-) => {
+module.exports = (config) => {
 	return async (socket, data) => {
 		if(!data) return;
+
+		const {
+			currDir,
+			name,
+			mapRow,
+			findByIdImpl,
+		} = config;
 		
 		console.log('exportExcelOne', data);
 		

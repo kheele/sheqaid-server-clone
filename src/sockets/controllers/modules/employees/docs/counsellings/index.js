@@ -1,50 +1,57 @@
-const findByIdImpl = require('./findByIdImpl');
-const listImpl = require('./listImpl');
+const findByIdImpl = require("../../../findByIdImpl");
+const listHRDocsByLogged = require('./listHRDocsByLogged');
 const {
 	getHRDocsDashboardFragment, hrDocsDashboardMapResults
 } = require("../hrDocsDashboardImpl");
 
 const {findByIdEmployeeDateRangeDashboardStats} = require("../../../findByIdEmployeeDateRangeDashboardStatsImpl");
 const updateImpl = require("../../../updateImpl");
-const {inc_fragment} = require("../competencies/commons");
+const {inc_fragment} = require("./commons");
 const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../../findByIdOrgDateRangeDashboardStatsImpl");
 const {getDateRangeDashboardFragment} = require("../hrDocsDateRangeDashboardImpl");
 const {findByIdOrgDashboardStatsImpl} = require("../../../findByIdOrgDashboardStatsImpl");
 const {findByIdEmployeeDashboardStats} = require("../../../findByIdEmployeeDashboardStatsImpl");
+const createImpl = require("../../../createImpl");
 
-eventManager.on("employees/docs/competencies/update", updateImpl({
-	name: 'Competency',
-	tbl: 'hr_employees_docs_competencies',
-	details_fragment: inc_fragment,
-	uploadUpdate: ({employee, id}) => ({
-		new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date())}`,
+const args = {
+	name: 'Counselling',
+	tbl: 'hr_employees_docs_counsellings',
+	details_fragment: inc_fragment({inc_employee: true}),
+	uploadUpdate: ({id, data: {employee}}) => ({
+		new_name: `employees/${employee.id}/docs/counsellings/${id}/Counselling-doc-${Dates.formatTimestamp(new Date())}`,
 		key: 'doc',
 	}),
-}));
+};
 
-eventManager.on("employees/docs/counsellings/findById", findByIdImpl);
+const path = `employees/docs/counsellings`;
 
-eventManager.on("employees/docs/counsellings/listByLogged", listImpl);
+eventManager.on(`${path}/create`, createImpl(args));
 
-eventManager.on(`employees/docs/counsellings/dashboard/single`, findByIdEmployeeDashboardStats({
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listHRDocsByLogged);
+
+eventManager.on(`${path}/dashboard/single`, findByIdEmployeeDashboardStats({
 	name: "Counselings",
 	listName: "counselling_list",
 	mapResults: hrDocsDashboardMapResults,
 }));
 
-eventManager.on(`employees/docs/counsellings/dashboard/date-range/single`, findByIdEmployeeDateRangeDashboardStats({
+eventManager.on(`${path}/dashboard/date-range/single`, findByIdEmployeeDateRangeDashboardStats({
 	name: "Counselings",
 	listName: "counselling_list"
 }));
 
-eventManager.on(`employees/docs/counsellings/dashboard`, findByIdOrgDashboardStatsImpl({
+eventManager.on(`${path}/dashboard`, findByIdOrgDashboardStatsImpl({
 	name: "Counselings",
 	listName: "counselling_list",
 	details_fragment: getHRDocsDashboardFragment("counselling_list"),
 	mapResults: hrDocsDashboardMapResults,
 }));
 
-eventManager.on(`employees/docs/counsellings/dashboard/date-range`, findByIdOrgDateRangeDashboardStatsImpl({
+eventManager.on(`${path}/dashboard/date-range`, findByIdOrgDateRangeDashboardStatsImpl({
 	name: "Counselings",
 	listName: "counselling_list",
 	details_fragment: getDateRangeDashboardFragment("counselling_list"),

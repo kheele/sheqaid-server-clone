@@ -118,7 +118,7 @@ eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
         }
     },
     orgs_fragment: null,
-    details_fragment: data => {
+    details_fragment: (socket, data) => {
         const {
             view = 'Asset',
             mon, mon2, mon3,

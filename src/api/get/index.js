@@ -11,7 +11,9 @@ const {ENDPOINT_CONTRACTORS, ENDPOINT_HR} = process.env;
  * @returns {Promise<string|null>} - A promise that resolves to the user's UID or `null` if the user is not found.
  * @throws {Error} - Throws an error if there is an issue with fetching or querying user data.
  */
-const getUserUidByUsername = async (username, access_type) => {
+global.getUserUidByUsernameImpl = async (username, access_type) => {
+    await authorize(access_type);
+
     if(access_type === 'ContractorUser') {
         return fetch(`${ENDPOINT_CONTRACTORS}api/callables/get/getUserUidByUsername`, {
             method: "POST",
@@ -53,9 +55,17 @@ const getUserUidByUsername = async (username, access_type) => {
  * @returns {Promise<string|null>} - A promise that resolves to the user's UID or `null` if the user is not found.
  * @throws {Error} - Throws an error if there is an issue with authorization or fetching the UID.
  */
-global.getUserUidByUsername = async (username, access_type) => {
-    await authorize(access_type);
-    return getUserUidByUsername(username, access_type);
+
+global.getUserUidByUsername = async (username) => {
+    return getUserUidByUsernameImpl(username, "User");
+};
+
+global.getContractorUserUidByUsername = async (username) => {
+    return getUserUidByUsernameImpl(username, "ContractorUser");
+};
+
+global.getStaffUidByUsername = async (username) => {
+    return getUserUidByUsernameImpl(username, "Staff");
 };
 // </editor-fold>
 
@@ -73,7 +83,7 @@ global.getUserUidByEmail = async (email, access_type) => {
     if (!email.isEmailAddress()) {
         return null;
     }
-    return getUserUidByUsername(email, access_type);
+    return getUserUidByUsernameImpl(email, access_type);
 };
 // </editor-fold>
 
@@ -91,6 +101,6 @@ global.getUserUidByPhone = async (phone, access_type) => {
     if (phone.isEmailAddress()) {
         return null;
     }
-    return getUserUidByUsername(phone, access_type);
+    return getUserUidByUsernameImpl(phone, access_type);
 };
 // </editor-fold>

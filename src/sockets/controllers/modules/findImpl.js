@@ -1,4 +1,5 @@
 let {orgs_fragment} = require("../../../graphql/Fragments");
+const getDetailsFragment = require("./getDetailsFragment");
 
 //<editor-fold desc="findImpl">
 module.exports = (config) => {
@@ -83,6 +84,7 @@ module.exports = (config) => {
         }
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
+        details_fragment = await getDetailsFragment({socket, data, details_fragment});
 
         const query = `
 	        query find${name}ByLoggedQuery {
@@ -92,7 +94,7 @@ module.exports = (config) => {
 	            },
 		        limit: 1,
 	          ) {
-                    ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
+                    ${details_fragment}
 	                ${__orgs_fragment}
 	          }
 	        }

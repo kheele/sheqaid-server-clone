@@ -3,20 +3,22 @@ const updateImpl = require("./updateImpl");
 const createImpl = require("./createImpl");
 
 //<editor-fold desc="updateImpl">
-module.exports = (
-    {
-        name,
-        tbl,
-        details_fragment,
-        orgs_fragment,
-        uploadUpdate,
-    }
-) => {
+module.exports = (config) => {
     return async (socket, attrs) => {
-        console.log('upsertImpl:', attrs);
-        const { id } = attrs;
+        if (!attrs) return;
 
-        if(id) {
+        let {
+            name,
+            tbl,
+            details_fragment,
+            orgs_fragment,
+            uploadUpdate,
+        } = config;
+
+        console.log('upsertImpl:', attrs);
+        const {id} = attrs;
+
+        if (id) {
             const findById = findByIdImpl({
                 name,
                 tbl,

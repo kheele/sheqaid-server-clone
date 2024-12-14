@@ -1,3 +1,5 @@
+require("./getDetailsFragment");
+
 require("./assets");
 require("./audits");
 require("./chemicals");
@@ -14,6 +16,7 @@ require("./inspections");
 require("./ncr");
 require("./projects");
 require("./safety-files");
+require("./sectors");
 require("./signature-settings");
 require("./sites");
 require("./structure-and-responsibility");

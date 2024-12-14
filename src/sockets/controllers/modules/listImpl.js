@@ -1,4 +1,5 @@
 let {orgs_fragment} = require("../../../graphql/Fragments");
+const getDetailsFragment = require("./getDetailsFragment");
 
 //<editor-fold desc="listImpl">
 module.exports = (config) => {
@@ -25,9 +26,20 @@ module.exports = (config) => {
         } = data || {};
 
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
+        details_fragment = await getDetailsFragment({socket, data, details_fragment});
 
         console.log('tbl------------', tbl, data)
         tbl = isFunction(tbl) ? tbl(data) : tbl;
+
+        if(order_by) {
+            if(isFunction(order_by)) {
+                order_by = order_by(data);
+            }
+
+            if(order_by && !order_by.trim().startsWith("order_by")) {
+                order_by = `order_by: ${order_by}`;
+            }
+        }
 
         if (id) {
             return listGraphQL({
@@ -38,7 +50,7 @@ module.exports = (config) => {
                           id: {_eq: ${id}}
                         }
                       ) {
-                          ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
+                          ${details_fragment}
                           ${__orgs_fragment}
                       }
                     }
@@ -55,7 +67,7 @@ module.exports = (config) => {
                           },
                           ${order_by ? `${order_by},` : ''}
                         ) {
-                          ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
+                          ${details_fragment}
                           ${__orgs_fragment}
                         }
                     }
@@ -141,11 +153,11 @@ module.exports = (config) => {
                         where: {
                           ${where}
                         },
-                        ${order_by ? `${isFunction(order_by) ? order_by(data) : order_by},` : ''}
+                        ${order_by ? `${order_by},` : ''}
                         offset: ${offset},
                         ${limit > 0 ? `limit: ${limit}` : ''}
                     ) {
-                        ${isFunction(details_fragment) ? details_fragment(data) : details_fragment}
+                        ${details_fragment}
                         ${__orgs_fragment}
                     }
                 }

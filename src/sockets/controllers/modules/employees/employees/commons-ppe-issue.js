@@ -1,4 +1,6 @@
 //<editor-fold desc="getVariablesAndQueryConfig">
+const {employee_details_list_fragment} = require("./commons");
+const {employee_personal_details_fragment} = require("../../../../../graphql/Fragments");
 exports.getVariablesAndQueryConfig = (
 	{
 		orgs_filter = [],
@@ -155,5 +157,233 @@ exports.getVariablesAndQueryConfig = (
 	//</editor-fold>
 	
 	return {filter};
+};
+//</editor-fold>
+
+//<editor-fold desc="employee_details_list_by_ppe_fragment">
+exports.employee_details_list_by_ppe_fragment = ({view, incContractors}) => {
+	if(view === "Employee") {
+		return `
+			${employee_personal_details_fragment}
+				  
+				  		ppe_type_list(where: {ppe_type: {removed: {_eq: false}}}){
+							id
+							created_at
+							ppe_type{
+								id
+								removed
+								name
+								profile_pic
+								unit
+								duration_type
+								duration_value
+								notes
+								ppe_item_list(where: {removed: {_eq: false}}){
+									id
+									created_at
+									notes
+									profile_pic
+									serial_num
+									purchase_date
+									condition
+									ppe_type{
+									  id
+									}
+								}
+							}
+							is_issued
+          				}
+          				ppe_item_list(where: {ppe_item:{removed: {_eq: false}}}){
+							id
+							ppe_item{
+							  	id
+								created_at
+								notes
+								profile_pic
+								serial_num
+								purchase_date
+								condition
+								ppe_type{
+									  id
+								}
+							}
+		      			}
+          
+          				${incContractors ? `
+					  	contractor {
+							id
+							name
+					  	}` : ''}
+		`;
+	}
+	if(view === "Team") {
+		return `
+			id
+						created_at
+						name
+						status
+					  
+						supervisor {
+							id
+							fname
+							lname
+							email
+							phone
+							job_position{
+							  id
+							  name
+							}
+						}
+			  
+						ppe_type_list(where: {ppe_type: {removed: {_eq: false}}}){
+							id
+							ppe_type{
+								id
+								removed
+								name
+								profile_pic
+								unit
+								duration_type
+								duration_value
+								notes
+								ppe_item_list(where: {removed: {_eq: false}}){
+									id
+									created_at
+									notes
+									profile_pic
+									serial_num
+									purchase_date
+									condition
+									ppe_type{
+										id
+									}
+								}
+							}
+						}
+			  
+						${incContractors ? `
+						contractor {
+							id
+							name
+						}` : ''}
+		`;
+	}
+	if(view === "Department") {
+		return `
+			id
+					  	name
+					  	removed
+			  
+					  	ppe_type_list(where: {ppe_type: {removed: {_eq: false}}}){
+							id
+							ppe_type{
+								id
+								removed
+								name
+								profile_pic
+								unit
+								duration_type
+								duration_value
+								notes
+								ppe_item_list(where: {removed: {_eq: false}}){
+									id
+									created_at
+									notes
+									profile_pic
+									serial_num
+									purchase_date
+									condition
+									ppe_type{
+									  	id
+									}
+								}
+							}
+					  	}
+			  
+					  	${incContractors ? `
+					  	contractor {
+							id
+							name
+					  	}` : ''}
+		`;
+	}
+	if(view === "Job Position") {
+		return `
+			id
+						name
+						desc
+						doc
+						job_position_owner
+					  
+						job_category {
+							id
+							name
+						}
+          
+						ppe_type_list(where: {ppe_type: {removed: {_eq: false}}}){
+							id
+							ppe_type{
+						  		id
+						  		removed
+						  		name
+						  		profile_pic
+						  		unit
+						  		duration_type
+						  		duration_value
+						  		notes
+						  		ppe_item_list(where: {removed: {_eq: false}}){
+									id
+									created_at
+									notes
+									profile_pic
+									serial_num
+									purchase_date
+									condition
+									ppe_type{
+									  	id
+									}
+								}
+							}
+          				}
+          
+          				${incContractors ? `
+					  	contractor {
+							id
+							name
+					  	}` : ''}
+		`;
+	}
+	if(view === "PPE Type") {
+		return `
+			id
+					  	created_at
+					  	removed
+					  	name
+					  	unit
+					  	duration_type
+					  	duration_value
+					  	notes
+					  	profile_pic
+			  
+			  			ppe_item_list(where: {removed: {_eq: false}}){
+							id
+				  			created_at
+				  			notes
+				  			profile_pic
+				  			serial_num
+				  			purchase_date
+				  			condition
+				  			ppe_type{
+								id
+							}
+				  		}
+			  
+						${incContractors ? `
+						contractor {
+							id
+							name
+						}` : ''}
+		`;
+	}
 };
 //</editor-fold>

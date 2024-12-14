@@ -107,7 +107,7 @@ eventManager.on(`${path}/listByLogged`, listByLoggedImpl({
             `;
     },
     orgs_fragment: null,
-    details_fragment: data => {
+    details_fragment: (socket, data) => {
         const {
             view = 'Asset',
             mon, mon2, mon3,
@@ -206,7 +206,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
         name: 'AssetDocs',
         tbl: 'asset_docs',
         orgs_fragment: null,
-        details_fragment: data => {
+        details_fragment: (socket, data) => {
             const {
                 written_off: removed = false,
             } = data;
