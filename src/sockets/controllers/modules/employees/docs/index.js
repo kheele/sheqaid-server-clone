@@ -1,7 +1,7 @@
 require('./competencies');
 require('./contracts');
 require('./counsellings');
-require('./documents');//IDOrPassports, PrDPs
+require('./docs');//IDOrPassports, PrDPs
 require('./expenses');
 require('./leaves');
 require('./licenses');
