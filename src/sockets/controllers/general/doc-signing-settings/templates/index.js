@@ -5,7 +5,7 @@ const findImpl = require("../../../modules/findImpl");
 const findByIdImpl = require("../../../modules/findByIdImpl");
 const listImpl = require("../../../modules/listImpl");
 const {signable_doc_template_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
-const {findByIdTemplate} = require("../../../../../fn/callables/triggered-events/documents/signable-docs/funs_find");
+const {findByIdTemplate} = require("../../../../../fn/callables/triggered-events/documents1/signable-docs/funs_find");
 const {findByIdDocusealTemplate} = require("../../../../../docuseal/find");
 
 const {DOCUSEAL_API_URL, DOCUSEAL_API_KEY, DOCUSEAL_USER_EMAIL} = process.env;
