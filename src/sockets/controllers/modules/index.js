@@ -8,7 +8,7 @@ require("./clients");
 require("./companies");
 require("./contractors");
 require("./dashboard");
-require("./documents");
+require("./docs");
 require("./employees");
 require("./hira-and-opportunities");
 require("./incidents");
