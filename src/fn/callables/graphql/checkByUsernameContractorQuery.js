@@ -5,6 +5,10 @@ exports.query = `
         node {
           id
           auth_id
+          contractor {
+            id
+            username
+          }
         }
       }
     }

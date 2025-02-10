@@ -36,7 +36,9 @@ global.whenFileReady = async (socket, res, findById, keys = ['doc']) => {
         if (item) {
             for (let n = 0; n <= keys.length; n++) {
                 const key = keys[n];
+                console.log("key", key);
                 const {id, data: {[key]: doc}} = item;
+                console.log("doc", doc);
                 if (!doc || !doc.dlUrls) {
                     return;
                 }

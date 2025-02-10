@@ -1,21 +1,22 @@
-const {orgs_fragment} = require("../../../../../graphql/Fragments");
-const {teams_details_fragment, getVariablesAndQueryConfig} = require('./commons');
+const {orgs_fragment} = require("../../../../../../graphql/Fragments");
+const {ppe_details_fragment, getVariablesAndQueryConfig} = require('./commons');
 
 //<editor-fold desc="listImpl">
 module.exports = async (socket, data) => {
 	// console.log('data', data)
 	
-	data.status = data.status || (data.removed ? 'Inactive' : 'Active');
-	
 	let {
 		offset = 0,
 		limit = 50,
 		//
-		status = "Active",
+		removed = false,
 		id,
 		//
 		name,
-		supervisor_id,
+		unit,
+		team_id,
+		department_id,
+		job_position_id,
 		employee_id,
 		//
 		site_id, project_id, client_id,
@@ -31,7 +32,10 @@ module.exports = async (socket, data) => {
 		id,
 		//
 		name,
-		supervisor_id,
+		unit,
+		team_id,
+		department_id,
+		job_position_id,
 		employee_id,
 		//
 		site_id, project_id, client_id,
@@ -41,22 +45,22 @@ module.exports = async (socket, data) => {
 	
 	return listGraphQL({
 		query: `
-			query listAllTeamByLoggedClientQuery {
-				default_teams(
+			  query listAllPPEByLoggedQuery {
+				ppe_types(
 				  where: {
-						status: {_eq: "${status}"},
-						${filter}
+					removed: {_eq: ${removed}},
+					${filter}
 				  },
 	        order_by: {name: asc},
 				  offset: ${offset},
 				  ${limit > 0 ? `limit: ${limit}` : ''}
 				) {
-				  ${teams_details_fragment}
-          ${orgs_fragment}
+				    ${ppe_details_fragment}
+            ${orgs_fragment}
 				}
-		  }
-		`,
-		operationName: "listAllTeamByLoggedClientQuery",
+			  }
+			`,
+		operationName: "listAllPPEByLoggedQuery",
 	});
 }
 //</editor-fold>

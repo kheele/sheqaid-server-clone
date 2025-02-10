@@ -34,12 +34,12 @@ eventManager.on(`${path}/findById`, findByIdImpl(args));
 
 eventManager.on(`${path}/listByLogged`, listHRDocsByLogged);
 
-eventManager.on(`${path}/dashboard`, findByIdEmployeeDashboardStats({
+eventManager.on(`${path}/dashboard/single`, findByIdEmployeeDashboardStats({
     name: "JobAppointments",
     listName: "job_appointment_list",
 }));
 
-eventManager.on(`${path}/dashboard/date-range`, findByIdEmployeeDateRangeDashboardStats({
+eventManager.on(`${path}/dashboard/date-range/single`, findByIdEmployeeDateRangeDashboardStats({
     name: "JobAppointments",
     listName: "job_appointment_list",
 }));

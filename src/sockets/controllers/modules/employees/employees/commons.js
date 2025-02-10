@@ -93,7 +93,7 @@ exports.getVariablesAndQueryConfig = (
     }
 
     filter = filter.join(',');
-    //</editor-fold>
+    //</editor-fold> ,
 
     return {filter};
 };

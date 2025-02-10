@@ -1,16 +1,5 @@
-const listImpl = require('../../../modules/listImpl');
-
-const args = {
-	name: "PermissionOtherKeys",
-	tbl: "sheq_permissions_other_keys",
-	details_fragment: `
-		id
-        value
-	`,
-	skipRemoved: true,
-	orgs_fragment: null,
-};
+import {listAllPermissionOtherKeys} from "./query_other_keys";
 
 const path = "permissions/other-keys";
 
-eventManager.on(`${path}/list`, listImpl(args));
+eventManager.on(`${path}/list`, listAllPermissionOtherKeys);

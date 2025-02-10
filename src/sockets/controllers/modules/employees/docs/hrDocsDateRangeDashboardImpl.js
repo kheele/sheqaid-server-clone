@@ -1,5 +1,5 @@
 //<editor-fold desc="getDateRangeDashboardFragment">
-module.exports.getDateRangeDashboardFragment = (socket, listName, isContract) => {
+module.exports.getDateRangeDashboardFragment = (listName, isContract) => {
 	return `
 		id
 	    

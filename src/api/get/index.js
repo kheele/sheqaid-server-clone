@@ -14,19 +14,19 @@ const {ENDPOINT_CONTRACTORS, ENDPOINT_HR} = process.env;
 global.getUserUidByUsernameImpl = async (username, access_type) => {
     await authorize(access_type);
 
-    if(access_type === 'ContractorUser') {
-        return fetch(`${ENDPOINT_CONTRACTORS}api/callables/get/getUserUidByUsername`, {
-            method: "POST",
-            body: username,
-        }).then(res => res.json());
-    }
-    if(access_type === 'Staff') {
-        return null;//TODO: deploy HR Server
-        // return fetch(`${ENDPOINT_HR}api/callables/get/getUserUidByUsername`, {
-        //     method: "POST",
-        //     body: username,
-        // }).then(res => res.json());
-    }
+    // if(access_type === 'ContractorUser') {
+    //     return fetch(`${ENDPOINT_CONTRACTORS}api/callables/get/getUserUidByUsername`, {
+    //         method: "POST",
+    //         body: username,
+    //     }).then(res => res.json());
+    // }
+    // if(access_type === 'Staff') {
+    //     return null;//TODO: deploy HR Server
+    //     // return fetch(`${ENDPOINT_HR}api/callables/get/getUserUidByUsername`, {
+    //     //     method: "POST",
+    //     //     body: username,
+    //     // }).then(res => res.json());
+    // }
 
     const fnName = username.isEmailAddress() ? 'getUserByEmail' : 'getUserByPhoneNumber';
     try {

@@ -1,0 +1,127 @@
+
+
+-- UPDATE hr_employees SET team_id = NULL WHERE id = 12018;
+-- DO $$
+-- DECLARE
+--     table_name TEXT;
+-- BEGIN
+--     FOR table_name IN
+--         SELECT unnest(ARRAY[
+--             'annual_company_calender_days',
+--             'annual_country_calender_days',
+--             'asset_calibration_record',
+--             'asset_calibration_record_list',
+--             'asset_depreciation',
+--             'asset_details',
+--             'asset_docs',
+--             'asset_job_cards',
+--             'asset_maintenance_plan',
+--             'asset_maintenance_plan_list',
+--             'asset_maintenance_plan_parts_used_list',
+--             'asset_monitoring_plan',
+--             'asset_monitoring_plan_fuel_usage',
+--             'asset_monitoring_plan_working_distance_or_time',
+--             'asset_parts',
+--             'asset_parts_order_requests_list',
+--             'asset_parts_photos',
+--             'asset_photos',
+--             'asset_purchase_info',
+--             'asset_register',
+--             'assets',
+--             'coida_claims',
+--             'coida_claims_annexture_1',
+--             'coida_claims_coid_provider_messages',
+--             'coida_claims_coid_provider_requests',
+--             'coida_claims_employer_details',
+--             'coida_claims_wcl_2',
+--             'coida_claims_wcl_4',
+--             'coida_claims_wcl_5',
+--             'coida_claims_wcl_6',
+--             'company_leave_allocations',
+--             'default_audit_trails',
+--             'default_auto_updates_mobile',
+--             'default_auto_updates_mobile__job_cards_app',
+--             'default_cities',
+--             'default_clients',
+--             'default_companies',
+--             'default_company_categories',
+--             'default_contractor_questionnaire_templates',
+--             'default_contractor_questionnaires',
+--             'default_contractor_questionnaires_messages',
+--             'default_contractor_questionnaires_ques',
+--             'default_contractor_questionnaires_ques_options',
+--             'default_contractor_questionnaires_ques_paths',
+--             'default_contractor_questionnaires_schedules',
+--             'default_contractor_users',
+--             'default_contractors',
+--             'default_countries',
+--             'default_departments',
+--             'default_doc_versions',
+--             'default_document_categories',
+--             'default_error_reporting',
+--             'default_job_categories',
+--             'default_job_positions',
+--             'default_manager_module',
+--             'default_manager_plugin',
+--             'default_projects',
+--             'default_sectors',
+--             'default_signature_settings',
+--             'default_sites',
+--             'default_teams',
+--             'default_users',
+--             'default_users_blacklisting_client',
+--             'default_users_blacklisting_project',
+--             'default_users_blacklisting_site',
+--             'default_users_otp',
+--             'default_zones',
+
+--             'sheq_non_conformance_responsible_parties',
+--             'sheq_non_conformances',
+--             'sheq_organograms',
+--             'sheq_permissions_actions',
+--             'sheq_permissions_modules',
+--             'sheq_permissions_other',
+--             'sheq_permissions_other_keys',
+--             'sheq_shared_docs',
+--             'sheq_training_courses',
+--             'sheq_training_manuals',
+--             'sheq_training_matrices',
+--             'sheq_training_plans__employee_blacklist',
+--             'sheq_training_plans__employee_training',
+--             'sheq_training_plans__job_position_course',
+--             'sheq_training_plans_per_year_course',
+--             'sheq_training_plans_per_year_res',
+--             'sheq_training_plans_per_year_table',
+--             'sheq_training_registers',
+--             'sheq_training_toolbox_talk_list',
+--             'sheq_training_toolbox_talk_list_registers',
+--             'sheq_training_toolbox_talk_registers',
+--             'sheq_training_toolbox_talk_subjects',
+--             'sheq_training_toolbox_talks',
+--             'signable_doc_template_employee_submissions',
+--             'signable_doc_template_employee_submitters',
+--             'signable_doc_templates',
+--             'site_blog_post',
+--             'site_blog_topic',
+--             'vehicle_change_notification',
+--             'vehicle_form_address',
+--             'vehicle_form_declaration',
+--             'vehicle_form_personal_details',
+--             'vehicle_form_vehicle',
+--             'vehicle_form_vehicle_extend',
+--             'vehicle_licensing_and_reg_application',
+--             'vehicle_licensing_application'
+--         ])
+--     LOOP
+--         EXECUTE format('
+--             DROP TRIGGER IF EXISTS audit_%I ON %I;
+--         ', table_name, table_name);
+--         -- EXECUTE format('
+--         --     CREATE OR REPLACE TRIGGER audit_%I
+--         --     AFTER INSERT OR UPDATE OR DELETE
+--         --     ON %I
+--         --     FOR EACH ROW
+--         --     EXECUTE FUNCTION public.upd_default_audit_trails();
+--         -- ', table_name, table_name);
+--     END LOOP;
+-- END $$;

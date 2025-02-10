@@ -46,5 +46,4 @@ class EventManager {
 	}
 }
 
-const eventManager = new EventManager();
-global.eventManager = eventManager;
+global.eventManager = new EventManager();

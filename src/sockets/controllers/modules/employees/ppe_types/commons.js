@@ -95,6 +95,35 @@ exports.ppe_type_one_details_fragment = `
     notes
     profile_pic
   }
+  ppe_inventory_list {
+  	id
+  	quantity
+  	reorder_threshold
+  	location
+  	added_date
+  	last_updated
+  }
+  ppe_requisition_list {
+  	id
+	created_at
+	auto_reorder_trigger
+	approval_status
+	quantity
+	reason
+  }
+  fit_test_list {
+  	id
+	test_date
+	next_due_date
+	result
+	notes
+	ppe_type{
+	  id
+	}
+	employee{
+	  ${employee_basic_personal_details_fragment}
+	}
+  }
   employee_list{
     id
     employee{
@@ -140,6 +169,21 @@ exports.ppe_type_one_details_fragment = `
       count
     }
   }
+  ppe_inventory_list_aggregate{
+    aggregate {
+      count
+    }
+  }
+  ppe_requisition_list_aggregate{
+    aggregate {
+      count
+    }
+  }
+  fit_test_list_aggregate{
+    aggregate {
+      count
+    }
+  }
   employee_list_aggregate{
     aggregate {
       count
@@ -176,6 +220,21 @@ exports.ppe_type_details_fragment = `
   profile_pic
   
   ppe_item_list_aggregate{
+    aggregate {
+      count
+    }
+  }
+  ppe_inventory_list_aggregate{
+    aggregate {
+      count
+    }
+  }
+  ppe_requisition_list_aggregate{
+    aggregate {
+      count
+    }
+  }
+  fit_test_list_aggregate{
     aggregate {
       count
     }

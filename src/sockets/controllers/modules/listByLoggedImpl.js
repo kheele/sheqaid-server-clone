@@ -1,7 +1,7 @@
 let {orgs_fragment} = require("../../../graphql/Fragments");
 const getDetailsFragment = require("./getDetailsFragment");
 
-//<editor-fold desc="listImpl">
+//<editor-fold desc="listByLoggedImpl">
 module.exports = (config) => {
     return async (socket, data) => {
         let {
@@ -17,7 +17,7 @@ module.exports = (config) => {
             getVariablesAndQueryConfig,
         } = config;
 
-        // console.log('data', data);
+        console.log('listByLoggedImpl data', data);
 
         let {
             id,

@@ -53,7 +53,7 @@ module.exports = async (config) => {
 
     limit = isNumber(limit) ? limit : _limit;
 
-    console.log('listByLoggedImpl1', orgs_filter)
+    // console.log('listByLoggedImpl1', orgs_filter)
     console.log('listByLoggedImpl2', socket && socket.orgsFilter(data))
 
     const orgs_filter = socket.orgsFilter(data);

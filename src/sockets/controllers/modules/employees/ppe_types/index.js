@@ -1,5 +1,4 @@
 const findByIdImpl = require('../../findByIdImpl');
-const listImpl = require('../../listImpl');
 const {
     ppe_type_one_details_fragment,
     ppe_type_details_fragment,

@@ -15,6 +15,7 @@ require("./incidents");
 require("./inspections");
 require("./ncr");
 require("./projects");
+require("./questionnaires");
 require("./safety-files");
 require("./sectors");
 require("./signature-settings");

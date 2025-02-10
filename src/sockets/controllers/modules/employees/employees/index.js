@@ -4,7 +4,8 @@ const {employee_details_fragment, employee_details_list_fragment, getVariablesAn
 const {getVariablesAndQueryConfig: getVariablesAndQueryConfigByPPEIssue, employee_details_list_by_ppe_fragment} = require('./commons-ppe-issue');
 const {createEmployee} = require("./create");
 const {updateEmployee} = require("./update");
-const {findByIdEmployee} = require("./query_employees");
+const {findByIdEmployee, loginUserStep1ByUsername, findByUsernameUserSetupBiometric} = require("./query_employees");
+const {createEmployeeImported} = require("./createImported");
 
 const args = {
     name: "Employee",
@@ -17,6 +18,8 @@ const args = {
 const path = 'employees';
 
 eventManager.on(`${path}/create`, createEmployee);
+
+eventManager.on(`${path}/imported/create`, createEmployeeImported);
 
 eventManager.on(`${path}/update`, updateEmployee);
 
@@ -102,3 +105,7 @@ eventManager.on(`${path}/listByPPEIssue`, listByLoggedImpl({
 }));
 
 eventManager.on(`${path}/dashboard`, findByIdOrgHRDashboardStatsImpl());
+
+eventManager.on(`${path}/loginUserStep1ByUsername`, loginUserStep1ByUsername);
+
+eventManager.on(`${path}/findByUsernameUserSetupBiometric`, findByUsernameUserSetupBiometric);

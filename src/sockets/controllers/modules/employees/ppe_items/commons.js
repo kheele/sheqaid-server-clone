@@ -7,8 +7,13 @@ exports.getVariablesAndQueryConfig = (
         //
         id,
         //
+        serial_num,
+        purchase_date_range,
+        condition,
         name,
         unit,
+        ppe_type_id,
+
         team_id,
         department_id,
         job_position_id,
@@ -25,32 +30,51 @@ exports.getVariablesAndQueryConfig = (
     if(id) {
         filter.push(`id: {_eq: ${id}}`);
     } else {
+        if (serial_num) {
+            filter.push(`serial_num: {_eq: "${serial_num}"}`);
+        }
+        if (condition) {
+            filter.push(`condition: {_eq: "${condition}"}`);
+        }
         if (name) {
-            filter.push(`name: {_ilike: "%${name}%"}`);
+            filter.push(`ppe_type:{name: {_ilike: "%${name}%"}}`);
+        }
+        if (unit) {
+            filter.push(`ppe_type:{unit: {_ilike: "%${unit}%"}}`);
+        }
+        if(purchase_date_range) {
+            const {start, end} = purchase_date_range;
+            if (start && end) {
+                filter.push(`purchase_date: {_gte: "${Dates.formatDateSQL(start)}", _lte: "${Dates.formatDateSQL(end)}"}`);
+            } else if (start) {
+                filter.push(`purchase_date: {_gte: "${Dates.formatDateSQL(start)}"}`);
+            } else if (end) {
+                filter.push(`purchase_date: {_lte: "${Dates.formatDateSQL(end)}"}`);
+            }
         }
 
-        if (unit) {
-            filter.push(`unit: {_ilike: "%${unit}%"}`);
+        if (ppe_type_id) {
+            filter.push(`ppe_type_id: {_eq: ${ppe_type_id}}`);
         }
 
         if (team_id) {
-            filter.push(`team_list: {team_id: {_eq: ${team_id}}}`);
+            filter.push(`ppe_type:{team_list: {team_id: {_eq: ${team_id}}}}`);
         }
 
         if (department_id) {
-            filter.push(`department_list: {department_id: {_eq: ${department_id}}}`);
+            filter.push(`ppe_type:{department_list: {department_id: {_eq: ${department_id}}}}`);
         }
 
         if (job_position_id) {
-            filter.push(`job_position_list: {job_position_id: {_eq: ${job_position_id}}}`);
+            filter.push(`ppe_type:{job_position_list: {job_position_id: {_eq: ${job_position_id}}}}`);
         }
 
         if (employee_id) {
             filter.push(`_and: {
                 _or: [
-                    {team_list:{team:{employee_list: {id: {_eq: ${employee_id}}}}}},
-                    {department_list:{department:{employee_list: {id: {_eq: ${employee_id}}}}}},
-                    {job_position_list:{job_position:{employee_list: {id: {_eq: ${employee_id}}}}}},
+                    {ppe_type:{team_list:{team:{employee_list: {id: {_eq: ${employee_id}}}}}}},
+                    {ppe_type:{department_list:{department:{employee_list: {id: {_eq: ${employee_id}}}}}}},
+                    {ppe_type:{job_position_list:{job_position:{employee_list: {id: {_eq: ${employee_id}}}}}}},
                 ]
             }`);
         }
@@ -77,6 +101,25 @@ exports.ppe_item_one_details_fragment = `
         id
         name
         unit
+        profile_pic
+        duration_type
+        duration_value
+    }
+    ppe_inventory{
+        id
+        quantity
+        reorder_threshold
+        location
+        added_date
+        last_updated
+    }
+    supplier{
+        id
+        name
+        contact_person
+        email
+        phone
+        address
     }
     
     employee_list{
@@ -84,8 +127,39 @@ exports.ppe_item_one_details_fragment = `
           ${employee_basic_personal_details_fragment}
         }
     }
+    ppe_inspection_list{
+        id
+        inspection_date
+        ppe_condition
+        issues
+        doc
+        inspector{
+  	        ${employee_basic_personal_details_fragment}
+        }
+    }
+    ppe_return_list{
+        id
+        return_date
+        ppe_condition
+        returner_signature
+        receiver_signature
+        doc
+        employee{
+            ${employee_basic_personal_details_fragment}
+        }
+    }
 
     employee_list_aggregate{
+        aggregate {
+            count
+        }
+    }
+    ppe_inspection_list_aggregate{
+        aggregate {
+            count
+        }
+    }
+    ppe_return_list_aggregate{
         aggregate {
             count
         }
@@ -107,9 +181,38 @@ exports.ppe_item_details_fragment = `
         id
         name
         unit
+        profile_pic
+        duration_type
+        duration_value
+    }
+    ppe_inventory{
+        id
+        quantity
+        reorder_threshold
+        location
+        added_date
+        last_updated
+    }
+    supplier{
+        id
+        name
+        contact_person
+        email
+        phone
+        address
     }
     
     employee_list_aggregate{
+        aggregate {
+            count
+        }
+    }
+    ppe_inspection_list_aggregate{
+        aggregate {
+            count
+        }
+    }
+    ppe_return_list_aggregate{
         aggregate {
             count
         }

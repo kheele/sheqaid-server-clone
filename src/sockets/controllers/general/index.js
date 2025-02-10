@@ -11,6 +11,7 @@ require("./notification-settings-categories");
 require("./notification-settings");
 require("./permissions");
 require("./plugins");
+require("./modules");
 require("./send");
 require("./send-msg");
 require("./orgs-auth");

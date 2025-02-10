@@ -40,7 +40,7 @@ exports.getVariablesAndQueryConfig = (
 const user_details_fragment = `
     id
     auth_id
-    created_at,
+    created_at
     fname
     lname
     full_name
@@ -50,6 +50,45 @@ const user_details_fragment = `
     auth_type
     has_biometric
 
+    permissions_module_list {
+        actions {
+          create
+          edit
+          id
+          remove
+          share
+          view
+        }
+        id
+        module {
+          key
+          id
+          plugin {
+            id
+            key
+            desc
+            title
+            status
+          }
+          title
+        }
+      }
+      permissions_other_list {
+        actions {
+          create
+          edit
+          id
+          remove
+          share
+          view
+        }
+        id
+        key {
+          value
+          id
+        }
+    }
+    
     notifications_settings {
       id
       receive_asset_management_notifs

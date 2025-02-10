@@ -254,3 +254,161 @@ exports.contractor_details_fragment = (data) => {
 		}
 	`;
 };
+
+exports.contractor_otp_details_fragment = `
+	id
+    created_at,
+    name
+    username
+    inc_contractor_pack
+    site_pending_list:site_list(where: {status: {_eq: "Pending"}}){
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+    site_accepted_list:site_list(where: {status: {_eq: "Accepted"}}){
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+    site_declined_list:site_list(where: {status: {_eq: "Declined"}}){
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+    site_cancelled_list:site_list(where: {status: {_eq: "Cancelled"}}){
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+    site_removed_list:site_list(where: {status: {_eq: "Removed"}}){
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+    site_list{
+        id
+        status
+        contractor{
+            id
+            name
+            username
+        }
+        site {
+            id
+            name
+            company {
+                id
+                name
+            }
+            client {
+                id
+                name
+            }
+            project {
+                id
+                name
+            }
+        }
+    }
+`;

@@ -3,7 +3,6 @@ const {details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const createImpl = require("../createImpl");
 const listByLoggedImpl = require("../listByLoggedImpl");
 const updateImpl = require("../updateImpl");
-const getDetailsFragment = require("../getDetailsFragment");
 
 const args = {
 	name: "Sites",

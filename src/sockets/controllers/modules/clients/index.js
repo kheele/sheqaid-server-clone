@@ -1,22 +1,13 @@
 const listByLoggedSkipRemovedImpl = require('../listByLoggedSkipRemovedImpl');
 const {details_fragment, getVariablesAndQueryConfig} = require("./commons");
-const createImpl = require("../createImpl");
-const updateImpl = require("../updateImpl");
-const {
-    findClientByContractorEmail,
-    checkDuplicateClientByContractorEmail,
-    findByIdClient,
-    checkClientExistById
-} = require("./query_clients");
+const {findByIdClient} = require("./query_clients");
+const {createClient} = require("./create");
+const {updateClient} = require("./update");
 
 const args = {
     name: "Clients",
     tbl: "default_clients",
     details_fragment,
-    uploadUpdate: ({id}) => ({
-        new_name: `clients/${id}/profile-pic`,
-        key: 'profile_pic',
-    }),
     orgs_fragment: `
 		company {
 			id
@@ -27,63 +18,9 @@ const args = {
 
 const path = 'clients';
 
-eventManager.on(`${path}/create`, async (socket, input) => {
-    const create = createImpl(args);
+eventManager.on(`${path}/create`, createClient);
 
-    const {
-        name,
-        business_id,
-        phone,
-        email,
-        contractor_email,
-        address,
-        profile_pic,
-        sector_list
-    } = input;
-
-    const loggedUser = await socket.getLoggedUser();
-    if (!loggedUser) return;
-    const {user: {id: user_id, company: {id: company_id}}} = loggedUser;
-    input.user_id = user_id;
-    input.company_id = company_id;
-
-    if (contractor_email) {
-        const existingItem = await findClientByContractorEmail(socket, contractor_email);
-        if (existingItem) {
-            return "DUP_CONTRACTOR_EMAIL";
-        }
-    }
-
-    return create(socket, input);
-});
-
-eventManager.on(`${path}/update`, async (socket, input) => {
-    const update = updateImpl(args);
-
-    const {
-        id,
-        name,
-        business_id,
-        phone,
-        email,
-        contractor_email,
-        address,
-        profile_pic,
-        sector_list
-    } = input;
-
-    const item = await checkClientExistById(socket, id);
-    if (!item) return;
-
-    if (contractor_email) {
-        const existingItem = await checkDuplicateClientByContractorEmail(socket, {id, contractor_email});
-        if (existingItem) {
-            return "DUP_CONTRACTOR_EMAIL";
-        }
-    }
-
-    return update(socket, input);
-});
+eventManager.on(`${path}/update`, updateClient);
 
 eventManager.on(`${path}/findById`, findByIdClient);
 

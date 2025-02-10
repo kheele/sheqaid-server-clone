@@ -13,9 +13,10 @@ module.exports = (config) => {
             uploadUpdate,
             // onUploadExist,
             // onUploadComplete,
+            skipOrgs,
         } = config;
 
-        socket && socket.injectCreate(input);
+        socket && socket.injectCreate(input, skipOrgs);
         console.log('createImpl:', input);
 
         const auth = socket ? await socket.getAuth() : null;

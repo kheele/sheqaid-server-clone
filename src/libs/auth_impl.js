@@ -87,8 +87,8 @@ global.isValidAccessType = (access_type) => access_type === "User" || access_typ
 global.adminAuth = (access_type) => {
     return {
         "User": admin,
-        "ContractorUser": admin2,
-        "Staff": admin_hr
+        "ContractorUser": adminContractors,
+        "Staff": adminHR
     }[access_type].auth();
 }
 

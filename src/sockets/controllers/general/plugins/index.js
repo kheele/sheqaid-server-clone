@@ -1,38 +1,11 @@
-const listImpl = require('../../modules/listImpl');
 const findByIdImpl = require('../../modules/findByIdImpl');
-const {getVariablesAndQueryConfig} = require("./commons");
+const {details_fragment_plugins: details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {listAllPlugins} = require("./query_plugins");
 
 const args = {
 	name: "Plugins",
 	tbl: "default_manager_plugin",
-	details_fragment: `
-		id
-        app
-        desc
-        key
-        status
-        title
-        module_list(order_by: [{sort: asc}]) {
-            id
-            borderColor
-            desc
-            discount
-            faIconLeft
-            faIconRight
-            has_update
-            hover
-            key
-            price
-            sort
-            status
-            svgIconLeft
-            svgIconRight
-            title
-            plugin {
-              key
-            }
-        }
-	`,
+	details_fragment,
 	skipRemoved: true,
 	orgs_fragment: null,
 };
@@ -41,9 +14,5 @@ eventManager.on("plugins/findById", findByIdImpl({
 	...args,
 }));
 
-eventManager.on("plugins/list", listImpl({
-	...args,
-	order_by: "order_by: {title: asc}",
-	getVariablesAndQueryConfig,
-}));
+eventManager.on("plugins/list", listAllPlugins);
 //
