@@ -54,6 +54,8 @@ exports.createUser = async (socket, input) => {
         return "EMAIL_DUP";
     }
 
+    console.log('input', input);
+
     // console.log('permissions_modules_sheq', permissions_modules_sheq);
     // console.log('permissions_modules_hr', permissions_modules_hr);
     // console.log('permissions_modules_claims', permissions_modules_claims);
@@ -124,7 +126,7 @@ exports.createUser = async (socket, input) => {
 
     const loggedUser = await socket.getLoggedUser();
     if(!loggedUser) return;
-    const { user:{id: user_id, company:{id: company_id}}} = loggedUser;
+    const { user:{id: user_id}, company:{id: company_id}} = loggedUser;
 
     data.user_id = user_id;
     data.company_id = company_id;
@@ -154,7 +156,11 @@ exports.createUser = async (socket, input) => {
 
         const onComplete = async (uid, isNew = true) => {
             if (isNew) {
-                await adminAuthGeneral.auth().signOut();
+                await admin.auth(adminAuthGeneral).revokeRefreshTokens(uid).then(() => {
+                    console.log(`Tokens for user ${uid} have been revoked.`);
+                }).catch((error) => {
+                    console.error('Error revoking tokens:', error);
+                });
             }
 
             const update = updateImpl(args);
@@ -169,7 +175,12 @@ exports.createUser = async (socket, input) => {
         };
 
         try {
-            return await adminAuthGeneral.auth().createUserWithEmailAndPassword(username, password).then(userCredential => userCredential.user.uid).then(onComplete);
+            return await admin.auth(adminAuthGeneral).createUser({
+                email: username,
+                emailVerified: false,
+                password,
+                disabled: false,
+            }).then(user => user.uid).then(onComplete);
         } catch (err) {
             if (err.code === "auth/email-already-in-use") {
                 const uid = await getUserUidByUsername(username);

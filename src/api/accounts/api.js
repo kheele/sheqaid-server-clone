@@ -470,9 +470,9 @@ global.getAppDownloadOptionMsg = (params = {}) => {
 	if (showOnlyAccess) {
 		let path;
 		if (isContractor) {
-			path = 'https://contractors.sheqaid.com';
+			path = 'https://contractors.sheqintel.com';
 		} else {
-			path = 'https://web.sheqaid.com';
+			path = 'https://web.sheqintel.com';
 		}
 		return `
             <p>Please access the application from one of the following option:</p>
@@ -483,7 +483,7 @@ global.getAppDownloadOptionMsg = (params = {}) => {
 	}
 	
 	if (isContractor) {
-		const path = 'https://contractors.sheqaid.com';
+		const path = 'https://contractors.sheqintel.com';
 		return `
             <p>
                 Note: <br/>
@@ -500,11 +500,11 @@ global.getAppDownloadOptionMsg = (params = {}) => {
         `;
 	}
 	
-	const path = 'https://web.sheqaid.com';
+	const path = 'https://web.sheqintel.com';
 	return `<p>Note: ${!isEmployee ? 'use the username and password provided to login' : 'login the application to setup your Password'}</p>
             ${!isEmployee ? '<p>You are strongly advised to change your password as soon as you login in to SHEQ Aid account</p>' : ''} 
             <p>Please access the application from one of the following option:</p>
-            <p>1. On Web/Cloud: use this <a target="_blank" href="${path}">https://web.sheqaid.com</a>.</p>
+            <p>1. On Web/Cloud: use this <a target="_blank" href="${path}">https://web.sheqintel.com</a>.</p>
             <p>2. On Windows: download the application <a target="_blank" href="${path}/updater/sheqassist-1.1.0.exe">here</a>.</p>
             <p>Best Regards<br/>SHEQ Aid</p>`;
 };

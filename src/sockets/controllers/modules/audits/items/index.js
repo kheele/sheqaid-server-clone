@@ -1,6 +1,12 @@
 const findByIdImpl = require('../../findByIdImpl');
+const createImpl = require("../../createImpl");
+const updateImpl = require("../../updateImpl");
+const deleteImpl = require("../../deleteImpl");
 
-const details_fragment = `
+const args = {
+	name: "AuditItem",
+	tbl: "sheq_compliance_audits_items",
+	details_fragment: `
   id
   audit_id
   audit{
@@ -53,11 +59,16 @@ const details_fragment = `
       username
     }
   }
-`;
+`,
+	orgs_fragment: null,
+};
 
-eventManager.on("audits/items/findById", findByIdImpl({
-	name: "AuditItem",
-	tbl: "sheq_compliance_audits_items",
-	details_fragment,
-	orgs_fragment: '',
-}));
+const path = "audits/items";
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/delete`, deleteImpl(args));

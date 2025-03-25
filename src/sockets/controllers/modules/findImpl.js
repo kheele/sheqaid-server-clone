@@ -14,7 +14,7 @@ module.exports = (config) => {
             getVariablesAndQueryConfig,
         } = config;
 
-        console.log('data', data);
+        // console.log('data', data);
 
         let {
             offset = 0,

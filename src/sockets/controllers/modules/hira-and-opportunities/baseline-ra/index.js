@@ -2,23 +2,29 @@ const findByIdImpl = require('../../findByIdImpl');
 const listImpl = require('../../listImpl');
 const {hira_baseline_ra_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const exportExcelImpl = require("../../exportExcelImpl");
+const updateImpl = require("../../updateImpl");
+const createImpl = require("../../createImpl");
+const listByLoggedImpl = require("../../listByLoggedImpl");
 
 const args = {
 	name: "BaselineRiskAssessments",
 	tbl: "hira_baseline_ra",
 	details_fragment,
-};
-
-eventManager.on("hira-and-opportunities/baseline-ra/findById", findByIdImpl(args));
-
-eventManager.on("hira-and-opportunities/baseline-ra/listByLogged", listImpl({
-	...args,
-	details_fragment,
 	order_by: "order_by: {activity: asc}",
 	getVariablesAndQueryConfig,
-}));
+};
 
-eventManager.on("hira-and-opportunities/baseline-ra/export-excel", exportExcelImpl({
+const path = 'hira-and-opportunities/baseline-ra';
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
 	currDir: __dirname,
 	name: "BaselineRA",
 	listImpl: listImpl({
@@ -59,7 +65,7 @@ eventManager.on("hira-and-opportunities/baseline-ra/export-excel", exportExcelIm
 	},
 }));
 
-eventManager.on("hira-and-opportunities/baseline-ra/createPDF", async (socket, data) => {
+eventManager.on(`${path}/createPDF`, async (socket, data) => {
 	if(!data) return;
 	
 	// const {

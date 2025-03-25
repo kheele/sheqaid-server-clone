@@ -28,8 +28,10 @@ exports.getVariablesAndQueryConfig = (
 			filter.push(`status: {_eq: "${status}"}`);
 		}
 
+		const plugin_filter = [];
 		if (plugin_status) {
-			filter.push(`plugin:{status: {_eq: "${plugin_status}"}}`);
+			plugin_filter.push(`status: {_eq: "${plugin_status}"}`);
+			// filter.push(`plugin:{status: {_eq: "${plugin_status}"}}`);
 		}
 
 		if (plugin_key) {
@@ -40,7 +42,12 @@ exports.getVariablesAndQueryConfig = (
 			} else {
 				eq = "_eq";
 			}
-			filter.push(`plugin:{key: {${eq}: "${plugin_key}"}}`);
+			plugin_filter.push(`key: {${eq}: "${plugin_key}"}`);
+			// filter.push(`plugin:{key: {${eq}: "${plugin_key}"}}`);
+		}
+
+		if(plugin_filter.isNotEmpty) {
+			filter.push(`plugin:{${plugin_filter.join(',')}}`);
 		}
 	}
 	

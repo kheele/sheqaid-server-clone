@@ -7,8 +7,10 @@ exports.inc_fragment = ({removed, inc_employee = false,}) => {
         created_at
         removed
         annexture_3
+        fitness_option
         restrictions
         doc
+        annexture3_doc
         expiry_date
         expiry_updated
         

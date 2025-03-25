@@ -63,17 +63,17 @@ exports.sendSignableDocSubmitterLinkByEmail = async (body) => {
         }
 
         EmailUtils.send({
-            from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+            from: '"SHEQIntel" <no-reply@sheqsolve.com>',
             to: employee.email,
-            subject: 'SHEQ Aid - You are invited to submit a form',
+            subject: 'SHEQIntel - You are invited to submit a form',
             html: `
-            <p>This is an automated email from SHEQ Aid.<br />Please do not reply to this email.</p>
+            <p>This is an automated email from SHEQIntel.<br />Please do not reply to this email.</p>
             
             <p>You have been invited to submit the <b>${doc_template.name}</b> form.</p>            
-            <p><a href="https://bun-server.cloud.sheqaid.com/signable-docs/sign.html?s=${slug}&role=${role}">Please click this link to submit a form</a></p>            
+            <p><a href="https://bun-server.cloud.sheqintel.com/signable-docs/sign.html?s=${slug}&role=${role}">Please click this link to submit a form</a></p>            
             
             <p>If you didn't request this, you can ignore this email or let us know.</p>
-            <p>Best Regards<br/>SHEQ Aid</p>
+            <p>Best Regards<br/>SHEQIntel</p>
         `
         });
     }
@@ -146,7 +146,7 @@ exports.sendSubmissionCompletedEmail = async (submitterItem) => {
         const onSendEmails = async ({email, is_owning}) => {
             if(is_owning) {
                     await EmailUtils.send({
-                    from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+                    from: '"SHEQIntel" <no-reply@sheqsolve.com>',
                     to: email,
                     subject: `Your ${name} form submission`,
                     html: "<h3><b>Hi there</b></h3>\n" +
@@ -156,11 +156,11 @@ exports.sendSubmissionCompletedEmail = async (submitterItem) => {
                         "</p>\n" +
                         "<p>\n" +
                         // "<a href='https://docuseal.co/submissions/" + submission.docuseal_id + "'>View Submission</a>\n" +
-                        "<a href='https://bun-server.cloud.sheqaid.com/signable-docs/view-submission.html?s=" + slug + "&id=" + submission.docuseal_id + "'>View Submission</a>\n" +
+                        "<a href='https://bun-server.cloud.sheqintel.com/signable-docs/view-submission.html?s=" + slug + "&id=" + submission.docuseal_id + "'>View Submission</a>\n" +
                         "</p>\n\n" +
 
                         "<p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n\n" +
-                        "<p>Thank you for using the SHEQ Aid system.</p>\n\n" +
+                        "<p>Thank you for using the SHEQIntel system.</p>\n\n" +
                         "<p>\n" +
                         "Best Regards<br/>\n" +
                         "SHEQ Aid\n" +
@@ -178,7 +178,7 @@ exports.sendSubmissionCompletedEmail = async (submitterItem) => {
                         "</p>\n\n" +
                         "<p>\n" +
                         // "<a href='https://docuseal.co/submissions/" + submission.docuseal_id + "'>View Submission</a>\n" +
-                        "<a href='https://bun-server.cloud.sheqaid.com/signable-docs/view-submission.html?s=" + slug + "&id=" + submission.docuseal_id + "'>View Submission</a>\n" +
+                        "<a href='https://bun-server.cloud.sheqintel.com/signable-docs/view-submission.html?s=" + slug + "&id=" + submission.docuseal_id + "'>View Submission</a>\n" +
                         "</p>\n\n" +
 
                         "<p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n\n" +

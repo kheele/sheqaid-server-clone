@@ -48,9 +48,26 @@ exports.findByPhoneDuplicateEmployee = async (socket, {id, phone}) => {
 };
 //</editor-fold>
 
+//<editor-fold desc="checkExistByDocsUploadComplete">
+exports.checkExistByDocsUploadComplete = async (socket, id) => {
+    if (!id) {
+        return;
+    }
+
+    const findBy = findImpl({
+        ...args,
+        getVariablesAndQueryConfig: ({id}) => {
+            return {filter: `id: {_eq: ${id}}, docs_upload_complete: {_eq: true}`};
+        }
+    });
+
+    return findBy(socket, {id}).then(res => !!res);
+};
+//</editor-fold>
+
 //<editor-fold desc="checkExistByUsername">
 exports.checkExistByUsername = async (socket, username) => {
-    if(!username) {
+    if (!username) {
         return;
     }
 
@@ -59,7 +76,7 @@ exports.checkExistByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{email: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{email: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -72,7 +89,7 @@ exports.checkExistByUsername = async (socket, username) => {
     }).then(async res => {
         if (!res) return;
 
-        if(res === "NO_USER_DB") {
+        if (res === "NO_USER_DB") {
             const uid = await getStaffUidByUsername(username);
             return {uid};
         }
@@ -84,7 +101,7 @@ exports.checkExistByUsername = async (socket, username) => {
 
 //<editor-fold desc="loginUserStep1ByUsername">
 exports.loginUserStep1ByUsername = async (socket, username) => {
-    if(!username) {
+    if (!username) {
         return;
     }
 
@@ -93,7 +110,7 @@ exports.loginUserStep1ByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{email: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{email: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -118,7 +135,7 @@ exports.loginUserStep1ByUsername = async (socket, username) => {
 
 //<editor-fold desc="findByUsernameUserSetupBiometric">
 exports.findByUsernameUserSetupBiometric = async (socket, username) => {
-    if(!username) {
+    if (!username) {
         return;
     }
 
@@ -127,7 +144,7 @@ exports.findByUsernameUserSetupBiometric = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{email: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{email: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 

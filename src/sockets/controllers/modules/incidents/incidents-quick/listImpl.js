@@ -3,7 +3,7 @@ const {incident_quick_details_fragment, getVariablesAndQueryConfig} = require('.
 
 //<editor-fold desc="listImpl">
 module.exports = async (socket, data) => {
-	// console.log('data', data)
+	console.log('data', data)
 	
 	let {
 		offset = 0,
@@ -33,7 +33,7 @@ module.exports = async (socket, data) => {
 		//
 		client_filter,
 		orgs_filter = [],
-	} = data;
+	} = data || {};
 	
 	const {filter} = getVariablesAndQueryConfig({
 		orgs_filter,

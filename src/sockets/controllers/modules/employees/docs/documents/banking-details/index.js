@@ -1,6 +1,6 @@
 const findByIdImpl = require("../../../../findByIdImpl");
-const createImpl = require("../../../../createImpl");
 const updateImpl = require("../../../../updateImpl");
+const {createBankingDetail} = require("./create");
 
 const args = {
     name: "EmployeeDocBankingDetail",
@@ -29,7 +29,7 @@ const args = {
 
 const path = 'employees/documents/banking-details';
 
-eventManager.on(`${path}/create`, createImpl(args));
+eventManager.on(`${path}/create`, createBankingDetail);
 
 eventManager.on(`${path}/update`, updateImpl(args));
 

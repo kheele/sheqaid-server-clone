@@ -2,10 +2,12 @@
 module.exports = async (socket, data) => {
     if(!data) return;
 
-    const {site_id, project_id, client_id, company_id,} = data;
+    const {logged_employee_id, site_id, project_id, client_id, company_id,} = data;
     const id = site_id || project_id || client_id || company_id;
     let tbl;
-    if(site_id) {
+    if(logged_employee_id) {
+        tbl = "hr_employees";
+    } else if(site_id) {
         tbl = "default_sites";
     } else if(project_id) {
         tbl = "default_projects";

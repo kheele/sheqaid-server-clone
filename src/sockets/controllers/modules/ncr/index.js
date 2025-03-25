@@ -1,3 +1,4 @@
+require('./progress');
 require('./ProxyNCRAssignedPerson');
 require('./ProxyNCRAssignedJobPosition');
 require('./ProxyNCRAssignedUser');
@@ -5,25 +6,35 @@ require('./ProxyNCRApprovingPerson');
 require('./ProxyNCRResponsibleParty');
 require('./ProxyNCRDocument');
 
-const createImpl = require("./createImpl");
-const findByIdImpl = require("./findByIdImpl");
-const listImpl = require('./listImpl');
+const createNCR = require("./create");
+const updateImpl = require("../updateImpl");
+const findByIdImpl = require("../findByIdImpl");
+const listByLoggedImpl = require('../listByLoggedImpl');
 const findByIdDashboardImpl = require("./findByIdDashboardImpl");
-const exportExcelImpl = require("../exportExcelImpl");
+const exportExcelImpl = require("../exportExcelImpl2");
 const exportExcelOneImpl = require("../exportExcelOneImpl");
+const {ncr_details_fragment: details_fragment} = require("./commons");
 
-eventManager.on("ncr/create", createImpl);
+const args = {
+	name: "NCR",
+	tbl: "sheq_non_conformances",
+	details_fragment,
+};
 
-eventManager.on("ncr/findById", findByIdImpl);
+eventManager.on("ncr/create", createNCR);
 
-eventManager.on("ncr/listByLogged", listImpl);
+eventManager.on("ncr/update", updateImpl(args));
+
+eventManager.on("ncr/findById", findByIdImpl(args));
+
+eventManager.on("ncr/listByLogged", listByLoggedImpl(args));
 
 eventManager.on("ncr/dashboard", findByIdDashboardImpl);
 
 eventManager.on("ncr/export-excel", exportExcelImpl({
-	currDir: __dirname,
+	...args,
 	name: "Non-Conformance",
-	listImpl,
+	currDir: __dirname,
 	mapRow,
 }));
 

@@ -4,6 +4,7 @@ const {inc_fragment} = require("./commons");
 //<editor-fold desc="listHRDocsByLoggedImpl">
 module.exports = async (socket, data) => {
     const {
+        fitness_option,
         annexture_3,
     } = data;
     return listHRDocsByLoggedImpl({
@@ -14,6 +15,7 @@ module.exports = async (socket, data) => {
         singular: 'Medical',
         inc_fragment,
         attrs: {
+            fitness_option,
             annexture_3,
         },
     });

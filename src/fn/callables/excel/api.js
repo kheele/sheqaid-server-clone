@@ -35,8 +35,8 @@ const createExcelFileSheets = async (data) => {
 	};
 	
 	const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
-	workbook.creator = 'SHEQ Aid';
-	workbook.lastModifiedBy = 'SHEQ Aid';
+	workbook.creator = 'SHEQIntel';
+	workbook.lastModifiedBy = 'SHEQIntel';
 	workbook.created = date;
 	workbook.modified = date;
 	workbook.lastPrinted = date;
@@ -121,8 +121,8 @@ const createExcelFile = async (data) => {
 //     };
 //
 //     const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
-//     workbook.creator = 'SHEQ Aid';
-//     workbook.lastModifiedBy = 'SHEQ Aid';
+//     workbook.creator = 'SHEQIntel';
+//     workbook.lastModifiedBy = 'SHEQIntel';
 //     workbook.created = new Date();
 //     workbook.modified = new Date();
 //     workbook.lastPrinted = new Date();

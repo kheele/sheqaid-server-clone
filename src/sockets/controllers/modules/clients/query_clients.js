@@ -8,7 +8,12 @@ const args = {
     details_fragment: `
         id
     `,
-    orgs_fragment: null,
+    orgs_fragment: `
+		company {
+			id
+			name
+		}
+	`,
 };
 
 //<editor-fold desc="findByIdClient">
@@ -52,7 +57,7 @@ exports.checkDuplicateClientByContractorEmail = async (socket, {id, contractor_e
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({id, contractor_email}) => {
-            return {filter: `{id: {_neq: ${id}}, contractor_email: {_eq: "${contractor_email}"}`};
+            return {filter: `id: {_neq: ${id}}, contractor_email: {_eq: "${contractor_email}"}`};
         }
     });
 

@@ -170,7 +170,7 @@ global.sendForgotPass = async (username, access_type) => {
             return res;
         }
 
-        const url = `https://bun-server.cloud.sheqaid.com/accounts/pass-recovery.html?id=${reset_password_id}&type=${access_type}`;// -H "Content-Type:application/json" --data '{"name":"Keyboard Cat"}';
+        const url = `https://bun-server.cloud.sheqintel.com/accounts/pass-recovery.html?id=${reset_password_id}&type=${access_type}`;// -H "Content-Type:application/json" --data '{"name":"Keyboard Cat"}';
         await EmailUtils.send({
             from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
             to: username,

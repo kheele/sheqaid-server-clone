@@ -28,6 +28,36 @@ global.execWhen = (test, max) => {
     });
 };
 
+global.execWhenWithInterval = (test, interval = 0, max) => {
+    return new Promise((resolve, reject) => {
+        const exec = async (n) => {
+            let res = test();
+            if (res instanceof Promise) {
+                try {
+                    res = await res;
+                } catch (ex) {
+                    if (max && n === max - 1) {
+                        reject(ex);
+                        return;
+                    }
+                    setTimeout(() => exec(n + 1), interval);
+                    return;
+                }
+            }
+            if (res) {
+                resolve(res);
+            } else {
+                if (max && n === max - 1) {
+                    reject();
+                    return;
+                }
+                setTimeout(() => exec(n + 1), interval);
+            }
+        };
+        exec(0);
+    });
+};
+
 global.whenFileReady = async (socket, res, findById, keys = ['doc']) => {
     if (!res) return;
 

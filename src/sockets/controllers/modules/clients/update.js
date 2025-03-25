@@ -6,6 +6,12 @@ const args = {
     name: "Clients",
     tbl: "default_clients",
     details_fragment,
+    orgs_fragment: `
+		company {
+			id
+			name
+		}
+	`,
     uploadUpdate: ({id}) => ({
         new_name: `clients/${id}/profile-pic`,
         key: 'profile_pic',

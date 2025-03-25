@@ -1,31 +1,22 @@
-const { v4: uuidv4 } = require('uuid');
+const {v4: uuidv4} = require('uuid');
 const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
 const {user_details_fragment: details_fragment} = require("./commons");
-const {listClientInstalledPermissionModulesAsNewPermissions, listClientInstalledPermissionModules} = require("../../general/modules/query_modules");
+const {
+    listClientInstalledPermissionModulesAsNewPermissions, listClientInstalledPermissionModules
+} = require("../../general/modules/query_modules");
 const {listAllPermissionOtherKeysAsNewPermissions} = require("../../general/permissions/other-keys/query_other_keys");
 
 const args = {
-    name: "User",
-    tbl: "default_users",
-    details_fragment,
-    uploadUpdate: ({id}) => ({
-        new_name: `users/${id}/profile-pic`,
-        key: 'profile_pic',
+    name: "User", tbl: "default_users", details_fragment, uploadUpdate: ({id}) => ({
+        new_name: `users/${id}/profile-pic`, key: 'profile_pic',
     }),
 };
 
 //<editor-fold desc="signupUser">
 exports.signupUser = async (socket, input) => {
     let {
-        uid,
-        customToken,
-        fname,
-        lname,
-        username,
-        phone,
-        password,
-        company, company: {
+        uid, customToken, fname, lname, username, phone, password, company, company: {
             data: {
                 account_type,
                 consultant,
@@ -64,22 +55,20 @@ exports.signupUser = async (socket, input) => {
     {
         const module_list = await listClientInstalledPermissionModules(socket);
         company.data.module_list = {
-            data: module_list,
+            data: module_list.map(({id}) => ({module_id: id})),
         };
     }
 
     input.notifications_settings = {
         data: {
-            receive_expired_docs_notifs: true,
-            //
+            receive_expired_docs_notifs: true, //
             receive_contractor_management_notifs: true,
             receive_asset_management_notifs: true,
             receive_incident_management_notifs: true,
             receive_inspection_management_notifs: true,
             receive_chemicals_management_notifs: true,
             receive_non_conformance_management_notifs: true,
-            receive_training_management_notifs: true,
-            //
+            receive_training_management_notifs: true, //
             receive_employees_profile_notifs: true,
             receive_employees_expired_docs_medicals: true,
         }
@@ -111,7 +100,11 @@ exports.signupUser = async (socket, input) => {
 
         const onComplete = async (uid, isNew = true) => {
             if (isNew) {
-                await adminAuthGeneral.auth().signOut();
+                await admin.auth(adminAuthGeneral).revokeRefreshTokens(uid).then(() => {
+                    console.log(`Tokens for user ${uid} have been revoked.`);
+                }).catch((error) => {
+                    console.error('Error revoking tokens:', error);
+                });
             }
 
             const update = updateImpl(args);
@@ -119,14 +112,9 @@ exports.signupUser = async (socket, input) => {
                 id, auth_id: uid,
             });
 
-            await SendEmailUtils.sendCreationEmail('UserSignup',
-                {
-                    companyName: company.name,
-                    username,
-                    password,
-                    fname,
-                    lname,
-                });
+            await SendEmailUtils.sendCreationEmail('UserSignup', {
+                companyName: company.name, username, password, fname, lname,
+            });
 
             return newUser;
         };
@@ -136,7 +124,12 @@ exports.signupUser = async (socket, input) => {
         }
 
         try {
-            return await adminAuthGeneral.auth().createUserWithEmailAndPassword(username, password).then(userCredential => userCredential.user.uid).then(onComplete);
+            return await admin.auth(adminAuthGeneral).createUser({
+                email: username,
+                emailVerified: false,
+                password,
+                disabled: false,
+            }).then(user => user.uid).then(onComplete);
         } catch (err) {
             if (err.code === "auth/email-already-in-use") {
                 const uid = await getUserUidByUsername(username);

@@ -1,0 +1,33 @@
+//<editor-fold desc="details_fragment">
+exports.details_fragment = `
+    id
+    question_id
+    date
+    msg
+    read
+    sender_id
+    recipient_id
+    contractor_sender_id
+    contractor_recipient_id
+    sender{
+        id
+        full_name
+        username
+    }
+    recipient{
+        id
+        full_name
+        username
+    }
+    contractor_sender{
+        id
+        full_name
+        username
+    }
+    contractor_recipient{
+        id
+        full_name
+        username
+    }
+`;
+//</editor-fold>

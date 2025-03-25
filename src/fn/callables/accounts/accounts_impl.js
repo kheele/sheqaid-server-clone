@@ -174,24 +174,26 @@ exports.onResetPassword = async (data, access_type) => {
 
     const {id, auth_id, email, phone} = item;
 
-    const _auth = adminAuth(access_type);
-
-    let promise;
+    if (access_type === 'ContractorUser') {
+        return socketClientContractor.emit('emit', {
+            path: 'accounts/onResetPassword',
+            data,
+        }).catch(err => {
+            console.error('onResetPassword', err)
+            throw err;
+        });
+    }
     if (access_type === 'Staff') {
-        if(auth_id) {
-            promise = _auth.getUser(auth_id);
-        } else if (phone) {
-            promise = _auth.getUserByPhoneNumber(phone);
-        } else if (email) {
-            promise = _auth.getUserByEmail(email);
-        } else {
-            return null;
-        }
-    } else {
-        promise = _auth.getUser(auth_id);
+        return socketClientHR.emit('emit', {
+            path: 'accounts/onResetPassword',
+            data,
+        }).catch(err => {
+            console.error('onResetPassword', err)
+            throw err;
+        });
     }
 
-    return promise.then(async (userRecord) => {
+    return admin.auth().getUser(auth_id).then(async (userRecord) => {
         const {uid, email, phoneNumber} = userRecord;
 
         try {

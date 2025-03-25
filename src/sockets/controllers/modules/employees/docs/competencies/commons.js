@@ -5,7 +5,9 @@ exports.inc_fragment = ({removed, inc_employee = false, }) => {
     return (socket, data) => `
         id
         created_at
+        removed
         accreditation_num
+        certificate_num
         competency_type
         type
         doc

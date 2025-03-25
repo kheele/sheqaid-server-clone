@@ -15,8 +15,9 @@ module.exports = (config) => {
 
         console.log('exportExcel', data);
 
-        const filename = path.join(currDir, `xlsx/${name}.xlsx`)
-        const template = await JsExcelTemplate.fromFile(filename);
+        const filename = `${name}.xlsx`;
+        const filepath = path.join(currDir, `xlsx/${filename}`)
+        const template = await JsExcelTemplate.fromFile(filepath);
 
         const {
             date,
@@ -44,7 +45,7 @@ module.exports = (config) => {
 
         const buffer = await template.toBuffer();
         const contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        return await excelPreviewUrl({buffer, contentType});
+        return await excelPreviewUrl({buffer, contentType, filename});
     };
 }
 //</editor-fold>

@@ -37,7 +37,7 @@ exports.createJobObservation = async (socket, input) => {
             employee_other.data.job_position_id = employee_other.data.job_position.id;
             delete employee_other.data.job_position;
         }
-        socket.injectCreate(employee_other.data);
+        socket.injectCreate({input: employee_other.data});
     }
 
 

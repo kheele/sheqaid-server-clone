@@ -14,46 +14,48 @@ const {Readable} = require('stream');
 // faceapi.env.monkeyPatch({Canvas, Image, ImageData});
 // </editor-fold>
 
-const {ENDPOINT_FILE_UPLOADER} = process.env;
-
 exports.createFaceUrl = (uid) => `faces/${uid}/face.png`;
 
-//<editor-fold desc="uploadFile">
-const createBuffer = (datauri_or_buffer) => {
-    if (typeof datauri_or_buffer === 'string') {
-        const parts = datauri_or_buffer.split(',');
-        const base64 = parts[1];
-        return Buffer.from(base64, 'base64');
-    } else {
-        return Buffer.from(datauri_or_buffer);
+function isBuffer(buffer) {
+    try {
+        return !!Buffer.from(buffer.data);
+    } catch (err) {
+        try {
+            return !!Buffer.from(buffer);
+        } catch (err) {
+            return false;
+        }
     }
-};
+}
 
-const getContentType = (datauri_or_buffer) => {
-    // if (typeof datauri_or_buffer === 'string') {
-    const parts = datauri_or_buffer.split(',');
-    return parts[0].replace('data:', '').split(';')[0];
-    // } else {
-    // 	try {
-    // 		const res = await fileTypeFromBuffer(datauri_or_buffer);
-    // 		return res.contentType;
-    // 	} catch (err) {
-    // 		console.log('getContentType err', err);
-    // 	}
-    // }
-};
+function extractFileBuffer(buffer) {
+    if (buffer && typeof buffer === 'object') {
+        if (isBuffer(buffer)) {
+            return buffer;
+        }
 
+        const keys = Object.keys(buffer);
+        for (let n = 0; n < keys.length; n++) {
+            const key = keys[n];
+            console.log(key);
+            let result = extractFileBuffer(buffer[key]);
+            if (result) return result;
+        }
+    }
+    return null;
+}
+
+//<editor-fold desc="uploadFile">
 global.uploadFile = async (doc, filePath) => {
     if (doc.buffer || (doc.path && doc.path.buffer)) {
         if(doc.path && doc.path.buffer) {
             doc.buffer = doc.path;
         }
-        // console.log('doc.buffer', doc.buffer);
-        try {
-            doc.buffer = Buffer.from(doc.buffer.data);
-        } catch (err) {
-            doc.buffer = Buffer.from(doc.buffer);
-        }
+
+        doc.buffer = extractFileBuffer(doc.buffer);
+
+        // console.log('doc.buffer1', doc.buffer);
+        // console.log('doc.buffer2', Buffer.isBuffer(doc.buffer));
     }
 
     // console.log('uploadFile doc.buffer', typeof doc.buffer, doc.buffer instanceof Buffer);
@@ -141,8 +143,8 @@ global.excelPreviewUrl = async (dataUrl) => {
     if (!dataUrl)
         throw new Error('No source file supplied.');
 
-    const new_name = `docs-office-preview/excel`;
-    return uploadFile(dataUrl, new_name);
+    const filePath = `docs-office-preview/excel`;
+    return uploadFile(dataUrl, filePath);
 };
 //</editor-fold>
 
@@ -184,7 +186,7 @@ global.uploadFilesUpdate = async ({id, doc, key, new_name, onUpdate}) => {
     }
 
     if (Object.keys(attrs).isNotEmpty()) {
-        await onUpdate({id, ...attrs});
+        return await onUpdate({id, ...attrs});
     }
 };
 //</editor-fold>

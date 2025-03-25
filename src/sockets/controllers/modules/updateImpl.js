@@ -35,13 +35,13 @@ module.exports = (config) => {
             if (keys) {
                 await Promise.all(keys.map(async (key, n) => {
                     const __new_name = new_names ? new_names[n] : new_name;
-                    await upload({attrs, id, tbl, new_name: __new_name, name, key});
+                    return await upload({attrs, id, tbl, new_name: __new_name, name, key});
                 }));
-                savedItem = await whenFileReady(socket, savedItem, findById, keys);
+                // savedItem = await whenFileReady(socket, savedItem, findById, keys);
             } else {
                 const __new_name = new_names ? new_names[0] : new_name;
                 await upload({attrs, id, tbl, new_name: __new_name, name, key});
-                savedItem = await whenFileReady(socket, savedItem, findById, [key]);
+                // savedItem = await whenFileReady(socket, savedItem, findById, [key]);
             }
         }
 
@@ -71,12 +71,13 @@ async function upload({attrs, id, tbl, new_name, name, key}) {
     let { [docKey]: doc } = attrs;
 
     if (doc) {
-        await uploadFilesUpdate({
+        return await uploadFilesUpdate({
             id,
             doc,
             new_name,
             onUpdate: async ({ id, ...attrsUpdate }) => {
                 attrs[docKey] = attrsUpdate[docKey];
+                return attrs;
             }
         });
     }

@@ -7,13 +7,16 @@ global.setAuthDecodedIdTokenBySocket = async (socket) => {
     if (handshake) {
     // if (request) {
         const {headers, auth} = handshake;
+        // console.log('setAuthDecodedIdTokenBySocket', handshake);
         // console.log('io.use session auth', auth);
-        const {token = null, uid} = auth || {};
+        const {token = null, uid, access_type} = auth || {};
         if (token) {
+            // socket.getAuth(token);
             // admin.auth().getUser(uid).then(({customClaims = {}}) => {
             //     console.log('io.use session auth customClaims', customClaims);
             // });
             return await admin.auth().verifyIdToken(token).then(decodedIdToken => {
+            // return await adminAuth(access_type).verifyIdToken(token).then(decodedIdToken => {
                 request.session.decodedIdToken = decodedIdToken;
                 console.log('decodedIdToken', decodedIdToken);
                 request.session.save();
@@ -47,6 +50,7 @@ global.setAuthDecodedIdTokenBySocket = async (socket) => {
 //<editor-fold desc="addCustomUserClaims">
 global.addCustomUserClaims = async (uid, claims, access_type) => {
     const _auth = admin.auth();
+    // const _auth = adminAuth(access_type);
     return _auth.getUser(uid).then(({customClaims = {}}) => {
         Object.keys(claims).forEach(key => {
             const val = claims[key];
@@ -70,7 +74,8 @@ global.addCustomUserClaims = async (uid, claims, access_type) => {
 
 //<editor-fold desc="setCustomUserClaims">
 global.setCustomUserClaims = async (uid, claims, access_type) => {
-    const _auth = admin.auth();
+    // const _auth = admin.auth();
+    const _auth = adminAuth(access_type);
     return _auth.getUser(uid).then(({customClaims}) =>
         _auth.setCustomUserClaims(uid, claims));
 }
@@ -78,7 +83,9 @@ global.setCustomUserClaims = async (uid, claims, access_type) => {
 
 //<editor-fold desc="createCustomToken">
 global.createCustomToken = (uid, claims) => {
+    const {access_type} = claims;
     return admin.auth().createCustomToken(uid, claims);
+    // return adminAuth(access_type).createCustomToken(uid, claims);
 }
 //</editor-fold>
 

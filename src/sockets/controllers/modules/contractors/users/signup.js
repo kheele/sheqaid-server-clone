@@ -72,7 +72,7 @@ exports.signupContractorUser = async (socket, input) => {
 
     // const loggedUser = await socket.getLoggedUser();
     // if (!loggedUser) return;
-    // const {user: {id: user_id, company: {id: company_id}}} = loggedUser;
+    // const { user:{id: user_id}, company:{id: company_id}} = loggedUser;
 
     // input.user_id = user_id;
     // input.company_id = company_id;

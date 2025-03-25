@@ -29,7 +29,7 @@ exports.onCreatedQuestionnaireContractors = async ({new_item, questionsArray}) =
 	}
 
 	const opts = {
-		from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+		from: '"SHEQIntel" <no-reply@sheqsolve.com>',
 		to: username,
 		bcc: ccList,
 		subject: contractorName + ' Questionnaire From ' + companyName
@@ -46,9 +46,9 @@ exports.onCreatedQuestionnaireContractors = async ({new_item, questionsArray}) =
         <p>No. Of Questions Required: <b>${questionsArray.filter(v => !!v.isMandatory).length}</b></p>
         <p>No. Of Questions Optional: <b>${questionsArray.filter(v => !v.isMandatory).length}</b></p>
         <hr />
-        <p>You will be required to use SHEQ Aid application to approve the questionnaire</p>
+        <p>You will be required to use SHEQIntel application to approve the questionnaire</p>
         <hr />
-        <p>Kind Regards<br/>SHEQ Aid</p>`;
+        <p>Kind Regards<br/>SHEQIntel</p>`;
 	} else {
 		opts.html = `
 			<h3><b>Good Day</b></h3>

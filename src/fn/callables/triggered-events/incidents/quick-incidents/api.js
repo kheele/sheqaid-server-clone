@@ -292,12 +292,12 @@ exports.sendNewQuickIncidentNotification = async (body) => {
     ` : null;
 
     EmailUtils.send({
-        from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+        from: '"SHEQIntel" <no-reply@sheqsolve.com>',
 //      to: emails.join(','),
         bcc: emails.distinct().join(','),
-        subject: 'SHEQ Aid Notifications (Incident Recorded)',
+        subject: 'SHEQIntel Notifications (Incident Recorded)',
         html: `
-            <p>This is an automated email from SHEQ Aid.<br />Please do not reply to this email.</p>
+            <p>This is an automated email from SHEQIntel.<br />Please do not reply to this email.</p>
             <p>The following incident has been reported:</p>
             <table style="width: 100%; display: block;">
                 <tbody>
@@ -338,7 +338,7 @@ exports.sendNewQuickIncidentNotification = async (body) => {
             </table>
             
             <p>If you didn't request this, you can ignore this email or let us know.</p>
-            <p>Kind Regards<br/>SHEQ Aid</p>
+            <p>Kind Regards<br/>SHEQIntel</p>
         `
     });
 

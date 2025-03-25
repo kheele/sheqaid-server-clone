@@ -1,21 +1,37 @@
 require('./definitions');
 require('./items');
 
-const findByIdImpl = require("./findByIdImpl");
-const listImpl = require('./listImpl');
+const findByIdImpl = require("../findByIdImpl");
 const exportExcelImpl = require('../exportExcelImpl');
 const findByIdDashboardImpl = require("./findByIdDashboardImpl");
+const {audit_details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const createImpl = require("../createImpl");
+const updateImpl = require("../updateImpl");
+const listByLoggedImpl = require("../listByLoggedImpl");
 
-eventManager.on("audits/findById", findByIdImpl);
-
-eventManager.on("audits/listByLogged", listImpl);
-
-eventManager.on("audits/dashboard", findByIdDashboardImpl);
-
-eventManager.on("audits/export-excel", exportExcelImpl({
-	currDir: __dirname,
+const args = {
 	name: "Audits",
-	listImpl,
+	tbl: "sheq_compliance_audits",
+	order_by: "order_by: {date: desc}",
+	details_fragment: audit_details_fragment,
+	getVariablesAndQueryConfig,
+};
+
+const path = "audits";
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/dashboard`, findByIdDashboardImpl);
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
+	...args,
+	currDir: __dirname,
 	mapRow: (item, idx) => {
 		let {
 			id,

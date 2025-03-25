@@ -27,7 +27,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(helmetMiddleware);
 app.use(sessionMiddleware);
-// app.use(csrf({ sessionKey: 'sheqaid' }));
+// app.use(csrf({ sessionKey: 'sheqintel' }));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms', {
 	stream: {
 		write: (message) => console.log(message.trim()),

@@ -1,8 +1,9 @@
-require('./incidents-quick');
-require('./incidents-injury-list');
 require('./cause-analysis');
 require('./corrective-actions');
+require('./incidents-injury-list');
+require('./incidents-quick');
 require('./investigations');
+require('./proxy');
 
 const createImpl = require("./createImpl");
 const findByIdImpl = require("./findByIdImpl");
@@ -216,7 +217,6 @@ function mapRow(item, idx) {
 		nature_of_charges,
 		who_laid_charges : who_laid_charges && who_laid_charges.full_name,
 		who_were_nature_charges_laid_against: who_were_nature_charges_laid_against && who_were_nature_charges_laid_against.full_name,
-		onsequence,
 		consequence,
 		likelihood,
 		risk_rating,

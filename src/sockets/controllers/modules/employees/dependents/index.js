@@ -1,6 +1,6 @@
 const findByIdImpl = require("../../findByIdImpl");
-const createImpl = require("../../createImpl");
 const updateImpl = require("../../updateImpl");
+const {createDependent} = require("./create");
 
 const args = {
     name: "EmployeeDependent",
@@ -18,13 +18,15 @@ const args = {
         }
     `,
     orgs_fragment: null,
+    skipOrgs: true,
+    skipUsers: true,
     // order_by: `{name: asc}`,
     // getVariablesAndQueryConfig,
 };
 
 const path = 'employees/dependents';
 
-eventManager.on(`${path}/create`, createImpl(args));
+eventManager.on(`${path}/create`, createDependent);
 
 eventManager.on(`${path}/update`, updateImpl(args));
 

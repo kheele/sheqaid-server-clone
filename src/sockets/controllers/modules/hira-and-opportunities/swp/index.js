@@ -3,14 +3,27 @@ const listImpl = require('./listImpl');
 
 const {hira_swp_details_fragment: details_fragment} = require('./commons');
 const exportExcelImpl = require("../../exportExcelImpl");
+const updateImpl = require("../../updateImpl");
+const createImpl = require("../../createImpl");
+const listByLoggedImpl = require("../../listByLoggedImpl");
 
-eventManager.on("hira-and-opportunities/swp/findById", findByIdImpl({
-	name: "WSWP", tbl: "hira_swp", details_fragment,
-}));
+const args = {
+	name: "WSWP",
+	tbl: "hira_swp",
+	details_fragment,
+};
 
-eventManager.on("hira-and-opportunities/swp/listByLogged", listImpl);
+const path = 'hira-and-opportunities/swp';
 
-eventManager.on("hira-and-opportunities/swp/export-excel", exportExcelImpl({
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
 	currDir: __dirname,
 	name: "WSWP",
 	listImpl,

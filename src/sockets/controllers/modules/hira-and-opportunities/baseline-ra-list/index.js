@@ -1,5 +1,7 @@
 const findByIdImpl = require('../../findByIdImpl');
 const {hira_baseline_ra_list_details_fragment: details_fragment} = require("./commons");
+const updateImpl = require("../../updateImpl");
+const createImpl = require("../../createImpl");
 
 const args = {
 	name: "BaselineRiskAssessmentListItems",
@@ -7,4 +9,10 @@ const args = {
 	details_fragment,
 };
 
-eventManager.on("hira-and-opportunities/baseline-ra-list/findById", findByIdImpl(args));
+const path = 'hira-and-opportunities/baseline-ra-list';
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));

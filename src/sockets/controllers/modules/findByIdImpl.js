@@ -1,7 +1,7 @@
 let {orgs_fragment} = require("../../../graphql/Fragments");
 const getDetailsFragment = require("./getDetailsFragment");
 
-//<editor-fold desc="listImpl">
+//<editor-fold desc="findByIdImpl">
 module.exports = (config) => {
 	return async (socket, id) => {
 		if (!id) return;
@@ -14,7 +14,7 @@ module.exports = (config) => {
 		} = config;
 
 		const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
-		console.log('findByIdImpl => orgs_fragment:', __orgs_fragment);
+		// console.log('findByIdImpl => orgs_fragment:', __orgs_fragment);
 
 		details_fragment = await getDetailsFragment({socket, data: {id}, details_fragment});
 

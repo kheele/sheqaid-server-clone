@@ -2,23 +2,29 @@ const findByIdImpl = require('../../findByIdImpl');
 const listImpl = require('../../listImpl');
 const {chemical_product_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const exportExcelImpl = require("../../exportExcelImpl");
+const createImpl = require("../../createImpl");
+const updateImpl = require("../../updateImpl");
+const listByLoggedImpl = require("../../listByLoggedImpl");
 
 const args = {
 	name: "ChemicalInventoryProduct",
 	tbl: "sheq_chemical_products",
 	details_fragment,
-};
-
-eventManager.on("chemicals/products/findById", findByIdImpl(args));
-
-eventManager.on("chemicals/products/listByLogged", listImpl({
-	...args,
-	details_fragment,
 	order_by: "order_by: {name: asc}",
 	getVariablesAndQueryConfig,
-}));
+};
 
-eventManager.on("chemicals/products/export-excel", exportExcelImpl({
+const path = "chemicals/products";
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
 	currDir: __dirname,
 	name: "Chemical-Products",
 	listImpl: listImpl({

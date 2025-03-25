@@ -63,10 +63,10 @@ eventManager.on(`${path}/listTeamBySupervisorId`, async (socket, supervisor_id) 
 
             return `
                 employee_reported_to_id:{_eq: ${supervisor_id}}, 
-                _or:{
-                    team_id:{_is_null: false},
-                    employee_list_aggregate: {count: {predicate: {_gt: 0}}}
-                }
+                _or:[
+                    {team_id:{_is_null: false}},
+                    {employee_list_aggregate: {count: {predicate: {_gt: 0}}}}
+                ]
             `;
         },
     });

@@ -121,7 +121,7 @@ module.exports = async (socket, input) => {
                 data.job_position_id = job_position.id;
                 delete data.job_position;
             }
-            socket.injectCreate(person_other.data);
+            socket.injectCreate({input: person_other.data});
         }
     };
 

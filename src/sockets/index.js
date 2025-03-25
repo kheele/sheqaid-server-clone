@@ -136,7 +136,7 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
     });
 };
 
-function injectCreate(input, skipOrgs = false) {
+function injectCreate({input, skipOrgs = false, skipUsers = false}) {
     if (!input) return;
 
     const {session} = this.request;
@@ -154,8 +154,11 @@ function injectCreate(input, skipOrgs = false) {
         logged_contractor_id,
 
         // access_type,
-        loggedUser: {user: {id: user_id}},
+        loggedUser,
     } = session.decodedIdToken || {};
+
+    const {user} = loggedUser || {};
+    const {id: user_id} = user || {};
 
     const {
         isConsultant,
@@ -169,10 +172,12 @@ function injectCreate(input, skipOrgs = false) {
         site_id,
     } = input;
 
-    if (isContractor) {
-        input.contractor_user_id = user_id;
-    } else {
-        input.user_id = user_id;
+    if(!skipUsers) {
+        if (isContractor) {
+            input.contractor_user_id = user_id;
+        } else {
+            input.user_id = user_id;
+        }
     }
 
     if (skipOrgs) return;

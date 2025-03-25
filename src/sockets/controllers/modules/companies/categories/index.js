@@ -9,6 +9,7 @@ const args = {
 		id
   		name
 	`,
+	orgs_fragment: null,
 };
 
 const path = 'companies/categories';
@@ -18,6 +19,7 @@ eventManager.on(`${path}/findById`, findByIdImpl(args));
 eventManager.on(`${path}/list`, listImpl({
 	...args,
 	order_by: "order_by: {name: asc}",
+	skipRemoved: true,
 	getVariablesAndQueryConfig,
 }));
 //

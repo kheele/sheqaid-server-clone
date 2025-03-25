@@ -4,8 +4,11 @@ const findByIdImpl = require('../../findByIdImpl');
 const listByLoggedImpl = require('../../listByLoggedImpl');
 const {
     job_observation_details_find_fragment,
-    job_observation_details_list_fragment, getVariablesAndQueryConfig,
+    job_observation_details_list_fragment,
+    getVariablesAndQueryConfig,
 } = require("./commons");
+const {createJobObservation} = require("./create");
+const {updateJobObservation} = require("./update");
 
 const args = {
     name: "JobObservationQuestionnaire",

@@ -43,10 +43,10 @@ exports.getVariablesAndQueryConfig = (
 			]`);
 		}
 		
-		//: /etc/letsencrypt/live/cloud.sheqaid.com/fullchain.pem
-		//: /etc/nginx/certs/all.cloud.sheqaid.com.crt
+		//: /etc/letsencrypt/live/cloud.sheqintel.com/fullchain.pem
+		//: /etc/nginx/certs/all.cloud.sheqintel.com.crt
 		
-		//:copy /etc/letsencrypt/live/cloud.sheqaid.com/fullchain.pem to ./certs/all.cloud.sheqaid.com.crt
+		//:copy /etc/letsencrypt/live/cloud.sheqintel.com/fullchain.pem to ./certs/all.cloud.sheqintel.com.crt
 		
 		//
 		if (category) {

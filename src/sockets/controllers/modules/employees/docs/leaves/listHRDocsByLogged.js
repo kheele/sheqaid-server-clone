@@ -37,6 +37,9 @@ module.exports = async (socket, data) => {
             date_approved,
             date,
         },
+    }).then(res => {
+        console.log('res', res);
+        return res;
     });
     // console.log('data', data)
 }

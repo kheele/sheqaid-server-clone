@@ -56,10 +56,10 @@ exports.onUpdateCOIDClaim = async (body) => {
 			if (!msg) return;
 			
 			const opts = {
-				from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+				from: '"SHEQIntel" <no-reply@sheqsolve.com>',
 				bcc: emails.join(','),
-				subject: 'SHEQ Aid Notifications (Claim Number Added/Updated)',
-				html: `<h3><b>SHEQ Aid User</b></h3>\n
+				subject: 'SHEQIntel Notifications (Claim Number Added/Updated)',
+				html: `<h3><b>SHEQIntel User</b></h3>\n
             <p>SHEQ Aid would like to notify you of the following:</p>\n
             <p>${msg}</p>\n
             <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
@@ -190,10 +190,10 @@ exports.onUpdateCOIDClaim = async (body) => {
 		const actionCodeSettings = {
 			// URL you want to redirect back to. The domain (www.example.com) for this
 			// URL must be in the authorized domains list in the Firebase Console.
-			url: `https://forms.sheqaid.com/cm/mcsp/?id=${id}`,
+			url: `https://forms.sheqintel.com/cm/mcsp/?id=${id}`,
 			// This must be true.
 			handleCodeInApp: true,
-//    dynamicLinkDomain: 'forms.sheqaid.com'
+//    dynamicLinkDomain: 'forms.sheqintel.com'
 		};
 		admin.auth().sendSignInLinkToEmail(new_item.doctor_email, actionCodeSettings).then(() => {
 			// The link was successfully sent. Inform the user.

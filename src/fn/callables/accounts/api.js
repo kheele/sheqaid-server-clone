@@ -152,9 +152,9 @@ exports.sendNewContractorSiteEmail = async (data) => {
         const sendEmail = async ({name, username, isContractor}) => {
             let msg;
             if (isContractor) {
-                msg = `Your contractor has been assigned the site on the SHEQ Aid (Contractors Management) system.`;
+                msg = `Your contractor has been assigned the site on the SHEQIntel (Contractors Management) system.`;
             } else {
-                msg = `Your company has assigned the site to a contractor the SHEQ Aid (Contractors Management) system.`;
+                msg = `Your company has assigned the site to a contractor the SHEQIntel (Contractors Management) system.`;
             }
             const html = `<h3><b>Dear ${name}</b></h3>\n
                 <p>${msg}</p>\n
@@ -164,18 +164,18 @@ exports.sendNewContractorSiteEmail = async (data) => {
                 <p>Company Name: ${clientName || companyName}</p>\n
                 <p>Site Status: ${status}</p>\n
                 <p>
-                    Please keep this email for your records as it contains important information regarding your account on the SHEQ Aid.<br/>
+                    Please keep this email for your records as it contains important information regarding your account on the SHEQIntel.<br/>
                     You can now log in and start using the features and tools that the system offers.
                 </p>
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
-                <p>Thank you for using the SHEQ Aid system.</p>\n
+                <p>Thank you for using the SHEQIntel system.</p>\n
                 <p>If you didn't request this, you can ignore this email or let us know.</p>\n
                 ${getAppDownloadOptionMsg({isContractor, showOnlyAccess: true})}`;
 
             const opts = {
-                from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+                from: '"SHEQIntel" <no-reply@sheqsolve.com>',
                 to: username,
-                subject: 'New Site Assigned in SHEQ Aid (Contractors Management) system',
+                subject: 'New Site Assigned in SHEQIntel (Contractors Management) system',
                 html,
             };
 
@@ -254,9 +254,9 @@ exports.sendUpdateStatusContractorSiteEmail = async (data) => {
             const sendEmail = async ({name, username, isContractor}) => {
                 let msg;
                 if (isContractor) {
-                    msg = `The site assigned to your contractor has been ${status} on the SHEQ Aid (Contractors Management) system.`;
+                    msg = `The site assigned to your contractor has been ${status} on the SHEQIntel (Contractors Management) system.`;
                 } else {
-                    msg = `The site your company has assigned to the contractor has been ${status} on the SHEQ Aid (Contractors Management) system.`;
+                    msg = `The site your company has assigned to the contractor has been ${status} on the SHEQIntel (Contractors Management) system.`;
                 }
 
                 const html = `<h3><b>Dear ${name}</b></h3>\n
@@ -267,18 +267,18 @@ exports.sendUpdateStatusContractorSiteEmail = async (data) => {
                 <p>Company Name: ${clientName || companyName}</p>\n
                 <p>Site Status: ${status}</p>\n
                 <p>
-                    Please keep this email for your records as it contains important information regarding your account on the SHEQ Aid.<br/>
+                    Please keep this email for your records as it contains important information regarding your account on the SHEQIntel.<br/>
                     You can now log in and start using the features and tools that the system offers.
                 </p>
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
-                <p>Thank you for choosing the SHEQ Aid system.</p>\n
+                <p>Thank you for choosing the SHEQIntel system.</p>\n
                 <p>If you didn't request this, you can ignore this email or let us know.</p>\n
                 ${getAppDownloadOptionMsg({isContractor, showOnlyAccess: true})}`;
 
                 const opts = {
-                    from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+                    from: '"SHEQIntel" <no-reply@sheqsolve.com>',
                     to: username,
-                    subject: `Site ${status} on SHEQ Aid (Contractors Management)`,
+                    subject: `Site ${status} on SHEQIntel (Contractors Management)`,
                     html,
                 };
 
@@ -360,22 +360,22 @@ const sendWelcomeEmailContractor = async (data) => {
     } = new_item;
 
     const html = `<h3><b>Dear ${contractorName}</b></h3>\n
-                <p>We are pleased to inform you that your account has been successfully registered on the SHEQ Aid system.</p>\n
+                <p>We are pleased to inform you that your account has been successfully registered on the SHEQIntel system.</p>\n
                 <p>Your Username is <b>${username}</b></p>\n
                 <p>Please use <b>${username}</b> as your Username in order to set up your account.</p>\n
                 <p>
-                    Please keep this email for your records as it contains important information regarding your account on the SHEQ Aid.<br/>
+                    Please keep this email for your records as it contains important information regarding your account on the SHEQIntel.<br/>
                     You can now log in and start using the features and tools that the system offers.
                 </p>
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
-                <p>Thank you for choosing the SHEQ Aid system.</p>\n
+                <p>Thank you for choosing the SHEQIntel system.</p>\n
                 <p>If you didn't request this, you can ignore this email or let us know.</p>\n
                 ${getAppDownloadOptionMsg({isContractor: true})}`;
 
     const opts = {
-        from: '"SHEQ Aid" <no-reply@sheqsolve.com>',
+        from: '"SHEQIntel" <no-reply@sheqsolve.com>',
         to: username,
-        subject: 'Welcome to SHEQ Aid (Contractors Management)',
+        subject: 'Welcome to SHEQIntel (Contractors Management)',
         html,
     };
 
@@ -417,7 +417,7 @@ const sendWelcomeOTPContractor = async (data) => {
     } = new_item;
 
     const html = `<h3><b>Dear ${contractorName}</b></h3>\n
-                <p>We are pleased to inform you that we have sent you a One-Time Password (OTP) to use to set up your account on the SHEQ Aid system.</p>\n
+                <p>We are pleased to inform you that we have sent you a One-Time Password (OTP) to use to set up your account on the SHEQIntel system.</p>\n
                 <p>Please use the following OTP:</p>\n
                 <p style="font-size: 20px"><b>${password_otp}</b></p>\n
                 <p>
@@ -458,9 +458,9 @@ const getAppDownloadOptionMsg = (params = {}) => {
     if(showOnlyAccess) {
         let path;
         if(isContractor) {
-            path = 'https://contractors.sheqaid.com';
+            path = 'https://contractors.sheqintel.com';
         } else {
-            path = 'https://web.sheqaid.com';
+            path = 'https://web.sheqintel.com';
         }
         return `
             <p>Please access the application from one of the following option:</p>
@@ -471,7 +471,7 @@ const getAppDownloadOptionMsg = (params = {}) => {
     }
 
     if (isContractor) {
-        const path = 'https://contractors.sheqaid.com';
+        const path = 'https://contractors.sheqintel.com';
         return `
             <p>
                 Note: <br/>
@@ -488,11 +488,11 @@ const getAppDownloadOptionMsg = (params = {}) => {
         `;
     }
 
-    const path = 'https://web.sheqaid.com';
+    const path = 'https://web.sheqintel.com';
     return `<p>Note: ${!isEmployee ? 'use the username and password provided to login' : 'login the application to setup your Password'}</p>
             ${!isEmployee ? '<p>You are strongly advised to change your password as soon as you login in to SHEQ Aid account</p>' : ''} 
             <p>Please access the application from one of the following option:</p>
-            <p>1. On Web/Cloud: use this <a target="_blank" href="${path}">https://web.sheqaid.com</a>.</p>
+            <p>1. On Web/Cloud: use this <a target="_blank" href="${path}">https://web.sheqintel.com</a>.</p>
             <p>2. On Windows: download the application <a target="_blank" href="${path}/updater/sheqassist-1.1.0.exe">here</a>.</p>
             <p>Best Regards<br/>SHEQ Aid</p>`;
 };

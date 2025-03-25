@@ -6,7 +6,6 @@ const listImpl = require('../listImpl');
 const findByIdDashboardImpl = require("./findByIdDashboardImpl");
 const {document_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const exportExcelImpl = require("../exportExcelImpl");
-const {asset_export_details_fragment} = require("../assets/commons");
 const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
 const {signable_doc_template_details_fragment} = require("../../general/doc-signing-settings/templates/commons");
@@ -21,7 +20,6 @@ const args = {
     }),
 };
 
-// eventManager.on(`documents/create`, createImpl(args));
 eventManager.on(`documents/create`, async (socket, input) => {
     const fn = createImpl(args);
     const {doc_template_id} = input;
@@ -53,9 +51,29 @@ eventManager.on(`documents/create`, async (socket, input) => {
             });
         });
     } else {
+        const {
+            doc_type,
+            //0
+            client_id,
+            project_id,
+            site_id,
+            //1
+            responsible_department_id,
+            responsible_person_id,
+            expiry,
+            internal_or_external,
+            category_id,
+            desc,
+            //2
+            title,
+            doc_version_list,//[{type,expiry,doc,doc_docs_id,doc_num}]
+        } = input;
+
         return fn.apply(this, [socket, input]);
     }
 });
+
+eventManager.on("documents/update", updateImpl(args));
 
 eventManager.on("documents/findById", findByIdImpl(args));
 

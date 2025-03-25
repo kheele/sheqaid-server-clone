@@ -51,6 +51,7 @@ require('./libs/date-utils');
 global.EmailUtils = require('./libs/email.util');
 global.SendEmailUtils = require('./libs/send.email.util.js');
 global.DriveUtils = require('./libs/drive.utils');
+global.DeepSeek = require('./ai/deepseek');
 
 require('./libs/funs_impl');
 require('./libs/graphql_impl');

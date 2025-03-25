@@ -1,6 +1,6 @@
 const findByIdImpl = require("./findByIdImpl");
 
-//<editor-fold desc="createImpl">
+//<editor-fold desc="createNCR">
 module.exports = async (socket, input) => {
     const {
         source,
@@ -79,7 +79,7 @@ module.exports = async (socket, input) => {
             data: [
                 ...(assigned_person_list || []).map(({other_person: employee_other, employee}) => {
                     if(employee_other && !employee_other.id) {
-                        socket.injectCreate(employee_other);
+                        socket.injectCreate({input: employee_other});
                         const {job_position} = employee_other;
                         if(job_position) {
                             delete employee_other.job_position;
@@ -139,7 +139,7 @@ module.exports = async (socket, input) => {
         data[[sourceItems[source]]] = selected_source_item_id;
     }
 
-    socket.injectCreate(data);
+    socket.injectCreate({input: data});
 
     console.log('saving data', data);
 

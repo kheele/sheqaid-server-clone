@@ -1,6 +1,6 @@
 const findByIdImpl = require("../../../../findByIdImpl");
-const createImpl = require("../../../../createImpl");
 const updateImpl = require("../../../../updateImpl");
+const {createResidentialAddress} = require("./create");
 
 const args = {
     name: "EmployeeDocLivingAddress",
@@ -37,7 +37,7 @@ const args = {
 
 const path = 'employees/documents/living-address';
 
-eventManager.on(`${path}/create`, createImpl(args));
+eventManager.on(`${path}/create`, createResidentialAddress);
 
 eventManager.on(`${path}/update`, updateImpl(args));
 

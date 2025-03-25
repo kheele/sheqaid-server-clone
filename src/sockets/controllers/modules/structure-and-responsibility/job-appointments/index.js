@@ -11,8 +11,8 @@ const {findByIdEmployeeDateRangeDashboardStats} = require("../../findByIdEmploye
 const {findByIdOrgDashboardStatsImpl} = require("../../findByIdOrgDashboardStatsImpl");
 const {findByIdOrgDateRangeDashboardStatsImpl} = require("../../findByIdOrgDateRangeDashboardStatsImpl");
 const {inc_fragment} = require("./commons");
-const createImpl = require("../../createImpl");
 const updateImpl = require("../../updateImpl");
+const {createJobAppointment} = require("./create");
 
 const args = {
     name: "JobAppointment",
@@ -26,7 +26,7 @@ const args = {
 
 const path = "structure-and-responsibility/job-appointments";
 
-eventManager.on(`${path}/create`, createImpl(args));
+eventManager.on(`${path}/create`, createJobAppointment);
 
 eventManager.on(`${path}/update`, updateImpl(args));
 

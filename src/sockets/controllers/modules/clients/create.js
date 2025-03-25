@@ -1,11 +1,18 @@
 const createImpl = require("../createImpl");
 const {details_fragment} = require("./commons");
 const {findClientByContractorEmail} = require("../clients/query_clients");
+const {orgs_fragment} = require("../../../../graphql/Fragments");
 
 const args = {
     name: "Clients",
     tbl: "default_clients",
     details_fragment,
+    orgs_fragment: `
+		company {
+			id
+			name
+		}
+	`,
     uploadUpdate: ({id}) => ({
         new_name: `clients/${id}/profile-pic`,
         key: 'profile_pic',
@@ -14,7 +21,7 @@ const args = {
 
 //<editor-fold desc="createClient">
 exports.createClient = async (socket, input) => {
-    const create = createImpl(args);
+    const create = createImpl({...args, skipOrgs: true,});
 
     const {
         name,
@@ -29,7 +36,7 @@ exports.createClient = async (socket, input) => {
 
     const loggedUser = await socket.getLoggedUser();
     if (!loggedUser) return;
-    const {user: {id: user_id, company: {id: company_id}}} = loggedUser;
+    const { user:{id: user_id}, company:{id: company_id}} = loggedUser;
     input.user_id = user_id;
     input.company_id = company_id;
 

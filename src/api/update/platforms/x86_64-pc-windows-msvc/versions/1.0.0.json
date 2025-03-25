@@ -4,8 +4,8 @@
   "pub_date": "2024-11-11T11:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "url": "https://bun-server.cloud.sheqaid.com/api/update/platforms/x86_64-pc-windows-msvc/releases/1.0.0",
-      "signature": "https://bun-server.cloud.sheqaid.com/api/update/platforms/x86_64-pc-windows-msvc/releases/1.0.0/sig"
+      "url": "https://bun-server.cloud.sheqintel.com/api/update/platforms/x86_64-pc-windows-msvc/releases/1.0.0",
+      "signature": "https://bun-server.cloud.sheqintel.com/api/update/platforms/x86_64-pc-windows-msvc/releases/1.0.0/sig"
     }
   }
 }

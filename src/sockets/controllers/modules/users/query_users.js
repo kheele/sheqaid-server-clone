@@ -60,7 +60,7 @@ exports.checkExistByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -94,7 +94,7 @@ exports.loginUserStep1ByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -128,7 +128,7 @@ exports.findByUsernameUserSetupBiometric = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 

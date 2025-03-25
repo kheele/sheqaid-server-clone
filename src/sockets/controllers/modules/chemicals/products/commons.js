@@ -103,6 +103,13 @@ const chemical_product_details_fragment = `
     type
     application_or_use
     
+    #manufacturer
+    #manufacturer_addr
+    #manufacturer_phone_num
+    #manufacturer_email
+    #manufacturer_fax
+    #manufacturer_website
+    
     supplier_list{
       id
       manufacturer

@@ -20,7 +20,7 @@ class SendEmailUtils {
                     You can now log in and start using the features and tools that the system offers.
                 </p>\n
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
-                ${Utils.getAppDownloadOptionMsg()}`,
+                ${getAppDownloadOptionMsg()}`,
             UserSignup: () => `<h3><b>Dear ${fname + ' ' + lname}</b></h3>\n
                 <p>We are pleased to inform you that your account has been successfully registered on the SHEQ Aid system.</p>\n
                 <p>Your Username is <b>${username}</b></p>\n
@@ -43,7 +43,7 @@ class SendEmailUtils {
                     You can now log in and start using the features and tools that the system offers.
                 </p>\n
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
-                ${Utils.getAppDownloadOptionMsg()}`,
+                ${getAppDownloadOptionMsg()}`,
             ContractorUserSignup: () => `<h3><b>Dear ${fname + ' ' + lname}</b></h3>\n
                 <p>We are pleased to inform you that your account has been successfully registered on the SHEQ Aid system.</p>\n
                 <p>Your Username is <b>${username}</b></p>\n
@@ -66,7 +66,7 @@ class SendEmailUtils {
                 </p>
                 <p>If you have any questions or concerns, please do not hesitate to contact us.</p>\n
                 <p>Thank you for choosing the SHEQ Aid system.</p>\n
-                ${Utils.getAppDownloadOptionMsg({isContractor: true})}`
+                ${getAppDownloadOptionMsg({isContractor: true})}`
         }[type];
 
         const opts = {

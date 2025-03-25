@@ -31,6 +31,7 @@ global.signOut = async ({session, sessionCookie, access_type}) => {
     }
 
     const _auth = admin.auth();
+    // const _auth = adminAuth(access_type);
 
     // res.clearCookie('session');
     return _auth
@@ -108,6 +109,7 @@ global.onReAuthUser = async ({uid, access_type}) => {
     } else {
         console.log('onReAuthUser', uid)
         const _auth = admin.auth();
+        // const _auth = adminAuth(access_type);
         tokenRes = await _auth.getUser(uid).then(async userRecord => {
             if (!userRecord) {
                 return "NO_USER_AUTH";
@@ -143,7 +145,7 @@ global.loginSession = async (data) => {
     console.log('loginSession')
     // Get the ID token passed and the CSRF token.
     // console.log('loginSession', req)
-    const {idToken, csrfToken} = data;
+    const {idToken, csrfToken, access_type} = data;
     // Guard against CSRF attacks.
     // if (csrfToken !== req.cookies.csrfToken) {
     //     return 'UNAUTHORIZED REQUEST!';
@@ -155,6 +157,7 @@ global.loginSession = async (data) => {
     // To only allow session cookie setting on recent sign-in, auth_time in ID token
     // can be checked to ensure user was recently signed in before creating a session cookie.
     const _auth = admin.auth();
+    // const _auth = adminAuth(access_type);
 
     return _auth.verifyIdToken(idToken).then((decodedIdToken) => {
         // Only process if the user just signed in the last 60 minutes.
@@ -214,6 +217,7 @@ global.verifySession = ({data, sessionCookie, access_type}) => {
 
     // returns decodedClaims
     return admin.auth().verifySessionCookie(sessionCookie, true /** checkRevoked */);
+    // return adminAuth(access_type).verifySessionCookie(sessionCookie, true /** checkRevoked */);
 };
 
 /**
@@ -248,4 +252,5 @@ global.getDecodedIdTokenFromSession = async ({sessionCookie, access_type}) => {
     // const sessionCookie = req.cookies.session || '';
 
     return admin.auth().verifySessionCookie(sessionCookie);
+    // return adminAuth(access_type).verifySessionCookie(sessionCookie);
 };

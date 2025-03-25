@@ -2,10 +2,12 @@ const findImpl = require("../../findImpl");
 const findByIdImpl = require("../../findByIdImpl");
 const {user_details_fragment} = require("./commons");
 const {findByUsernameContractor} = require("../query_contractors");
+const {orgs_contractor_fragment} = require("../../../../../graphql/Fragments");
 
 const args = {
     name: "ContractorUser",
     tbl: "default_contractor_users",
+    orgs_fragment: orgs_contractor_fragment,
     details_fragment: `
         id
         auth_id
@@ -64,7 +66,7 @@ exports.checkExistByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -114,7 +116,7 @@ exports.loginUserStep1ByUsername = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 
@@ -164,7 +166,7 @@ exports.findByUsernameUserSetupBiometric = async (socket, username) => {
     const findBy = findImpl({
         ...args,
         getVariablesAndQueryConfig: ({username}) => {
-            return {filter: `_or:{username: {_eq: "${username}"}, phone: {_eq: "${username}"}}`};
+            return {filter: `_or:[{username: {_eq: "${username}"}}, {phone: {_eq: "${username}"}}]`};
         }
     });
 

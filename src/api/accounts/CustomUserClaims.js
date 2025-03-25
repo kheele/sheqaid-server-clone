@@ -29,7 +29,7 @@ global.onSetCustomUserClaims = async ({idToken, csrfToken, access_type}) => {
         });
     }
 
-    let res = await loginSession({idToken, csrfToken});//{sessionCookie, options, decodedIdToken}
+    let res = await loginSession({idToken, csrfToken, access_type});//{sessionCookie, options, decodedIdToken}
     // console.log(`/${access_type} decodedIdToken`, decodedIdToken)
     if (!res) return;
     const {sessionCookie, options, decodedIdToken} = res;

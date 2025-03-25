@@ -2,23 +2,29 @@ const findByIdImpl = require('../../findByIdImpl');
 const listImpl = require('../../listImpl');
 const {hira_taskbased_ra_details_fragment: details_fragment, getVariablesAndQueryConfig} = require("./commons");
 const exportExcelImpl = require("../../exportExcelImpl");
+const updateImpl = require("../../updateImpl");
+const createImpl = require("../../createImpl");
+const listByLoggedImpl = require("../../listByLoggedImpl");
 
 const args = {
 	name: "TaskBaseRiskAssessments",
 	tbl: "hira_taskbased_ra",
 	details_fragment,
-};
-
-eventManager.on("hira-and-opportunities/task-based-ra/findById", findByIdImpl(args));
-
-eventManager.on("hira-and-opportunities/task-based-ra/listByLogged", listImpl({
-	...args,
-	details_fragment,
 	order_by: "order_by: {activity: asc}",
 	getVariablesAndQueryConfig,
-}));
+};
 
-eventManager.on("hira-and-opportunities/task-based-ra/export-excel", exportExcelImpl({
+const path = 'hira-and-opportunities/task-based-ra';
+
+eventManager.on(`${path}/create`, createImpl(args));
+
+eventManager.on(`${path}/update`, updateImpl(args));
+
+eventManager.on(`${path}/findById`, findByIdImpl(args));
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
 	currDir: __dirname,
 	name: "TaskbasedRA",
 	listImpl: listImpl({
@@ -59,7 +65,7 @@ eventManager.on("hira-and-opportunities/task-based-ra/export-excel", exportExcel
 	},
 }));
 
-eventManager.on("hira-and-opportunities/task-based-ra/createPDF", async (socket, data) => {
+eventManager.on(`${path}/createPDF`, async (socket, data) => {
 		if(!data) return;
 	
 	// const {
