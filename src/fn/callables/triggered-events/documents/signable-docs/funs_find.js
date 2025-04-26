@@ -2,7 +2,7 @@ const findByIdImpl = require("../../../../../sockets/controllers/modules/findByI
 const findImpl = require("../../../../../sockets/controllers/modules/findImpl");
 const {
     signable_doc_template_details_fragment: details_fragment,
-} = require("../../../../../sockets/controllers/general/doc-signing-settings/templates/commons");
+} = require("../../../../../sockets/controllers/default/doc-signing-settings/templates/commons");
 const {
     employee_basic_personal_details_fragment,
     user_personal_details_fragment

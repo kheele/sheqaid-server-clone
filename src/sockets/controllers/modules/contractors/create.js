@@ -1,9 +1,9 @@
 const createImpl = require("../createImpl");
 const {contractor_details_fragment} = require("./commons");
-const {findClientByContractorEmail} = require("../clients/query_clients");
+const {findClientByContractorEmail} = require("../../general/clients/query_clients");
 const {updateContractor} = require("./update");
 const {checkContractorExistByUsername, findByIdContractor, checkContractorExistByLinkedCompanyId} = require("./query_contractors");
-const {updateClient} = require("../clients/update");
+const {updateClient} = require("../../general/clients/update");
 
 const args = {
     name: "Contractor",

@@ -203,7 +203,7 @@ exports.getVariablesAndQueryConfig = (
 //</editor-fold>
 
 //<editor-fold desc="incident_details_one_fragment">
-exports.incident_details_one_fragment = `
+exports.incident_details_one_fragment = incident_details_one_fragment = `
   id
   removed
   group
@@ -463,6 +463,8 @@ exports.incident_details_one_fragment = `
   }
 `;
 //</editor-fold>
+
+exports.incident_details_export_fragment = incident_details_one_fragment;
 
 //<editor-fold desc="incident_details_fragment">
 exports.incident_details_fragment = `

@@ -67,4 +67,18 @@ eventManager.on(`${path}/findBy`, findImpl({
     },
 }));
 
-eventManager.on(`${path}/listByLogged`, listByLoggedSkipRemovedImpl(args));
+eventManager.on(`${path}/listByLogged`, listByLoggedSkipRemovedImpl({
+    ...args,
+    where: ({data, filters}) => {
+        const {
+            removed,
+        } = data;
+
+        let {filter} = filters;
+
+        let newFilter = `status: {_eq: ${removed ? "Inactive" : "Active"}}`;
+        filter = filter ? `${filter}, ${newFilter}` : newFilter;
+
+        return filter;
+    },
+}));

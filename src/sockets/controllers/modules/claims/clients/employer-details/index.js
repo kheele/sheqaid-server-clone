@@ -1,8 +1,8 @@
 const findByIdImpl = require('./findByIdImpl');
-const {details_fragment} = require("../../../clients/commons");
-const {createClient} = require("../../../clients/create");
-const {updateClient} = require("../../../clients/update");
-const {findByIdClient} = require("../../../clients/query_clients");
+const {details_fragment} = require("../../../../general/clients/commons");
+const {createClient} = require("../../../../general/clients/create");
+const {updateClient} = require("../../../../general/clients/update");
+const {findByIdClient} = require("../../../../general/clients/query_clients");
 
 eventManager.on("claims/clients/employer-details/findById", findByIdImpl);
 

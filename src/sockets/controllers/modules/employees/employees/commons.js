@@ -1,5 +1,5 @@
-const {signable_doc_template_details_fragment} = require("../../../general/doc-signing-settings/templates/commons");
-const {signable_doc_submitter_details_fragment} = require("../../../general/doc-signing-settings/submitters/commons");
+const {signable_doc_template_details_fragment} = require("../../../default/doc-signing-settings/templates/commons");
+const {signable_doc_submitter_details_fragment} = require("../../../default/doc-signing-settings/submitters/commons");
 const {employee_personal_details_fragment} = require("../../../../../graphql/Fragments");
 
 //<editor-fold desc="getVariablesAndQueryConfig">
@@ -277,6 +277,7 @@ exports.employee_details_fragment = `
     id
     created_at
     accreditation_num
+    certificate_num
     competency_type
     type
     doc
@@ -285,6 +286,10 @@ exports.employee_details_fragment = `
     expiry_updated
     employee{
       id
+    }
+    course{
+      id
+      name
     }
     training{
       id
@@ -704,6 +709,10 @@ exports.employee_details_fragment = `
 exports.employee_details_list_fragment = ({incContractors}) => `
     ${employee_personal_details_fragment}
     
+    supervisor{
+        ${employee_personal_details_fragment}
+    }
+    
     job_observation_list_aggregate(where: {removed: {_eq: false}}){
         aggregate{
             count
@@ -766,6 +775,30 @@ exports.employee_details_list_fragment = ({incContractors}) => `
             name
         }
     }
+    ${incContractors ? `
+    contractor_site {
+        id
+        name
+    }
+    contractor_client {
+        id
+        name
+    }
+    contractor {
+        id
+        name
+    }` : ''}
+`;
+//</editor-fold>
+
+//<editor-fold desc="employee_export_details_fragment">
+exports.employee_export_details_fragment = ({incContractors}) => `
+    ${employee_personal_details_fragment}
+    
+    supervisor{
+        ${employee_personal_details_fragment}
+    }
+    
     ${incContractors ? `
     contractor_site {
         id

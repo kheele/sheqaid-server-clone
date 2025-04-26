@@ -6,7 +6,7 @@ const args = {
     tbl: 'hr_employees_docs_competencies',
     details_fragment: inc_fragment({inc_employee: true}),
     uploadUpdate: ({id, data: {employee}}) => ({
-        new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date())}`,
+        new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
         key: 'doc',
     }),
 };
@@ -30,6 +30,7 @@ exports.createCompetency = async (socket, input) => {
         competency_type, //
         accreditation_num, //
         certificate_num, //
+        course, //
         training, //
         doc,//
         //
@@ -47,6 +48,7 @@ exports.createCompetency = async (socket, input) => {
         competency_type,
         accreditation_num,
         certificate_num,
+        course_id: course && course.id,
         training_id: training && training.id,
         doc,
 

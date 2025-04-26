@@ -19,7 +19,7 @@ const args = {
     tbl: "hr_employees_docs_job_appointments",
     details_fragment: inc_fragment({inc_employee: true}),
     uploadUpdate: ({id, data: {employee}}) => ({
-        new_name: `employees/${employee.id}/docs/job_appointments/${id}/Job-Appointment-doc-${Dates.formatTimestamp(new Date())}`,
+        new_name: `employees/${employee.id}/docs/job_appointments/${id}/Job-Appointment-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
         key: 'doc',
     }),
 };

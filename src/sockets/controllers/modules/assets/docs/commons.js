@@ -1,3 +1,6 @@
+const {orgs_fragment} = require("../../../../../graphql/Fragments");
+const {asset_basic_details_fragment} = require("../commons");
+
 //<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (
 	{
@@ -117,4 +120,152 @@ exports.getVariablesAndQueryConfig = (
 	
 	return {filter, filterAsset};
 };
+//</editor-fold>
+
+exports.details_fragment = `
+  id
+  created_at
+  date
+  expiry
+  removed
+  title
+  desc
+  type
+  doc
+  
+  asset_id
+  asset{
+    ${asset_basic_details_fragment}
+    doc_list(where: {removed: {_eq: false}}){
+      id
+      expiry
+    }
+    ${orgs_fragment}
+  }
+`;
+
+exports.asset_doc_export_details_fragment = (socket, data) => {
+	const {
+		written_off: removed = false,
+	} = data;
+
+	return `
+                id
+                created_at
+                date
+                expiry
+                removed
+                title
+                desc
+                type
+                doc
+                
+                asset{
+                  ${asset_basic_details_fragment}
+                  doc_list(where: {removed: {_eq: ${removed}}}){
+                    id
+                    expiry
+                  }
+                  ${orgs_fragment}
+                }
+            `;
+};
+
+exports.asset_doc_list_details_fragment = (socket, data) => {
+	const {
+		view = 'Asset',
+		mon, mon2, mon3,
+		written_off: removed = false,
+	} = data;
+	if (view === 'Asset') {
+		return `
+                ${asset_basic_details_fragment}
+                doc_list(where: {removed: {_eq: ${removed}}}, order_by: {expiry: desc_nulls_last}){
+                  ${doc_inc_fragment}
+                }
+                doc_list_no_expiry_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_is_null: true}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                doc_list_expired_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_lte: "now()"}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                doc_list_mon_expiry_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_gt: "now()", _lte: "${mon}"}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                doc_list_2mon_expiry_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_gt: "${mon}", _lte: "${mon2}"}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                doc_list_3mon_expiry_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_gt: "${mon2}", _lte: "${mon3}"}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                doc_list_4mon_expiry_aggregate:doc_list_aggregate(where: {
+                  removed: {_eq: ${removed}}, expiry: {_gt: "${mon3}"}
+                }){
+                  aggregate{
+                    count
+                  }
+                }
+                ${orgs_fragment}
+            `;
+	}
+
+	return `
+            id
+            created_at
+            date
+            expiry
+            removed
+            title
+            desc
+            type
+            doc
+            
+            asset{
+              ${asset_basic_details_fragment}
+              doc_list(where: {removed: {_eq: ${removed}}}){
+                id
+                expiry
+              }
+              ${orgs_fragment}
+            }
+        `;
+};
+
+//<editor-fold desc="doc_inc_fragment">
+const doc_inc_fragment = `
+    id
+    created_at
+    date
+    expiry
+    removed
+    title
+    desc
+    type
+    doc
+    asset{
+        id
+        ${orgs_fragment}
+    }
+`;
+exports.doc_inc_fragment = doc_inc_fragment;
 //</editor-fold>

@@ -7,7 +7,7 @@ const args = {
     tbl: "sheq_organograms",
     details_fragment: organogram_details_fragment,
     uploadUpdate: ({id}) => ({
-        new_name: `organograms/${id}/organogram-doc-${Dates.formatTimestamp(new Date())}`,
+        new_name: `organograms/${id}/organogram-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
         key: 'doc',
     }),
     getVariablesAndQueryConfig,

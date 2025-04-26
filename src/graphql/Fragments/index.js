@@ -105,6 +105,10 @@ const employee_personal_details_fragment = `
     job_position{
       id
       name
+      job_category{
+        id
+        name
+      }
     }
     department{
       id
@@ -146,6 +150,10 @@ const employee_basic_personal_details_fragment = `
     job_position{
       id
       name
+      job_category{
+        id
+        name
+      }
     }
     department{
       id
@@ -169,6 +177,10 @@ const personal_details_other_fragment = `
     job_position{
       id
       name
+      job_category{
+        id
+        name
+      }
     }
 `;
 exports.personal_details_other_fragment = personal_details_other_fragment;
@@ -230,6 +242,10 @@ const asset_basic_details_fragment = `
         job_position{
             id
             name
+            job_category{
+              id
+              name
+            }
         }
     }
     asset_detail{

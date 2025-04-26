@@ -40,7 +40,7 @@ exports.run = async () => {
 
                 // return;
 
-                const new_name = `employees/${employee_id}/docs/expenses/${id}/Expense-doc-${Dates.formatTimestamp(new Date())}`;
+                const new_name = `employees/${employee_id}/docs/expenses/${id}/Expense-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`;
                 return await uploadFilesUpdate({
                     id,
                     doc,

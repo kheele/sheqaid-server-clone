@@ -8,7 +8,7 @@ const {document_details_fragment: details_fragment, getVariablesAndQueryConfig} 
 const exportExcelImpl = require("../exportExcelImpl");
 const createImpl = require("../createImpl");
 const updateImpl = require("../updateImpl");
-const {signable_doc_template_details_fragment} = require("../../general/doc-signing-settings/templates/commons");
+const {signable_doc_template_details_fragment} = require("../../default/doc-signing-settings/templates/commons");
 
 const args = {
     name: "Documents",

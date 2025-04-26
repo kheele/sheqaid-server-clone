@@ -32,10 +32,10 @@ async function urlToBase64DataUrl(url) {
 }
 
 // Example usage
-const url = 'https://storage.googleapis.com/sheqsolve.appspot.com/assets/489/208/photos/doc.PNG';
-urlToBase64DataUrl(url).then((dataUrl) => {
-	console.log('Base64 Data URL:', dataUrl);
-});
+// const url = 'https://storage.googleapis.com/sheqsolve.appspot.com/assets/489/208/photos/doc.PNG';
+// urlToBase64DataUrl(url).then((dataUrl) => {
+// 	console.log('Base64 Data URL:', dataUrl);
+// });
 
 
 

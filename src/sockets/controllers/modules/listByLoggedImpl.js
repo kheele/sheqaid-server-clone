@@ -87,6 +87,7 @@ module.exports = (config) => {
                 site_id, project_id, client_id, company_id,
                 //
                 exact_orgs = false,
+                exact_orgs_company = false,
                 excCompany,
                 //
                 client_filter,

@@ -19,7 +19,7 @@ const args = {
 	tbl: 'hr_employees_docs_competencies',
 	details_fragment: inc_fragment({inc_employee: true}),
 	uploadUpdate: ({id, data: {employee}}) => ({
-		new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date())}`,
+		new_name: `employees/${employee.id}/docs/competencies/${id}/Competency-Certificate-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
 		key: 'doc',
 	}),
 };
@@ -76,6 +76,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
 				issued_date,
 				expiry_date,
 				expiry_updated,
+				course,
 				training,
 				employee,
 			}
@@ -83,6 +84,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
 
 		return {
 			idx: idx + 1,
+			//
 			id,
 
 			project: project && project.name,
@@ -94,7 +96,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
 			employment_num: employee && employee.employment_num,
 
 			issued_date: Dates.formatDate(issued_date),
-			course: training && training.course && training.course.name,
+			course: course && course.name,
 			accreditation_num,
 			certificate_num,
 			type,

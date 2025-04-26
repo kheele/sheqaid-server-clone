@@ -23,18 +23,68 @@ const args = {
     //         tbl: 'hr_employees_docs_warnings',
     //         listName: 'warning_list',
     //         key: 'doc',
-    //         new_name: `employees/${employee.id}/docs/warnings/${id}/Warning-doc-${Dates.formatTimestamp(new Date())}`,
+    //         new_name: `employees/${employee.id}/docs/warnings/${id}/Warning-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
     //
     //     },
     // ],
 };
 
 //<editor-fold desc="createEmployee">
-exports.createEmployee = async (socket, input) => {
+exports.createEmployee = async (socket, inputRaw) => {
     const is = await socket.is();
     if (!is) return;
 
+    const {session} = socket.request;
+
+    if(inputRaw === "START"){
+        session.newEmployeeInput = {};
+        session.save();
+        return;
+    }
+    if(!isString(inputRaw)) {
+        if (
+            'formData' in inputRaw &&
+            'optionalInfoFormData' in inputRaw
+        ) {
+            session.newEmployeeInput.formData = inputRaw.formData;
+            if (inputRaw.optionalInfoFormData) {
+                session.newEmployeeInput.optionalInfoFormData = inputRaw.optionalInfoFormData;
+            }
+            session.save();
+            return;
+        }
+        if (
+            'counselingFormData' in inputRaw &&
+            'warningFormData' in inputRaw &&
+            'timeOffFormData' in inputRaw
+        ) {
+            if (inputRaw.counselingFormData) {
+                session.newEmployeeInput.counselingFormData = inputRaw.counselingFormData;
+            }
+            if (inputRaw.warningFormData) {
+                session.newEmployeeInput.warningFormData = inputRaw.warningFormData;
+            }
+            if (inputRaw.timeOffFormData) {
+                session.newEmployeeInput.timeOffFormData = inputRaw.timeOffFormData;
+            }
+            session.save();
+            return;
+        }
+        if ('documentsFormData' in inputRaw) {
+            if (inputRaw.documentsFormData) {
+                session.newEmployeeInput.documentsFormData = inputRaw.documentsFormData;
+            }
+            session.save();
+            return;
+        }
+    }
+    if(inputRaw === "END"){
+        //continue
+    }
+
     const {isContractor} = is;
+
+    const {newEmployeeInput: input} = session;
 
     const {
         formData,
@@ -54,6 +104,8 @@ exports.createEmployee = async (socket, input) => {
         project,
         site,
     } = formData;
+
+    console.log('input', input);
 
     const newData = processFormData(input);
     const newDataSavedLater = {};
@@ -126,13 +178,17 @@ exports.createEmployee = async (socket, input) => {
 
     ////////////////
 
-    let existingUser = await checkByUsernameStaff(email);
-    if (existingUser) {
-        return "EMAIL_DUP";
+    if (email) {
+        const existingUser = await checkByUsernameStaff(email);
+        if (existingUser) {
+            return "EMAIL_DUP";
+        }
     }
-    existingUser = await checkByPhoneStaff(phone);
-    if (existingUser) {
-        return "PHONE_DUP";
+    if (phone) {
+        const existingUser = await checkByPhoneStaff(phone);
+        if (existingUser) {
+            return "PHONE_DUP";
+        }
     }
 
     if (email) {
@@ -190,7 +246,16 @@ exports.createEmployee = async (socket, input) => {
             }));
         }
 
-        const res = await Promise.all(promises);
+        for (let n = 0; n < promises.length; n++) {
+            const promise = promises[n];
+            console.log('new employee process', n+1);
+            const res = await promise;
+            console.log('new employee process', n+1, 'res', res);
+        }
+
+        console.log('savedItem1', savedItem);
+        console.log('savedItem2', await findByIdEmployee(id));
+
         // console.log('new employee response', res);
 
         // return execWhenWithInterval(async () => await checkExistByDocsUploadComplete(socket, id), 500).then(exist => {
@@ -199,6 +264,8 @@ exports.createEmployee = async (socket, input) => {
         // });
         return findByIdEmployee(id);
     }
+
+    console.log('savedItem3', savedItem);
 
     return savedItem;
 };

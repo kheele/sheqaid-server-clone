@@ -8,15 +8,15 @@ global.sendRelay = async (args) => {
         headers = {};
     }
 
-    if(auth) {
+    if (auth) {
         const {token, user_auth_id, user_access_type} = auth;
-        if(token) {
+        if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        if(user_auth_id) {
+        if (user_auth_id) {
             headers['X-Hasura-User-Id'] = user_auth_id;
         }
-        if(user_access_type) {
+        if (user_access_type) {
             headers['X-Hasura-User-Access-Type'] = user_access_type;
         }
     }
@@ -60,15 +60,15 @@ global.sendGraphQL = async (args) => {
         headers = {};
     }
 
-    if(auth) {
+    if (auth) {
         const {token, user_auth_id, user_access_type} = auth;
-        if(token) {
+        if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
-        if(user_auth_id) {
+        if (user_auth_id) {
             headers['X-Hasura-User-Id'] = user_auth_id;
         }
-        if(user_access_type) {
+        if (user_access_type) {
             headers['X-Hasura-User-Access-Type'] = user_access_type;
         }
     }
@@ -151,7 +151,7 @@ global.sendGraphQL = async (args) => {
                 Object.keys(data).forEach(key => {
                     const list = data[key];
                     // console.log('data list', key, list)
-                    if(isArray(list)) {
+                    if (isArray(list)) {
                         list.forEach(node => {
                             convertMutations(node);
                         });
@@ -289,7 +289,7 @@ global.getGraphQLOne = async ({query, operationName, variables, multi_queries = 
         count,
     }).then(res => {
         // console.log('getGraphQLOne res', res);
-        if(res) {
+        if (res) {
             return isArray(res) ? res[0] : res;
         }
     });
@@ -312,7 +312,7 @@ global.insertGraphQL = async ({mutation, operationName, input, auth}) => {
     return await sendGraphQL({
         mutation,
         operationName,
-        variables: {[isArray(input)? "objects" : "object"]: input},
+        variables: {[isArray(input) ? "objects" : "object"]: input},
         auth,
     });
 };
@@ -365,28 +365,22 @@ global.deleteGraphQL = async ({mutation, operationName, id, auth}) => {
 };
 //</editor-fold>
 
-// const {fileTypeFromBuffer} = require('./file-type');
-
 // listGraphQL({
 //     query: `
-// 	    query listAllAssetDocsQuery {
-// 		    asset_docs {
+// 	    query listAllDocsQuery {
+// 		    hr_employees_docs_work_permits(where:{doc:{_is_null: false}}) {
 // 			    id
-// 			    asset_id
+//                 employee{
+//                     id
+//                 }
 // 			    doc
 // 			}
 // 		}
 // 	`,
-//     operationName: "listAllAssetDocsQuery",
+//     operationName: "listAllDocsQuery",
 // }).then(async res => {
-//     await Promise.all(res.filter(v => v.data.doc.path).map(async ({id, data: {asset_id, doc}}) => {
-//         let {path, data} = doc;
-//         data = data || path.data;
-//
-//         const type = fileTypeFromBuffer(data);
-//         console.log(id, asset_id, type);
-//
-//         const new_name = `assets/${asset_id}/${id}/docs`;
+//     await Promise.all(res.filter(v => !v.data.doc.dlUrls).map(async ({id, data: {employee, doc}}) => {
+//         const new_name = `employees/${employee.id}/docs/licenses/${id}/License-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`;
 //         return await uploadFilesUpdate({
 //             id,
 //             doc,
@@ -394,18 +388,20 @@ global.deleteGraphQL = async ({mutation, operationName, id, auth}) => {
 //             onUpdate: async ({id, ...attrs}) => {
 //                 delete attrs.id;
 //
-//                 await updateRelay({
-//                     mutation: `
-//                         mutation updateAssetDocMutation($id: asset_docs_pk_columns_input!, $_set: asset_docs_set_input!) {
-//                           update_asset_docs_by_pk(pk_columns: $id, _set: $_set) {
-//                             id
-//                           }
-//                         }
-//                     `,
-//                     operationName: "updateAssetDocMutation",
-//                     id,
-//                     attrs,
-//                 });
+//                 console.log('attrs', attrs);
+//
+//                 // await updateRelay({
+//                 //     mutation: `
+//                 //         mutation updateAssetDocMutation($id: asset_docs_pk_columns_input!, $_set: asset_docs_set_input!) {
+//                 //           update_asset_docs_by_pk(pk_columns: $id, _set: $_set) {
+//                 //             id
+//                 //           }
+//                 //         }
+//                 //     `,
+//                 //     operationName: "updateAssetDocMutation",
+//                 //     id,
+//                 //     attrs,
+//                 // });
 //             },
 //         });
 //     }));

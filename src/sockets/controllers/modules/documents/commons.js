@@ -1,5 +1,5 @@
 const {employee_personal_details_fragment} = require("../../../../graphql/Fragments");
-const {signable_doc_template_details_fragment} = require("../../general/doc-signing-settings/templates/commons");
+const {signable_doc_template_details_fragment} = require("../../default/doc-signing-settings/templates/commons");
 
 //<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (

@@ -389,7 +389,6 @@ exports.incident_investigation_cause_analysis_fragment = incident_investigation_
 //<editor-fold desc="incident_investigation_details_fragment">
 exports.incident_investigation_details_fragment = `
   id
-  created_at
   due_date
   investigation_details
   estimated_costs_damages

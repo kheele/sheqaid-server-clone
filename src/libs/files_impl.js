@@ -185,7 +185,7 @@ global.uploadFilesUpdate = async ({id, doc, key, new_name, onUpdate}) => {
         attrs[key] = await uploadFile(doc, new_name);
     }
 
-    if (Object.keys(attrs).isNotEmpty()) {
+    if (Object.keys(attrs).isNotEmpty() && onUpdate) {
         return await onUpdate({id, ...attrs});
     }
 };

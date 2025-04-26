@@ -1,14 +1,19 @@
 const listByLoggedImpl = require("../../listByLoggedImpl");
 const {findByIdOrgHRDashboardStatsImpl} = require("./findByIdOrgHRDashboardStatsImpl");
-const {employee_details_fragment, employee_details_list_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {employee_details_fragment, employee_details_list_fragment, getVariablesAndQueryConfig,
+    employee_export_details_fragment
+} = require("./commons");
 const {getVariablesAndQueryConfig: getVariablesAndQueryConfigByPPEIssue, employee_details_list_by_ppe_fragment} = require('./commons-ppe-issue');
 const {createEmployee} = require("./create");
 const {updateEmployee} = require("./update");
 const {findByIdEmployee, loginUserStep1ByUsername, findByUsernameUserSetupBiometric} = require("./query_employees");
 const {createEmployeeImported} = require("./createImported");
+const exportExcelImpl = require("../../exportExcelImpl2");
+const {mapExportRow} = require("./employee_funcs");
+const {processFileImport} = require("./processFileImport");
 
 const args = {
-    name: "Employee",
+    name: "Employees",
     tbl: "hr_employees",
     details_fragment: employee_details_fragment,
     order_by: `order_by: {employment_num: asc}`,
@@ -20,6 +25,8 @@ const path = 'employees';
 eventManager.on(`${path}/create`, createEmployee);
 
 eventManager.on(`${path}/imported/create`, createEmployeeImported);
+
+eventManager.on(`${path}/processFileImport`, processFileImport);
 
 eventManager.on(`${path}/update`, updateEmployee);
 
@@ -109,3 +116,10 @@ eventManager.on(`${path}/dashboard`, findByIdOrgHRDashboardStatsImpl());
 eventManager.on(`${path}/loginUserStep1ByUsername`, loginUserStep1ByUsername);
 
 eventManager.on(`${path}/findByUsernameUserSetupBiometric`, findByUsernameUserSetupBiometric);
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
+    ...args,
+    currDir: __dirname,
+    details_fragment: employee_export_details_fragment({incContractors: true}),
+    mapRow: mapExportRow,
+}));

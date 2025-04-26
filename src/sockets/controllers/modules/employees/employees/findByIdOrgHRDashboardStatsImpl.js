@@ -105,7 +105,21 @@ exports.findByIdOrgHRDashboardStatsImpl = () => {
 	        }
 	        supervisor_list_aggregate:hr_employees_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
-	            removed: {_eq: false}, supervisor_employee_list_aggregate: {count: {filter: {removed: {_gt: false}}, predicate: {_gt: 0}}}
+	            removed: {_eq: false}, 
+	            _or:{
+	            	supervisor_employee_list_aggregate: {
+	            		count: {
+	            			filter: {removed: {_eq: false}}, 
+	            			predicate: {_gt: 0}
+	            		}
+	            	},
+	            	supervisor_team_list_aggregate: {
+	            		count: {
+	            			filter: {status: {_eq: "Active"}}, 
+	            			predicate: {_gt: 0}
+	            		}
+	            	},
+	            }
 	        }){
 	            aggregate{
 	                count
@@ -750,22 +764,22 @@ exports.findByIdOrgHRDashboardStatsImpl = () => {
 	            }
 	        }
 	
-	        team_list_aggregate:default_teams_aggregate(where:{${org_id_key}:{_eq: $id}}){
+	        team_list_aggregate:default_teams_aggregate(where:{status: {_eq: "Active"}, ${org_id_key}:{_eq: $id}}){
 	            aggregate{
 	                count
 	            }
 	        }
-	        department_list_aggregate:default_departments_aggregate(where:{${org_id_key}:{_eq: $id}}){
+	        department_list_aggregate:default_departments_aggregate(where:{removed: {_eq: false}, ${org_id_key}:{_eq: $id}}){
 	            aggregate{
 	                count
 	            }
 	        }
-	        job_category_list_aggregate:default_job_categories_aggregate(where:{${org_id_key}:{_eq: $id}}){
+	        job_category_list_aggregate:default_job_categories_aggregate(where:{removed: {_eq: false}, ${org_id_key}:{_eq: $id}}){
 	            aggregate{
 	                count
 	            }
 	        }
-	        job_position_list_aggregate:default_job_positions_aggregate(where:{${org_id_key}:{_eq: $id}}){
+	        job_position_list_aggregate:default_job_positions_aggregate(where:{removed: {_eq: false}, ${org_id_key}:{_eq: $id}}){
 	            aggregate{
 	                count
 	            }

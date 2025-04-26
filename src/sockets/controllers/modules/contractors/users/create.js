@@ -5,8 +5,8 @@ const {user_details_fragment: details_fragment} = require("./commons");
 const {orgs_contractor_fragment} = require("../../../../../graphql/Fragments");
 const {
     listClientInstalledPermissionModulesAsNewPermissions
-} = require("../../../general/modules/query_modules");
-const {listAllPermissionOtherKeysAsNewPermissions} = require("../../../general/permissions/other-keys/query_other_keys");
+} = require("../../../default/modules/query_modules");
+const {listAllPermissionOtherKeysAsNewPermissions} = require("../../../default/permissions/other-keys/query_other_keys");
 
 const args = {
     name: "ContractorUser",

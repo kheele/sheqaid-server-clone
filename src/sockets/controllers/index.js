@@ -1,6 +1,7 @@
 require("../eventManager");
 require("./ACntr");
 
+require("./default");
 require("./general");
 require("./modules");
 

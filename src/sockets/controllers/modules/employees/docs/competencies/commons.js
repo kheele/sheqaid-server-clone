@@ -14,6 +14,10 @@ exports.inc_fragment = ({removed, inc_employee = false, }) => {
         issued_date
         expiry_date
         expiry_updated
+        course{
+            id
+            name
+        }
         training{
             id
             course{

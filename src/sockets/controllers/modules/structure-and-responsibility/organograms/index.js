@@ -2,7 +2,7 @@ const findByIdImpl = require('../../findByIdImpl');
 const listByLoggedImpl = require('../../listByLoggedImpl');
 const {organogram_details_fragment} = require("./commons");
 const updateImpl = require("../../updateImpl");
-const {getVariablesAndQueryConfig} = require("../../sites/commons");
+const {getVariablesAndQueryConfig} = require("../../../general/sites/commons");
 const {employee_personal_details_fragment} = require("../../../../../graphql/Fragments");
 const {createOrganogram} = require("./create");
 
@@ -11,7 +11,7 @@ const args = {
     tbl: "sheq_organograms",
     details_fragment: organogram_details_fragment,
     uploadUpdate: ({id}) => ({
-        new_name: `organograms/${id}/organogram-doc-${Dates.formatTimestamp(new Date())}`,
+        new_name: `organograms/${id}/organogram-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
         key: 'doc',
     }),
     getVariablesAndQueryConfig,

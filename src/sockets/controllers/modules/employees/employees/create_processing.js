@@ -9,6 +9,8 @@ const {createWarning} = require("../docs/warnings/create");
 const {createTimeOff} = require("../docs/leaves/create");
 const {createIDOrPassport} = require("../docs/documents/id-or-passports/create");
 const {createPrDP} = require("../docs/documents/prdp/create");
+const {createBankingDetail} = require("../docs/documents/banking-details/create");
+const {createResidentialAddress} = require("../docs/documents/living-address/create");
 
 exports.processFormData = (input) => {
     const data = {};
@@ -384,6 +386,9 @@ const funs = {
 };
 
 exports.listCreateFuns = {
+    living_address_list: createResidentialAddress,
+    banking_detail_list: createBankingDetail,
+
     // document_list: createIDOrPassport, createPrDP,
     document_list__id_or_passport: createIDOrPassport,
     document_list__prdp: createPrDP,

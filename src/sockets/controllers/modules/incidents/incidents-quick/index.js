@@ -1,55 +1,28 @@
-const findByIdImpl = require('./findByIdImpl');
-const listImpl = require('./listImpl');
+const findByIdImpl = require('../../findByIdImpl');
+const listByLoggedImpl = require('../../listByLoggedImpl');
 const findByIdDashboardImpl = require('./findByIdDashboardImpl');
-const exportExcelImpl = require("../../exportExcelImpl");
+const exportExcelImpl = require("../../exportExcelImpl2");
+const {mapExportRow} = require("./incidents_quick_funcs");
+const {incident_quick_details_fragment, getVariablesAndQueryConfig} = require("./commons");
 
-eventManager.on("incidents-quick/findById", findByIdImpl);
+const args = {
+	name: "QuickIncidents",
+	tbl: "sheq_incident_investigation_quick",
+	details_fragment: incident_quick_details_fragment,
+	order_by: `order_by: {incident_date: desc}`,
+	getVariablesAndQueryConfig,
+};
 
-eventManager.on("incidents-quick/listByLogged", listImpl);
+const path = 'incidents-quick';
 
-eventManager.on("incidents-quick/dashboard", findByIdDashboardImpl);
+eventManager.on(`${path}/findById`, findByIdImpl(args));
 
-eventManager.on("incidents-quick/export-excel", exportExcelImpl({
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+eventManager.on(`${path}/dashboard`, findByIdDashboardImpl);
+
+eventManager.on(`${path}/export-excel`, exportExcelImpl({
+	...args,
 	currDir: __dirname,
-	name: "Quick-Incidents",
-	listImpl,
-	mapRow: (item, idx) => {
-		let {
-			id,
-			data: {
-				created_at,
-				//0
-				company, client, project, site,
-				//1
-				exact_location,
-				latitude,
-				longitude,
-				short_desc,
-				incident_date,
-				incident_time,
-				date_reported,
-				time_reported,
-				time_shift,
-			}
-		} = item;
-		
-		client = client || company;
-		
-		return {
-			idx: idx + 1,
-			//0
-			project: project && project.name,
-			site: site && site.name,
-			//1
-			exact_location,
-			latitude,
-			longitude,
-			short_desc,
-			incident_date,
-			incident_time,
-			date_reported,
-			time_reported,
-			time_shift,
-		};
-	},
+	mapRow: mapExportRow,
 }));

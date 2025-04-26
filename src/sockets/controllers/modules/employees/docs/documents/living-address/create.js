@@ -27,7 +27,7 @@ const args = {
         }
     `,
     uploadUpdate: ({id, data: {employee}}) => ({
-        new_name: `employees/${employee.id}/docs/residential-addresses/residential-address-${id}-${Dates.formatTimestamp(new Date())}`,
+        new_name: `employees/${employee.id}/docs/residential-addresses/residential-address-${id}-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
         key: 'doc',
     }),
     orgs_fragment: null,
