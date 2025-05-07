@@ -104,6 +104,8 @@ const processDocumentsFormData = (formData) => {
     let {
         'document_list__ID/Passport': document_list__id_or_passport,//
         'document_list__PrDP': document_list__prdp,//
+        // document_list__id_or_passport,//
+        // document_list__prdp,//
         license_list,//
 
         competency_list,//

@@ -6,7 +6,7 @@ const args = {
     tbl: 'hr_employees_docs_contracts',
     details_fragment: inc_fragment({inc_employee: true}),
     uploadUpdate: ({id, data: {employee}}) => {
-        const d = Dates.formatTimestamp(new Date());
+        const d = Dates.formatTimestamp(new Date()).replaceAll(" ", "-").replaceAll(":", "-");
         const path = `employees/${employee.id}/docs/contracts/${id}`;
         return {
             new_names: [
@@ -59,7 +59,7 @@ exports.createContract = async (socket, input) => {
     };
 
     if (contractDetailsFormData) {
-        const {
+        let {
             contract_type,
             start_date,
             expiry_date,
@@ -69,6 +69,16 @@ exports.createContract = async (socket, input) => {
             daily_working_hours,
             notes,
         } = contractDetailsFormData;
+        if(start_time) {
+            if(start_time.length > 5) {
+                start_time = start_time.substring(0, 5);
+            }
+        }
+        if(end_time) {
+            if(end_time.length > 5) {
+                end_time = end_time.substring(0, 5);
+            }
+        }
         data.contract_details_list = {
             data: [{
                 contract_type,

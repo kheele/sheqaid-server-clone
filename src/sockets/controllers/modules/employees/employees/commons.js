@@ -122,17 +122,17 @@ exports.employee_details_fragment = `
       count
     }
   }
-  job_observation_list{
+  job_observation_list(where: {removed: {_eq: false}}){
     id
     name
   }
   
-  banking_detail_list_aggregate{
+  banking_detail_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
   }
-  banking_detail_list{
+  banking_detail_list(where: {removed: {_eq: false}}){
     id
     created_at
     name
@@ -142,12 +142,12 @@ exports.employee_details_fragment = `
     doc
     is_default
   }
-  living_address_list_aggregate{
+  living_address_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
   }
-  living_address_list{
+  living_address_list(where: {removed: {_eq: false}}){
     id
     created_at
     local_address
@@ -167,24 +167,24 @@ exports.employee_details_fragment = `
       name
     }
   }
-  dependent_list_aggregate{
+  dependent_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
   }
-  dependent_list{
+  dependent_list(where: {removed: {_eq: false}}){
     id
     fname
     lname
     dob
     gender
   }
-  next_of_kin_list_aggregate{
+  next_of_kin_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
   }
-  next_of_kin_list{
+  next_of_kin_list(where: {removed: {_eq: false}}){
     id
     fname
     lname
@@ -423,7 +423,7 @@ exports.employee_details_fragment = `
     expiry_date
     expiry_updated
   }
-  license_list_aggregate{
+  license_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
@@ -448,7 +448,9 @@ exports.employee_details_fragment = `
     created_at
     removed
     annexture_3
+    fitness_option
     restrictions
+    annexture3_doc
     doc
     expiry_date
     expiry_updated
@@ -499,7 +501,7 @@ exports.employee_details_fragment = `
         ${signable_doc_template_details_fragment}
     }
   }
-  work_permit_list_aggregate{
+  work_permit_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
@@ -515,7 +517,7 @@ exports.employee_details_fragment = `
     expiry_updated
   }
 
-  document_list_aggregate{
+  document_list_aggregate(where: {removed: {_eq: false}}){
     aggregate{
       count
     }
@@ -530,7 +532,7 @@ exports.employee_details_fragment = `
       count
     }
   }
-  document_list{
+  document_list(where: {removed: {_eq: false}}){
     id
     created_at
     expiry_date
@@ -718,7 +720,7 @@ exports.employee_details_list_fragment = ({incContractors}) => `
             count
         }
     }
-    job_observation_list{
+    job_observation_list(where: {removed: {_eq: false}}){
         id
         name
     }

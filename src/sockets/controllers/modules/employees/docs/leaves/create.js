@@ -6,7 +6,7 @@ const args = {
     tbl: 'hr_employees_docs_leaves',
     details_fragment: inc_fragment({inc_employee: true}),
     uploadUpdate: ({id, data: {employee}}) => {
-        const d = Dates.formatTimestamp(new Date());
+        const d = Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-');
         const path = `employees/${employee.id}/docs/leaves/${id}`;
         return {
             new_names: [

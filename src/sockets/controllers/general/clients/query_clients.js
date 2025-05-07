@@ -1,6 +1,7 @@
 const findByIdImpl = require("../../modules/findByIdImpl");
 const findImpl = require("../../modules/findImpl");
 const {details_fragment} = require("./commons");
+const listByLoggedImpl = require("../../modules/listByLoggedImpl");
 
 const args = {
     name: "Clients",
@@ -29,6 +30,25 @@ exports.findByIdClient = async (socket, id) => {
         `,
     });
     return findById(socket, id);
+};
+//</editor-fold>
+
+//<editor-fold desc="listByCompanyIdClients">
+exports.listByCompanyIdClients = async (socket, company_id) => {
+    const listByLogged = listByLoggedImpl({
+        ...args,
+        details_fragment,
+        orgs_fragment: `
+            company {
+                id
+                name
+            }
+        `,
+        getVariablesAndQueryConfig: ({company_id}) => {
+            return {filter: `removed: {_eq: false}, company_id: {_eq: ${company_id}}`};
+        }
+    });
+    return listByLogged(socket, {company_id});
 };
 //</editor-fold>
 

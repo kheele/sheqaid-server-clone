@@ -8,6 +8,7 @@ exports.getVariablesAndQueryConfig = (
 		//
 		id,
 		//
+		removed = false,
 		view,
 		mon, mon2, mon3,
 		expiry_date = 'ALL',
@@ -64,6 +65,10 @@ exports.getVariablesAndQueryConfig = (
 	if (id) {
 		filter.push(`id: {_eq: ${id}}`);
 	} else {
+		if (view !== "Employee") {
+			filterEmployee.push(`removed: {_eq: ${removed}}`);
+		}
+
 		if (logged_employee_id) {
 			if (view === "Employee") {
 				filterEmployee.push(`id: {_eq: ${logged_employee_id}}`);

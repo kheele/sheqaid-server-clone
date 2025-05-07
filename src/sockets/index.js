@@ -34,14 +34,20 @@ exports.start = async ({server, corsOptions, getRedisClient, sessionMiddleware, 
 
     const {pubClient, subClient} = getRedisClient();
 
-    await Promise.all([
-        pubClient.connect(),
-        subClient.connect()
-    ]);
+    const serverOpts = {};
+
+    if(isProduction) {
+        await Promise.all([
+            pubClient.connect(),
+            subClient.connect()
+        ]);
+
+        // serverOpts.adapter = createAdapter(pubClient, subClient);
+        serverOpts.adapter = createShardedAdapter(pubClient, subClient);
+    }
 
     global.io = new Server(server, {
-        adapter: createAdapter(pubClient, subClient),
-        // adapter: createShardedAdapter(pubClient, subClient),
+        ...serverOpts,
         maxHttpBufferSize: 10e8, // 1000 MB
         cors: corsOptions,
         transports: ['websocket'],

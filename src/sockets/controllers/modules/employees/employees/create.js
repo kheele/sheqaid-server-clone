@@ -30,61 +30,11 @@ const args = {
 };
 
 //<editor-fold desc="createEmployee">
-exports.createEmployee = async (socket, inputRaw) => {
+exports.createEmployee = async (socket, input) => {
     const is = await socket.is();
     if (!is) return;
 
-    const {session} = socket.request;
-
-    if(inputRaw === "START"){
-        session.newEmployeeInput = {};
-        session.save();
-        return;
-    }
-    if(!isString(inputRaw)) {
-        if (
-            'formData' in inputRaw &&
-            'optionalInfoFormData' in inputRaw
-        ) {
-            session.newEmployeeInput.formData = inputRaw.formData;
-            if (inputRaw.optionalInfoFormData) {
-                session.newEmployeeInput.optionalInfoFormData = inputRaw.optionalInfoFormData;
-            }
-            session.save();
-            return;
-        }
-        if (
-            'counselingFormData' in inputRaw &&
-            'warningFormData' in inputRaw &&
-            'timeOffFormData' in inputRaw
-        ) {
-            if (inputRaw.counselingFormData) {
-                session.newEmployeeInput.counselingFormData = inputRaw.counselingFormData;
-            }
-            if (inputRaw.warningFormData) {
-                session.newEmployeeInput.warningFormData = inputRaw.warningFormData;
-            }
-            if (inputRaw.timeOffFormData) {
-                session.newEmployeeInput.timeOffFormData = inputRaw.timeOffFormData;
-            }
-            session.save();
-            return;
-        }
-        if ('documentsFormData' in inputRaw) {
-            if (inputRaw.documentsFormData) {
-                session.newEmployeeInput.documentsFormData = inputRaw.documentsFormData;
-            }
-            session.save();
-            return;
-        }
-    }
-    if(inputRaw === "END"){
-        //continue
-    }
-
     const {isContractor} = is;
-
-    const {newEmployeeInput: input} = session;
 
     const {
         formData,
@@ -111,7 +61,10 @@ exports.createEmployee = async (socket, inputRaw) => {
     const newDataSavedLater = {};
     Object.keys(newData).forEach(key => {
         if (
-            key.endsWith("_list") &&
+            (
+                key.endsWith("_list") ||
+                ['document_list__id_or_passport', 'document_list__prdp'].contains(key)
+            ) &&
             !['next_of_kin_list', 'dependent_list'].contains(key)
         ) {
             newDataSavedLater[key] = newData[key];

@@ -66,6 +66,7 @@ module.exports = async (config) => {
         //
         id,
         //
+        removed,
         view,
         mon, mon2, mon3,
         expiry_date,
@@ -101,6 +102,7 @@ module.exports = async (config) => {
                 query listAllByGroup${singularQueryName}ByLoggedQuery {
                   hr_employees(
                       where: {
+                          removed: {_eq: ${removed}},
                           ${listName}_aggregate: {
                             count: {
                               predicate: {_gt: 0},

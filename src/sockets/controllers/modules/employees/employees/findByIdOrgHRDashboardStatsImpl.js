@@ -106,20 +106,20 @@ exports.findByIdOrgHRDashboardStatsImpl = () => {
 	        supervisor_list_aggregate:hr_employees_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
 	            removed: {_eq: false}, 
-	            _or:{
+	            _or:[{
 	            	supervisor_employee_list_aggregate: {
 	            		count: {
 	            			filter: {removed: {_eq: false}}, 
 	            			predicate: {_gt: 0}
 	            		}
-	            	},
-	            	supervisor_team_list_aggregate: {
+	            	}},
+	            	{supervisor_team_list_aggregate: {
 	            		count: {
 	            			filter: {status: {_eq: "Active"}}, 
 	            			predicate: {_gt: 0}
 	            		}
 	            	},
-	            }
+	            }]
 	        }){
 	            aggregate{
 	                count

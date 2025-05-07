@@ -2,6 +2,7 @@ const findByIdImpl = require('./findByIdImpl');
 const listByLoggedImpl = require("../../listByLoggedImpl");
 const exportExcelImpl = require("../../exportExcelImpl");
 const {training_course_details_fragment, getVariablesAndQueryConfig} = require("./commons");
+const {createCourse} = require("./create");
 
 const args = {
 	name: 'Courses',
@@ -11,11 +12,15 @@ const args = {
 	getVariablesAndQueryConfig,
 };
 
-eventManager.on("trainings/courses/findById", findByIdImpl);
+const path = `trainings/courses`;
 
-eventManager.on("trainings/courses/listByLogged", listByLoggedImpl(args));
+eventManager.on(`${path}/create`, createCourse);
 
-// eventManager.on("trainings/courses/export-excel", exportExcelImpl({
+eventManager.on(`${path}/findById`, findByIdImpl);
+
+eventManager.on(`${path}/listByLogged`, listByLoggedImpl(args));
+
+// eventManager.on(`${path}/export-excel`, exportExcelImpl({
 // 	currDir: __dirname,
 // 	name: "TrainingCourses",
 // 	listImpl,

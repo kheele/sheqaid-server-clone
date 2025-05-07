@@ -21,10 +21,17 @@ const args = {
 	name: 'Medicals',
 	tbl: 'hr_employees_docs_medicals',
 	details_fragment: inc_fragment({inc_employee: true}),
-	uploadUpdate: ({id, data: {employee}}) => ({
-		new_name: `employees/${employee.id}/docs/medicals/${id}/Medical-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
-		key: 'doc',
-	}),
+	uploadUpdate: ({id, data: {employee}}) => {
+		const d = Dates.formatTimestamp(new Date());
+		const path = `employees/${employee.id}/docs/medicals/${id}`;
+		return {
+			new_names: [
+				`${path}/Medical-doc-${d}`,
+				`${path}/Medical-Annexture3-doc-${d}`,
+			],
+			keys: ['doc', 'annexture3_doc'],
+		};
+	},
 };
 
 const path = `employees/docs/medicals`;

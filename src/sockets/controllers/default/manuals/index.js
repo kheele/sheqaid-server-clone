@@ -43,7 +43,7 @@ const processUrls = (item) => {
 
     {
         const pdf_url = {
-            1: "https://assets.api.gamma.app/export/pdf/b3fbhyf3z1zsnz6/6cfd88075e88fc11dcc33cade282ad8c/SHEQ-Intel-Employee-Management.pdf",
+            1: "https://storage.googleapis.com/sheqsolve.appspot.com/manuals/hr/SHEQ-Intel-Employee-Management.pdf",
             // 2: "asset-management-vnzdgxp",
             // 3: "sheq-management-ppfhov9",
         }[id];
