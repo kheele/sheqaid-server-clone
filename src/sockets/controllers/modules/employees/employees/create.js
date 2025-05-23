@@ -30,9 +30,136 @@ const args = {
 };
 
 //<editor-fold desc="createEmployee">
-exports.createEmployee = async (socket, input) => {
+exports.createEmployee = async (socket, inputRaw) => {
     const is = await socket.is();
     if (!is) return;
+
+    const {session} = socket.request;
+
+    if (inputRaw === "START") {
+        session.newEmployeeInput = {};
+        session.save();
+        return;
+    }
+    if (!isString(inputRaw)) {
+        if (
+            'formData' in inputRaw &&
+            'optionalInfoFormData' in inputRaw
+        ) {
+            session.newEmployeeInput.formData = inputRaw.formData;
+            if (inputRaw.optionalInfoFormData) {
+                session.newEmployeeInput.optionalInfoFormData = inputRaw.optionalInfoFormData;
+            }
+            session.save();
+            return;
+        }
+
+        //NB: Saved separately
+        // if ('counselingFormData' in inputRaw) {
+        //     if (inputRaw.counselingFormData) {
+        //         session.newEmployeeInput.counselingFormData = inputRaw.counselingFormData;
+        //     }
+        //     session.save();
+        //     return;
+        // }
+        //NB: Saved separately
+        // if ('warningFormData' in inputRaw) {
+        //     if (inputRaw.warningFormData) {
+        //         session.newEmployeeInput.warningFormData = inputRaw.warningFormData;
+        //     }
+        //     session.save();
+        //     return;
+        // }
+        //NB: Saved separately
+        // if ('timeOffFormData' in inputRaw) {
+        //     if (inputRaw.timeOffFormData) {
+        //         session.newEmployeeInput.timeOffFormData = inputRaw.timeOffFormData;
+        //     }
+        //     session.save();
+        //     return;
+        // }
+
+        // if ('documentsFormData' in inputRaw) {
+        //     if (inputRaw.documentsFormData) {
+        //         session.newEmployeeInput.documentsFormData = inputRaw.documentsFormData;
+        //     }
+        //     session.save();
+        //     return;
+        // }
+
+        if (!session.newEmployeeInput.documentsFormData) {
+            session.newEmployeeInput.documentsFormData = {};
+            session.save();
+        }
+
+        if ('document_list__ID/Passport' in inputRaw || 'document_list__id_or_passport' in inputRaw) {
+            if (inputRaw['document_list__ID/Passport']) {
+                session.newEmployeeInput.documentsFormData['document_list__ID/Passport'] = inputRaw['document_list__ID/Passport'];
+            } else if (inputRaw['document_list__id_or_passport']) {
+                session.newEmployeeInput.documentsFormData['document_list__ID/Passport'] = inputRaw['document_list__id_or_passport'];
+            }
+            session.save();
+            return;
+        }
+        if ('document_list__PrDP' in inputRaw || 'document_list__prdp' in inputRaw) {
+            if (inputRaw['document_list__PrDP']) {
+                session.newEmployeeInput.documentsFormData['document_list__PrDP'] = inputRaw['document_list__PrDP'];
+            } else if (inputRaw['document_list__prdp']) {
+                session.newEmployeeInput.documentsFormData['document_list__PrDP'] = inputRaw['document_list__prdp'];
+            }
+            session.save();
+            return;
+        }
+        if ('license_list' in inputRaw) {
+            if (inputRaw.license_list) {
+                session.newEmployeeInput.documentsFormData.license_list = inputRaw.license_list;
+            }
+            session.save();
+            return;
+        }
+        if ('competency_list' in inputRaw) {
+            if (inputRaw.competency_list) {
+                session.newEmployeeInput.documentsFormData.competency_list = inputRaw.competency_list;
+            }
+            session.save();
+            return;
+        }
+        if ('contract_list' in inputRaw) {
+            if (inputRaw.contract_list) {
+                session.newEmployeeInput.documentsFormData.contract_list = inputRaw.contract_list;
+            }
+            session.save();
+            return;
+        }
+        if ('medical_list' in inputRaw) {
+            if (inputRaw.medical_list) {
+                session.newEmployeeInput.documentsFormData.medical_list = inputRaw.medical_list;
+            }
+            session.save();
+            return;
+        }
+        if ('work_permit_list' in inputRaw) {
+            if (inputRaw.work_permit_list) {
+                session.newEmployeeInput.documentsFormData.work_permit_list = inputRaw.work_permit_list;
+            }
+            session.save();
+            return;
+        }
+        if ('job_appointment_list' in inputRaw) {
+            if (inputRaw.job_appointment_list) {
+                session.newEmployeeInput.documentsFormData.job_appointment_list = inputRaw.job_appointment_list;
+            }
+            session.save();
+            return;
+        }
+    }
+
+    const {newEmployeeInput: input} = session;
+    if (inputRaw === "END") {
+        delete session.newEmployeeInput;
+        session.save();
+        //continue
+    }
 
     const {isContractor} = is;
 
@@ -55,22 +182,22 @@ exports.createEmployee = async (socket, input) => {
         site,
     } = formData;
 
-    console.log('input', input);
+    // console.log('input', input);
 
     const newData = processFormData(input);
     const newDataSavedLater = {};
     Object.keys(newData).forEach(key => {
         if (
             (
-                key.endsWith("_list") ||
-                ['document_list__id_or_passport', 'document_list__prdp'].contains(key)
-            ) &&
-            !['next_of_kin_list', 'dependent_list'].contains(key)
+                key.endsWith("_list") &&
+                !['next_of_kin_list', 'dependent_list'].contains(key)
+            ) ||
+            ['document_list__id_or_passport', 'document_list__prdp'].contains(key)
         ) {
             newDataSavedLater[key] = newData[key];
             delete newData[key];
         }
-    })
+    });
 
     const data = {
         // profile_pic: profile_pic && {path: await toDataURI(profile_pic.path)},
@@ -199,15 +326,16 @@ exports.createEmployee = async (socket, input) => {
             }));
         }
 
+        console.log('new employee process count', promises.length);
         for (let n = 0; n < promises.length; n++) {
             const promise = promises[n];
-            console.log('new employee process', n+1);
+            console.log('new employee process', n + 1);
             const res = await promise;
-            console.log('new employee process', n+1, 'res', res);
+            console.log('new employee process', n + 1, 'res', res.id);
         }
 
         console.log('savedItem1', savedItem);
-        console.log('savedItem2', await findByIdEmployee(id));
+        // console.log('savedItem2', await findByIdEmployee(id));
 
         // console.log('new employee response', res);
 

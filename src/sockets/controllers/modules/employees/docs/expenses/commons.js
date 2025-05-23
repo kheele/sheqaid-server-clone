@@ -11,13 +11,13 @@ exports.inc_fragment = ({removed, inc_employee = false,}) => {
         doc
         amount
         status
-            currency_country{
+        currency_country{
                 id
                 name
                 currency
                 currency_name
                 iso2
-            }
+        }
         paid_with
         comments
         date_submitted

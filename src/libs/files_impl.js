@@ -16,6 +16,20 @@ const {Readable} = require('stream');
 
 exports.createFaceUrl = (uid) => `faces/${uid}/face.png`;
 
+const getContentType = (datauri_or_buffer) => {
+    // if (typeof datauri_or_buffer === 'string') {
+    const parts = datauri_or_buffer.split(',');
+    return parts[0].replace('data:', '').split(';')[0];
+    // } else {
+    // 	try {
+    // 		const res = await fileTypeFromBuffer(datauri_or_buffer);
+    // 		return res.contentType;
+    // 	} catch (err) {
+    // 		console.log('getContentType err', err);
+    // 	}
+    // }
+};
+
 function isBuffer(buffer) {
     try {
         return !!Buffer.from(buffer.data);
@@ -48,17 +62,14 @@ function extractFileBuffer(buffer) {
 //<editor-fold desc="uploadFile">
 global.uploadFile = async (doc, filePath) => {
     if (doc.buffer || (doc.path && doc.path.buffer)) {
-        if(doc.path && doc.path.buffer) {
+        if (doc.path && doc.path.buffer) {
             doc.buffer = doc.path;
         }
 
         doc.buffer = extractFileBuffer(doc.buffer);
-
-        // console.log('doc.buffer1', doc.buffer);
-        // console.log('doc.buffer2', Buffer.isBuffer(doc.buffer));
     }
 
-    // console.log('uploadFile doc.buffer', typeof doc.buffer, doc.buffer instanceof Buffer);
+    console.log('uploadFile doc.buffer', typeof doc.buffer, doc.buffer instanceof Buffer);
 
     return socketFileUploader.emit('emit', {
         path: 'uploadFile',
@@ -68,6 +79,52 @@ global.uploadFile = async (doc, filePath) => {
         return res;
     });
 };
+// global.uploadFile = async (doc, filePath) => {
+//     const contentType = isString(doc) ? getContentType(doc) : doc.contentType;
+//     const filename = doc.filename;
+//
+//     let file;
+//     if (isString(doc)) {
+//         file = doc;
+//     } else {
+//         if (doc.buffer || (doc.path && doc.path.buffer)) {
+//             if (doc.path && doc.path.buffer) {
+//                 doc.buffer = doc.path;
+//             }
+//
+//             doc.buffer = extractFileBuffer(doc.buffer);
+//         }
+//
+//         try {
+//             file = Buffer.from(doc.buffer.data);
+//         } catch (err) {
+//             file = Buffer.from(doc.buffer);
+//         }
+//     }
+//
+//     const ext = mime.getExtension(contentType);
+//     console.log('uploadFile', filename, ext, contentType);
+//
+//     const options = {
+//         resumable: false,
+//         metadata: {
+//             contentType,
+//         }
+//     };
+//
+//     const newName = `${filePath}/${filename || `${new Date().getTime()}-doc.${ext}`}`;
+//
+//     const storageBucket = adminStorage.bucket(DEFAULT_BUCKET);
+//     let bucketFile = await storageBucket.file(newName);
+//     return bucketFile.save(file, options).then(async () => {
+//         const gcsUri = "gs://" + DEFAULT_BUCKET + "/" + newName;
+//         const dlUrls = await bucketFile.getSignedUrl({
+//             action: 'read',
+//             expires: '03-17-2099',
+//         });
+//         return {gcsUri, dlUrls};
+//     });
+// };
 //</editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="loadFaceModels">
@@ -171,11 +228,11 @@ global.uploadFilesUpdate = async ({id, doc, key, new_name, onUpdate}) => {
 
     const {path, buffer} = doc;
     if (buffer || path) {
-        if(path) {
+        if (path) {
             delete doc.path;
             if (path.buffer) {
                 doc = path;
-            } else if(isString(path)) {
+            } else if (isString(path)) {
                 doc.buffer = Buffer.from(path);
                 doc.contentType = path.split(';')[0].split(':')[1];
             }

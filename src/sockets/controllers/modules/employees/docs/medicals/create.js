@@ -31,6 +31,7 @@ exports.createMedical = async (socket, input) => {
 
     const {
         embeddedEmployee, employee,//
+        follow_up_date, //
         expiry_date, //
         annexture_3,//
         fitness_option,//
@@ -48,6 +49,7 @@ exports.createMedical = async (socket, input) => {
         annexture3_doc,
         doc,
 
+        follow_up_date: Dates.formatTimestampSQL(follow_up_date),
         expiry_date: Dates.formatTimestampSQL(expiry_date),
         fitness_option,
         restrictions,

@@ -26,8 +26,8 @@ exports.run = async (data) => {
 
     const run = (n) => {
         list(null, {
-            limit: 1,
-            offset: 0 + n,
+            limit: 20,
+            offset: 20 * n,
         }).then(async res => {
             await Promise.all(res.filter(({data: {[key]: doc}}) => !!doc && doc.buffer).map(async item => {
                 const {id, data: {employee_id, [key]: doc}} = item;
@@ -82,7 +82,7 @@ exports.run = async (data) => {
             });
         });
     };
-    run(1);
+    run(0);
     // run(1, 'path.path.path');
 };
 

@@ -2,7 +2,7 @@ const findByIdImpl = require("./findByIdImpl");
 const updateImpl = require("./updateImpl");
 const createImpl = require("./createImpl");
 
-//<editor-fold desc="updateImpl">
+//<editor-fold desc="upsetImpl">
 module.exports = (config) => {
     return async (socket, attrs) => {
         if (!attrs) return;

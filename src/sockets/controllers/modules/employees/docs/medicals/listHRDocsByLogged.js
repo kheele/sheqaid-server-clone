@@ -5,6 +5,7 @@ const {inc_fragment} = require("./commons");
 module.exports = async (socket, data) => {
     const {
         fitness_option,
+        follow_up_date_range,
         annexture_3,
     } = data;
     return listHRDocsByLoggedImpl({
@@ -16,6 +17,7 @@ module.exports = async (socket, data) => {
         inc_fragment,
         attrs: {
             fitness_option,
+            follow_up_date_range,
             annexture_3,
         },
     });

@@ -6,6 +6,7 @@ exports.inc_fragment = ({removed, inc_employee = false,}) => {
         id
         created_at
         removed
+        follow_up_date
         annexture_3
         fitness_option
         restrictions

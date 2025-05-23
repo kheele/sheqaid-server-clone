@@ -28,7 +28,7 @@ module.exports = (config) => {
         const __orgs_fragment = orgs_fragment_override === null ? '' : orgs_fragment_override || orgs_fragment;
         details_fragment = await getDetailsFragment({socket, data, details_fragment});
 
-        console.log('tbl------------', tbl, data)
+        // console.log('tbl------------', tbl, data)
         tbl = isFunction(tbl) ? tbl(data) : tbl;
 
         if(order_by) {
@@ -97,9 +97,9 @@ module.exports = (config) => {
 
             limit = isNumber(limit) ? limit : _limit;
 
-            console.log('listImpl1', orgs_filter)
+            // console.log('listImpl1', orgs_filter)
             // const orgs_filter = noFilter ? [] : socket.orgsFilter(data);
-            console.log('listImpl2', noFilter ? [] : socket && socket.orgsFilter(data))
+            // console.log('listImpl2', noFilter ? [] : socket && socket.orgsFilter(data))
 
             let remove_args;
             if(data) {

@@ -1,6 +1,6 @@
 const {
 	employee_personal_details_fragment,
-	personal_details_other_fragment,
+	personal_details_other_fragment, employee_basic_personal_details_fragment,
 } = require("../../../../graphql/Fragments");
 
 //<editor-fold desc="getVariablesAndQueryConfig">
@@ -446,7 +446,7 @@ exports.incident_details_one_fragment = incident_details_one_fragment = `
   witness_list{
     id
     witness{
-      ${employee_personal_details_fragment}
+      ${employee_basic_personal_details_fragment}
     }
     witness_other{
       ${personal_details_other_fragment}

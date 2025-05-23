@@ -13,6 +13,7 @@ exports.getVariablesAndQueryConfig = (
 		mon, mon2, mon3,
 		expiry_date = 'ALL',
 		date_range,
+		follow_up_date_range,
 		issued_date,
 		date,
 		isContract = false,

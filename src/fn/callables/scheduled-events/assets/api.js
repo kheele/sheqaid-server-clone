@@ -1,5 +1,6 @@
 const {send: send__users} = require("./send__users");
 const {send: send__employees} = require("./send__employees");
+const {employee_personal_details_fragment} = require("../../../../graphql/Fragments");
 
 //<editor-fold desc="where">
 const where_expired = `
@@ -71,13 +72,7 @@ const fragment = `
         phone
       }
       responsible_person{
-        id
-        lname
-        fname
-        id_num
-        passport_num
-        email
-        phone
+        ${employee_personal_details_fragment}
       }
       selected_source_site {
         id

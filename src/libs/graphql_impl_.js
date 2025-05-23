@@ -21,7 +21,7 @@ global.sendGraphQL = async (args) => {
         }
     }
 
-    console.log('hasura headers:', headers);
+    // console.log('hasura headers:', headers);
 
     if (mutation) {
         return fetch(process.env.ENDPOINT_HASURA_GRAPHQL, {

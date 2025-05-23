@@ -11,6 +11,7 @@ exports.inc_fragment = ({removed, inc_employee = false,}) => {
         id
         created_at
         removed    
+        category_of_misconduct    
         type
         details
         employee_comments

@@ -128,6 +128,7 @@ async function upload({input, id, tbl, new_name, name, key}) {
     if (doc) {
         return await uploadFilesUpdate({
             id,
+            key,
             doc,
             new_name,
             onUpdate: async ({ id, ...attrs }) => {

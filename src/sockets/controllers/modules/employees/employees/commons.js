@@ -1,6 +1,6 @@
 const {signable_doc_template_details_fragment} = require("../../../default/doc-signing-settings/templates/commons");
 const {signable_doc_submitter_details_fragment} = require("../../../default/doc-signing-settings/submitters/commons");
-const {employee_personal_details_fragment} = require("../../../../../graphql/Fragments");
+const {employee_personal_details_fragment, employee_basic_personal_details_fragment} = require("../../../../../graphql/Fragments");
 
 //<editor-fold desc="getVariablesAndQueryConfig">
 exports.getVariablesAndQueryConfig = (
@@ -360,28 +360,12 @@ exports.employee_details_fragment = `
     reasons
     types
     responsible_person{
-      id
-      fname
-      lname
-      email
-      phone
-      id_num
-      passport_num
-      profile_pic
-      employment_num
+      ${employee_basic_personal_details_fragment}
     }
     witness_list{
       id
       witness{
-        id
-        fname
-        lname
-        email
-        phone
-        id_num
-        passport_num
-        profile_pic
-        employment_num
+        ${employee_basic_personal_details_fragment}
       }
     }
     signable_doc_template_list{
@@ -447,6 +431,7 @@ exports.employee_details_fragment = `
     id
     created_at
     removed
+    follow_up_date
     annexture_3
     fitness_option
     restrictions
@@ -464,6 +449,7 @@ exports.employee_details_fragment = `
     id
     created_at
     removed
+    category_of_misconduct
     type
     details
     employee_comments
@@ -475,27 +461,11 @@ exports.employee_details_fragment = `
     witness_list{
       id
       witness{
-        id
-        fname
-        lname
-        email
-        phone
-        id_num
-        passport_num
-        profile_pic
-        employment_num
+        ${employee_basic_personal_details_fragment}
       }
     }
     issued_by{
-      id
-      fname
-      lname
-      email
-      phone
-      id_num
-      passport_num
-      profile_pic
-      employment_num
+      ${employee_basic_personal_details_fragment}
     }
     signable_doc_template_list{
         ${signable_doc_template_details_fragment}

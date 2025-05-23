@@ -79,6 +79,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
 				site,
 				employee,
 				date,
+				follow_up_date,
 				annexture_3,
 				fitness_option,
 				restrictions,
@@ -102,6 +103,7 @@ eventManager.on(`${path}/export-excel`, exportExcelImpl({
 			employment_num: employee && employee.employment_num,
 
 			date: Dates.formatDate(date),
+			follow_up_date: Dates.formatDate(follow_up_date),
 			annexture_3,
 			fitness_option,
 			restrictions,

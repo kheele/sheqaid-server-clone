@@ -73,9 +73,29 @@ const automate = require('./fn/automate');
 //     tbl: "hr_employees_docs_expenses",
 //     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/expenses/${id}/Expense-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
 // });
-/////
+////////////////////////
 // automate.run({
-//     name: 'Warning',
-//     tbl: 'hr_employees_docs_warnings',
-//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/warnings/${id}/Warning-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
+//     name: 'WorkPermit',
+//     tbl: 'hr_employees_docs_work_permits',
+//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/work-permits/${id}/Work-Permit-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
+// });
+// automate.run({
+//     name: 'License',
+//     tbl: 'hr_employees_docs_licenses',
+//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/licenses/${id}/License-doc-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
+// });
+// automate.run({
+//     name: 'IDOrPassport',
+//     tbl: 'hr_employees_documents',
+//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/document-${id}-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
+// });
+// automate.run({
+//     name: "EmployeeDocBankingDetail",
+//     tbl: "hr_employees_banking_details",
+//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/banking-details/banking_detail-${id}-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
+// });
+// automate.run({
+//     name: "EmployeeDocLivingAddress",
+//     tbl: "hr_employees_living_address",
+//     new_name: ({employee_id, id}) => `employees/${employee_id}/docs/residential-addresses/residential-address-${id}-${Dates.formatTimestamp(new Date()).replaceAll(':','-').replaceAll(' ','-')}`,
 // });

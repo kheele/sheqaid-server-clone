@@ -383,33 +383,74 @@ exports.findByIdOrgHRDashboardStatsImpl = () => {
 	                count
 	            }
 	        }
-	        leave_list_mon_expiry_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	        leave_list_awaiting_approval_aggregate:hr_employees_docs_leaves_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
-	            removed: {_eq: false}, expiry_date: {_gt: "now()", _lte: $mon}
+	            removed: {_eq: false}, status: {_eq: "Awaiting Approval"}
 	        }){
 	            aggregate{
 	                count
 	            }
 	        }
-	        leave_list_2mon_expiry_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	        leave_list_approved_aggregate:hr_employees_docs_leaves_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
-	            removed: {_eq: false}, expiry_date: {_gt: $mon, _lte: $mon2}
+	            removed: {_eq: false}, status: {_eq: "Approved"}
 	        }){
 	            aggregate{
 	                count
 	            }
 	        }
-	        leave_list_3mon_expiry_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	        leave_list_rejected_aggregate:hr_employees_docs_leaves_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
-	            removed: {_eq: false}, expiry_date: {_gt: $mon2, _lte: $mon3}
+	            removed: {_eq: false}, status: {_eq: "Rejected"}
 	        }){
 	            aggregate{
 	                count
 	            }
 	        }
-	        leave_list_4mon_expiry_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	        
+	        leave_list_type_unclassified_aggregate:hr_employees_docs_leaves_aggregate(where: {
 	            ${org_id_key}: {_eq: $id},
-	            removed: {_eq: false}, expiry_date: {_gt: $mon3}
+	            removed: {_eq: false}, type: {_is_null: true}
+	        }){
+	            aggregate{
+	                count
+	            }
+	        }
+	        leave_list_type_sick_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	            ${org_id_key}: {_eq: $id},
+	            removed: {_eq: false}, type: {_eq: "Sick"}
+	        }){
+	            aggregate{
+	                count
+	            }
+	        }
+	        leave_list_type_annual_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	            ${org_id_key}: {_eq: $id},
+	            removed: {_eq: false}, type: {_eq: "Annual"}
+	        }){
+	            aggregate{
+	                count
+	            }
+	        }
+	        leave_list_type_unpaid_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	            ${org_id_key}: {_eq: $id},
+	            removed: {_eq: false}, type: {_eq: "Unpaid"}
+	        }){
+	            aggregate{
+	                count
+	            }
+	        }
+	        leave_list_type_maternity_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	            ${org_id_key}: {_eq: $id},
+	            removed: {_eq: false}, type: {_eq: "Maternity"}
+	        }){
+	            aggregate{
+	                count
+	            }
+	        }
+	        leave_list_type_family_responsibility_aggregate:hr_employees_docs_leaves_aggregate(where: {
+	            ${org_id_key}: {_eq: $id},
+	            removed: {_eq: false}, type: {_eq: "Family Responsibility"}
 	        }){
 	            aggregate{
 	                count

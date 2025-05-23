@@ -10,6 +10,8 @@ const args = {
         name
         iso2
         phone_code
+        currency
+        currency_name
 	`,
 	orgs_fragment: null,
 };

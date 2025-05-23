@@ -1,3 +1,7 @@
+require('./leave-allocations');
+require('./leave-types');
+require('./leave-policies');
+
 const findByIdImpl = require("../../../findByIdImpl");
 const exportExcelImpl = require("../../../exportExcelImpl2");
 const listHRDocsByLogged = require('./listHRDocsByLogged');
