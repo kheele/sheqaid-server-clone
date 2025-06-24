@@ -13,7 +13,7 @@
                 "add:cors": "gsutil cors set cors.json gs://sheqsolve.appspot.com",
                 "install:mod": "npm install -g npm@10.2.5",
                 "install:remove": "rm -rf node_modules package-lock.json",
-                "install:all": "npm uninstall form-data ",
+                "install:all": "npm install exceljs",
                 "neon:build": "npm run build"
         },
         "engines": {
@@ -32,7 +32,7 @@
                 "crawlee": "^3.13.5",
                 "csurf": "^1.11.0",
                 "ejs": "^3.1.6",
-                "exceljs": "^4.3.0",
+                "exceljs": "^4.4.0",
                 "express": "^4.18.2",
                 "express-session": "^1.17.3",
                 "express-socket.io-session": "^1.3.5",

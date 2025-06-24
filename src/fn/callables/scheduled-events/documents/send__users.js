@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs-extra");
 const {JsExcelTemplate} = require("../../../../libs/JsExcelTemplate");
 const {sendEmail} = require("./send_email");
 const {send_no_expiry, send_to_expire, send_expired} = require("./createSheets");
@@ -17,9 +18,9 @@ const send_final = async ({email, name, company_name, item}) => {
 		list_project_plan_month_expiry,
 		list_project_plan_no_expiry,
 		//
-		// list_ims_policy_expired,
-		// list_ims_policy_month_expiry,
-		// list_ims_policy_no_expiry,
+		list_ims_policy_expired,
+		list_ims_policy_month_expiry,
+		list_ims_policy_no_expiry,
 		//
 		list_general_document_expired,
 		list_general_document_month_expiry,
@@ -32,46 +33,59 @@ const send_final = async ({email, name, company_name, item}) => {
 	await send_to_expire({sheets, list: list_project_plan_month_expiry, group: "Project Plan"});
 	await send_no_expiry({sheets, list: list_project_plan_no_expiry, group: "Project Plan"});
 
-	// await send_expired({sheets, list: list_ims_policy_expired, group: "IMS Policy"});
-	// await send_to_expire({sheets, list: list_ims_policy_month_expiry, group: "IMS Policy"});
-	// await send_no_expiry({sheets, list: list_ims_policy_no_expiry, group: "IMS Policy"});
+	await send_expired({sheets, list: list_ims_policy_expired, group: "IMS Policy"});
+	await send_to_expire({sheets, list: list_ims_policy_month_expiry, group: "IMS Policy"});
+	await send_no_expiry({sheets, list: list_ims_policy_no_expiry, group: "IMS Policy"});
 
 	await send_expired({sheets, list: list_general_document_expired, group: "General Document"});
 	await send_to_expire({sheets, list: list_general_document_month_expiry, group: "General Document"});
 	await send_no_expiry({sheets, list: list_general_document_no_expiry, group: "General Document"});
 
+	console.log('send_final sheets', sheets);
 	const attachments = [];
 
 	for (let n = 0; n < sheets.length; n++) {
 		const sheetInfo = sheets[n];
 		const {rows, sheetName, group} = sheetInfo;
 
-		const template_filename = path.join(__dirname, `xlsx/Template-List-${sheetName}.xlsx`)
-		const template = await JsExcelTemplate.fromFile(template_filename);
+		try {
+			const template_filename = path.join(__dirname, `xlsx/Template-List-${sheetName}.xlsx`);
+			console.log('send_final template_filename', template_filename);
+			// const fileBuffer = await fs.readFile(template_filename);
+			const template = await JsExcelTemplate.fromFile(template_filename);
+			// const template = await JsExcelTemplate.fromArrayBuffer(fileBuffer);
+			console.log('send_final template', template);
 
-		template.set('company_name', company_name);
-		template.set('date', Dates.formatDate(new Date()));
-		template.set('doc_type', group);
-		template.set('documents_title', sheetName);
-		template.set("rows", rows);
+			template.set('company_name', company_name);
+			template.set('date', Dates.formatDate(new Date()));
+			template.set('doc_type', group);
+			template.set('documents_title', sheetName);
+			template.set("rows", rows);
 
-		const buffer = await template.toBuffer();
-		const base64 = buffer.toString('base64');
+			const buffer = await template.toBuffer();
+			const base64 = buffer.toString('base64');
+			console.log('send_final base64', base64);
 
-		const filename = `${group.replaceAll(' ','_')}_(${sheetName})_(${Dates.formatDate(new Date())}).xlsx`;
-		attachments.push({
-			filename,
-			content: base64,
-			encoding: 'base64'
-		});
+			const filename = `${group.replaceAll(' ', '_')}_(${sheetName})_(${Dates.formatDate(new Date())}).xlsx`;
+			console.log('send_final', filename);
+			attachments.push({
+				filename,
+				content: base64,
+				encoding: 'base64'
+			});
+		} catch (err) {
+			console.log('send_final err', err);
+		}
 	}
+
+	console.log(attachments);
 
 	if (!attachments.isEmpty()) {
 		console.log("send_final", email)
 		if (email === 'edward2@sheqsolve.com') {
 			email = 'edward@sheqsolve.com';
 		}
-		// email = 'kheelet@gmail.com';
+		email = 'kheelet@gmail.com';
 
 		const notifMsg = `
 			<p>As a valued user of our platform, we would like to notify you that the <b>${attachments.length} Documents Expiry Spreadsheets</b> are now available for your reference.</p>\n

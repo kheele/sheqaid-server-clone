@@ -10,4 +10,3 @@ router.post('/onDocumentsExpiry', async (req, res) => {
 });
 
 module.exports = router;
-

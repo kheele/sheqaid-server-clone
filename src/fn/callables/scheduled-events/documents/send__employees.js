@@ -1,69 +1,96 @@
-// const {send: send_expired} = require("./send_expired");
-// const {send: send_no_expiry} = require("./send_no_expiry");
-// const {send: send_to_expire} = require("./send_to_expire");
+const path = require("path");
+const {JsExcelTemplate} = require("../../../../libs/JsExcelTemplate");
+const {sendEmail} = require("./send_email");
+const {send_no_expiry, send_to_expire, send_expired} = require("./createSheets");
+const {sendImpl} = require("../send__employees_impl");
 
-//<editor-fold desc="columns">
-const columns = [
-    {header: 'Company', key: 'Company', width: 30},
-    {header: 'Project', key: 'Project', width: 30},
-    {header: 'Site', key: 'Site', width: 30},
-
-    {header: 'Department', key: 'Department', width: 25},
-    {header: 'Job Position', key: 'Job Position', width: 25},
-
-    {header: 'First Name', key: 'First Name', width: 25},
-    {header: 'Last Name', key: 'Last Name', width: 25},
-    {header: 'ID/Passport No.', key: 'ID/Passport No.', width: 25},
-    {header: 'Gender', key: 'Gender', width: 15},
-    {header: 'Phone No.', key: 'Phone No.', width: 15},
-    {header: 'Email Address', key: 'Email Address', width: 25},
-
-    {header: 'Expiry Date', key: 'Expiry Date', width: 20},
-    {header: 'Document', key: 'Document', width: 35}
-];
+//<editor-fold desc="send_users">
+exports.send = async (user_list) => {
+    return sendImpl(user_list, send_final);
+};
 //</editor-fold>
 
-//<editor-fold desc="send_employees">
-exports.send = async ({company_ids, company_groups, collectionGroup, tbl, _group, name,}) => {
-    // console.log('*********************************************')
-    // console.log('send_employees', collectionGroup)
-    // console.log('*********************************************')
+//<editor-fold desc="send_final">
+const send_final = async ({email, name, company_name, item}) => {
+    const {
+        list_project_plan_expired,
+        list_project_plan_month_expiry,
+        list_project_plan_no_expiry,
+        //
+        list_ims_policy_expired,
+        list_ims_policy_month_expiry,
+        list_ims_policy_no_expiry,
+        //
+        list_general_document_expired,
+        list_general_document_month_expiry,
+        list_general_document_no_expiry,
+    } = item;
 
-    const employees = db_hr.collection('employees').where('removed', '==', false).where('receive_expired_docs_notifs', '==', true);
+    const sheets = [];
 
-    const employees_by_company_snapshots = await Promise.all(company_ids.map(company_id => employees.where('company_id', '==', company_id).get()));
+    await send_expired({sheets, list: list_project_plan_expired, group: "Project Plan"});
+    await send_to_expire({sheets, list: list_project_plan_month_expiry, group: "Project Plan"});
+    await send_no_expiry({sheets, list: list_project_plan_no_expiry, group: "Project Plan"});
 
-    employees_by_company_snapshots.forEach(({docs}) => {
-        //each docs / company
-        const sentList = company_groups[docs[0].data('company_id')];
+    await send_expired({sheets, list: list_ims_policy_expired, group: "IMS Policy"});
+    await send_to_expire({sheets, list: list_ims_policy_month_expiry, group: "IMS Policy"});
+    await send_no_expiry({sheets, list: list_ims_policy_no_expiry, group: "IMS Policy"});
 
-        docs.map(doc => {
-            return {id: doc.id, data: doc.data()};
-        }).filter(({data: {email}}) => !!email).map(({
-                                                         id,
-                                                         data: {email: username, client, project, site, company_id}
-                                                     }) => {
-            if (!client) {
-                return {id, username, sentList};
-            }
-            if (!project) {
-                return {
-                    id,
-                    username,
-                    sentList: sentList.filter(({data: {client: _client}}) => _client && _client.id === client.id)
-                };
-            }
-            if (!site) {
-                return {
-                    id,
-                    username,
-                    sentList: sentList.filter(({data: {project: _project}}) => _project && _project.id === project.id)
-                };
-            }
-            return {
-                id, username, sentList: sentList.filter(({data: {site: _site}}) => _site && _site.id === site.id)
-            };
+    await send_expired({sheets, list: list_general_document_expired, group: "General Document"});
+    await send_to_expire({sheets, list: list_general_document_month_expiry, group: "General Document"});
+    await send_no_expiry({sheets, list: list_general_document_no_expiry, group: "General Document"});
+
+    const attachments = [];
+
+    for (let n = 0; n < sheets.length; n++) {
+        const sheetInfo = sheets[n];
+        const {rows, sheetName, group} = sheetInfo;
+
+        const template_filename = path.join(__dirname, `xlsx/Template-List-${sheetName}.xlsx`)
+        const template = await JsExcelTemplate.fromFile(template_filename);
+
+        template.set('company_name', company_name);
+        template.set('date', Dates.formatDate(new Date()));
+        template.set('doc_type', group);
+        template.set('documents_title', sheetName);
+        template.set("rows", rows);
+
+        const buffer = await template.toBuffer();
+        const base64 = buffer.toString('base64');
+
+        const filename = `${group.replaceAll(' ','_')}_(${sheetName})_(${Dates.formatDate(new Date())}).xlsx`;
+        attachments.push({
+            filename,
+            content: base64,
+            encoding: 'base64'
         });
-    });
+    }
+
+    if (!attachments.isEmpty()) {
+        console.log("send_final", email)
+        if (email === 'edward2@sheqsolve.com') {
+            email = 'edward@sheqsolve.com';
+        }
+        email = 'kheelet@gmail.com';
+
+        const notifMsg = `
+			<p>As a valued user of our platform, we would like to notify you that the <b>${attachments.length} Documents Expiry Spreadsheets</b> are now available for your reference.</p>\n
+
+			<p>Please find the aforementioned attachments enclosed with this email. They contain crucial information regarding the expiration dates of various documents, which are essential for the smooth functioning of your organization. 
+			We highly recommend that you review these spreadsheets carefully and take appropriate actions in a timely manner to ensure that all necessary documents are updated and renewed accordingly.</p>\n
+
+			<p>If you have any queries or concerns regarding the <b>Documents Expiry Spreadsheets</b>, please do not hesitate to contact us. 
+			We are always here to assist you in any way we can.</p>\n
+
+			<p>Thank you for your continued support and trust in our services.</p>\n
+		`;
+
+        await sendEmail({
+            email,
+            name,
+            notifMsg,
+            attachments,
+        });
+    }
 };
 //</editor-fold>

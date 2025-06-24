@@ -32,21 +32,27 @@ class JsExcelTemplate extends JsExcelTemplateBase {
     }
 
     static merge() {
-        const template = new JsExcelTemplate()
+        const template = new JsExcelTemplate();
         template.workbook = new ExcelJS.Workbook();
         return template
     }
 
     static async fromArrayBuffer(buffer) {
-        const template = new JsExcelTemplate()
-        await template.workbook.xlsx.load(buffer)
+        const template = new JsExcelTemplate();
+        await template.workbook.xlsx.load(buffer);
         return template
     }
 
     static async fromFile(filepath) {
-        const template = new JsExcelTemplate()
-        await template.workbook.xlsx.readFile(filepath)
-        return template
+        try {
+            const template = new JsExcelTemplate();
+            // console.log(1, filepath, template)
+            await template.workbook.xlsx.readFile(filepath);
+            // console.log(2, filepath, template);
+            return template;
+        } catch (err) {
+            console.log('fromFile err', err);
+        }
     }
 
 }

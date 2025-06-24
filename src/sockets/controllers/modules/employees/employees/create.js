@@ -117,13 +117,13 @@ exports.createEmployee = async (socket, inputRaw) => {
             session.save();
             return;
         }
-        if ('competency_list' in inputRaw) {
-            if (inputRaw.competency_list) {
-                session.newEmployeeInput.documentsFormData.competency_list = inputRaw.competency_list;
-            }
-            session.save();
-            return;
-        }
+        // if ('competency_list' in inputRaw) {
+        //     if (inputRaw.competency_list) {
+        //         session.newEmployeeInput.documentsFormData.competency_list = inputRaw.competency_list;
+        //     }
+        //     session.save();
+        //     return;
+        // }
         if ('contract_list' in inputRaw) {
             if (inputRaw.contract_list) {
                 session.newEmployeeInput.documentsFormData.contract_list = inputRaw.contract_list;
@@ -131,13 +131,13 @@ exports.createEmployee = async (socket, inputRaw) => {
             session.save();
             return;
         }
-        if ('medical_list' in inputRaw) {
-            if (inputRaw.medical_list) {
-                session.newEmployeeInput.documentsFormData.medical_list = inputRaw.medical_list;
-            }
-            session.save();
-            return;
-        }
+        // if ('medical_list' in inputRaw) {
+        //     if (inputRaw.medical_list) {
+        //         session.newEmployeeInput.documentsFormData.medical_list = inputRaw.medical_list;
+        //     }
+        //     session.save();
+        //     return;
+        // }
         if ('work_permit_list' in inputRaw) {
             if (inputRaw.work_permit_list) {
                 session.newEmployeeInput.documentsFormData.work_permit_list = inputRaw.work_permit_list;

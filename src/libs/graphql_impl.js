@@ -23,31 +23,43 @@ global.sendRelay = async (args) => {
 
     console.log('hasura relay headers:', headers);
 
-    const result = await fetch(process.env.ENDPOINT_HASURA_RELAY, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-hasura-access-key": process.env.HASURA_ADMIN_SECRET,
-            "X-Hasura-Role": "admin",
-            ...headers,
-        },
-        body: JSON.stringify({
-            query,
-            variables,
-            operationName
-        })
-    });
+    try {
+        const result = await fetch(process.env.ENDPOINT_HASURA_RELAY, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-hasura-access-key": process.env.HASURA_ADMIN_SECRET,
+                "X-Hasura-Role": "admin",
+                ...headers,
+            },
+            body: JSON.stringify({
+                query,
+                variables,
+                operationName
+            })
+        });
 
-    const {errors, data} = await result.json();
-    if (errors) {
-        // handle those errors like a pro
-        console.error(errors);
-        return null;
+        // console.log('result', result)
+
+        try {
+            const {errors, data} = await result.json();
+            if (errors) {
+                // handle those errors like a pro
+                console.error(errors, query);
+                return null;
+            }
+
+            // console.log('sendRelay res', data);
+
+            return data;
+        }catch (err) {
+            console.log('result err', err)
+            throw err;
+        }
+    }catch (err) {
+        console.log('result err', err)
+        throw err;
     }
-
-    // console.log('sendRelay res', data);
-
-    return data;
 };
 //</editor-fold>
 
@@ -244,6 +256,7 @@ global.getRelayOne = async ({query, operationName, variables, multi_queries = fa
         operationName,
         variables,
     });
+    // console.log('query_res1', query_res)
     if (!query_res) {
         return;
     }
@@ -263,6 +276,7 @@ global.getRelayOne = async ({query, operationName, variables, multi_queries = fa
 
             query_res[key] = nodes;
         });
+        // console.log(query_res)
         return query_res;
     } else {
         const key = Object.keys(query_res)[0];
